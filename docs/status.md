@@ -1,5 +1,53 @@
 # Current delivery status
 
+**2026-11-09 — A rule left behind can stop the agent once. Measured: it changed nothing, so it stays off.**
+- **Result** ([results](../results/rule-gate/README.md), $18.36, 98 runs, all
+  completed):
+  - The gate sent back 7 runs that had left the dependent unchanged. All 7
+    explained a scope choice and stopped, with no further edit: **0 of 7
+    converted**.
+  - Primary: 7 of 25 lost against 10 of 25 with the note (p = 0.28). The gap
+    is runs that had already changed the file.
+  - Harm stages: 1 of 24 against 0 of 24, from a run that made no edit after
+    the block.
+  - The gate costs about a tenth more spend and 15 s more per run.
+  - By the rule fixed in advance, `rule_gate` stays off. The losses the note
+    leaves are disagreements, not misses
+    ([journey 100](../journey/100-told-twice-and-chose-the-same.md)).
+- **The gap.** With a reviewer's declared rules, the rule note left 5 of 40
+  covered runs losing the dependent, all on `household_budget` 7. Each ended
+  with the rule changed in `budgets.py` and not `month_end.py`. ElevenPowers
+  said so only in the end report, which goes to the person. No profile told
+  the agent at Stop.
+- **Now.** With `"rule_gate": true` under `strict`, each left-behind finding
+  (declared rules and `LINT.IfChange` blocks) sends the agent back once,
+  naming the rule and the unchanged files. A repeat is let through and logged
+  as `rule gate released`. It shares the two-block cap and joins any
+  obligation block. Borrowed from Chromium's IfThisThenThat presubmit.
+- **Off by default.** The research said the note stays until a gate beats it.
+  A $0 replay on 153 saved runs supports waiting:
+  - the file-level finding fired on all 9 losses a declared rule covered;
+  - it also fired on 21 of 132 correct runs (16%);
+  - on `household_budget` 7 it fires on every run, because the reviewer also
+    kept a rule whose other file no correct run changes.
+
+  A function-level check would fire on 6 of 132, but it misses all three
+  `parcelpost` losses.
+- **Tests.** 10 in `tests/test_rule_gate.py`, through the real hook with git
+  and pytest. They cover a block once, release and log, the cap, `guide`, the
+  default, both files changed, a failing change, a resent request, and a
+  config round-trip.
+  - Mutation check: 11 of 11 killed. A first run left 3 survivors. Two were
+    weak tests: the cap test did not catch "Reported as UNVERIFIED" on
+    verified work, and a resend test opened a new task. One was a redundant
+    condition, now removed.
+  - Running the harness path also found `Config.save` dropping the new key.
+- **Measured** against the note as
+  [designed](superpowers/specs/2026-11-09-declared-rule-gate-design.md):
+  - a $0 rehearsal through the real plugin hook, 4 of 4;
+  - a one-slot harness check, read in full;
+  - two sealed batches.
+
 **2026-11-06 — "Pre-existing" now needs proof.**
 - **The defect.** The ledger took a test's first sighting in the task as its
   state before the task. So an agent that broke a test, then ran the suite

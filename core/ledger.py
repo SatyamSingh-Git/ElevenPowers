@@ -199,6 +199,8 @@ class Ledger:
     """Does the project hold a `LINT.ThenChange`? Asked on the task's first shell command, once."""
     rules_checked_at: float = 0.0
     """When files changed through the shell were last read for a rule note: later commands read only newer ones."""
+    rules_sent: list = field(default_factory=list)
+    """Left-behind rules the Stop gate already sent the agent back for. Each is asked once."""
     passed_before: list = field(default_factory=list)
     """Test identities observed **passing** on the tree this task started from.
 
@@ -301,6 +303,7 @@ class Ledger:
             briefed=raw.get("briefed", []) or [],
             marked=raw.get("marked"),
             rules_checked_at=raw.get("rules_checked_at", 0.0) or 0.0,
+            rules_sent=raw.get("rules_sent", []) or [],
             discrimination_inputs=raw.get("discrimination_inputs", {}) or {},
             discrimination=raw.get("discrimination", {}) or {},
         )
@@ -407,6 +410,7 @@ class Ledger:
             "briefed": self.briefed,
             "marked": self.marked,
             "rules_checked_at": self.rules_checked_at,
+            "rules_sent": self.rules_sent,
             "discrimination_inputs": self.discrimination_inputs,
             "discrimination": self.discrimination,
             # Written for diagnosis, never read back. `stress` declines when a

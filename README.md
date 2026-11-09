@@ -558,7 +558,11 @@ python plugin/bin/ep_milestones.py --project PATH --propose
    names the rule and the other files. An agent that writes the file
    through a shell command gets the same note right after that command. The
    end report names a declared rule the task changed in only some of its
-   files. Neither blocks.
+   files. Neither blocks unless the project opts in with `"rule_gate": true`
+   under `strict`. The agent is then sent back once, naming the rule. That
+   is off by default: measured against the note, all 7 agents it sent back
+   explained a scope choice and changed nothing
+   ([results](results/rule-gate/README.md)).
 
 Proposals never reach the agent; only what you declared does. This version
 reads Python only and counts other source files as not examined.

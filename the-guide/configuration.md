@@ -448,6 +448,17 @@ This is opt-in pending installed edit-session cost and broader precision;
 [delivery, suppression and recovery](milestones.md#optional-automatic-edit-advice)
 explain worker limits, incomplete output and private diagnostic state.
 
+### Optional rule gate
+
+`"rule_gate": true` in the project config. Under `strict`, a declared or
+marked rule the task changed in only some of its files sends the agent back
+once at Stop. The message names the rule and the unchanged files. A repeat is
+let through and logged as `rule gate released`, and the gate shares the cap of
+two blocks. Under `guide` and `off` it does nothing, and without it the rule
+stays a line in the end report. Off by default: measured against the note,
+it converted 0 of 7 agents it sent back
+([results](../results/rule-gate/README.md)).
+
 ## Pytest option scope
 
 Built-in pytest option values are separate from positional targets. For example,

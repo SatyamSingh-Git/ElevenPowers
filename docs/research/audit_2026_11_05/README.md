@@ -329,6 +329,20 @@ decide whether a claim like "this test passes" still holds after a change:
   a test the agent broke as "pre-existing" on its first sighting. It now needs
   proof from the tree the task opened ([status](../../status.md)).
 
+**What came of test 3 (2026-11-09):**
+- **The gate did not beat the note.** Of 7 runs sent back with the dependent
+  left behind, 0 changed it. Each explained a scope choice and stopped.
+- Primary: 7 of 25 lost against 10 of 25, p = 0.28. There was no harm, and
+  about a tenth more cost
+  ([results](../../../results/rule-gate/README.md)).
+- So, for this finding, a gate with an exit adds nothing to the note. On
+  Claude, the losses that survive a delivered note are judgements, and they
+  are mostly told to the user. A gate with no exit was not tested. At file
+  level it would fire on most correct runs.
+- The test-discrimination and pre-existing gates are a different case. They
+  answer a factual question the agent can be wrong about. This one asks it to
+  reconsider a choice.
+
 ## Claims re-read against the page
 
 Each of these was re-read on 2026-11-05 and matched the track report:

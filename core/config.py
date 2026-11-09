@@ -31,6 +31,8 @@ class Config:
     auto_detect: bool = True
     strength: dict = field(default_factory=dict)
     milestone_advice: dict = field(default_factory=dict)
+    rule_gate: bool = False
+    """Under `strict`, may a declared rule left behind stop the agent once? Off until measured against the note."""
 
     @property
     def blocks(self) -> bool:
@@ -92,6 +94,7 @@ def load(root: Path) -> Config:
         commands={k: v for k, v in effective.items() if v},
         strength=raw.get('strength', {}),
         milestone_advice=raw.get('milestone_advice', {}),
+        rule_gate=raw.get('rule_gate') is True,
     )
 
 
@@ -163,6 +166,7 @@ def save(root: Path, config: Config) -> None:
     path.write_text(
         json.dumps({"profile": config.profile, "commands": config.commands,
                     "scan": config.scan, "auto_detect": config.auto_detect,
-                    "strength": config.strength, "milestone_advice": config.milestone_advice}, indent=2),
+                    "strength": config.strength, "milestone_advice": config.milestone_advice,
+                    "rule_gate": config.rule_gate}, indent=2),
         encoding="utf-8",
     )

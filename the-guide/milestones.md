@@ -146,7 +146,8 @@ MAX_UPLOAD_SIZE_MB = 50
   `docs/api.md:upload_limit`. An agent that writes the file through a
   shell command gets the same note after that command.
 - **At completion:** the end report names the block if the task changed a
-  line inside it but not its target.
+  line inside it but not its target. With `"rule_gate": true` under
+  `strict`, the agent is sent back once as well, as for a declared rule.
   - A `path:label` target counts as changed only if its labelled block
     changed.
   - A bare path counts if the file changed at all.
@@ -201,7 +202,18 @@ python plugin/bin/ep_milestones.py --project PATH --propose --limit 50
    names other files, its brief says so and names them. An agent that writes
    the file through a shell command gets the same note right after that
    command. At completion, the end report names a declared rule the task
-   changed in only some of its files. Neither blocks.
+   changed in only some of its files. Neither blocks, unless you opt in:
+   under `strict`, `"rule_gate": true` in `.elevenpowers/config.json` sends
+   the agent back once at Stop, naming the rule and the unchanged files. It
+   may change them or say why they should differ. A repeat is let through
+   and logged as `rule gate released`. It is off by default because it was
+   measured against the note and changed nothing: of 7 agents sent back with
+   the dependent left behind, all 7 explained a scope choice and stopped
+   ([results](../results/rule-gate/README.md)). If an agent keeps leaving a
+   file behind, write in the rule's description that the files must agree.
+   It reads files, not functions, so it also fires when the task changed a
+   part of the file the rule does not touch: on one correct run in six in
+   the saved runs.
 
 **Say every way the files are tied, not only the one the proposal found.**
 An agent takes the declared rule as the whole contract between the files.

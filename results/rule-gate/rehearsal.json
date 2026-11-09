@@ -1,0 +1,455 @@
+{
+ "dependent": "src/budgetbook/reports/month_end.py",
+ "primary": {
+  "note, left behind": {
+   "exit": 0,
+   "rules told": []
+  },
+  "note, reference": {
+   "exit": 0,
+   "rules told": []
+  },
+  "gate, left behind": {
+   "exit": 2,
+   "rules told": [
+    "declared rule rule-summarise-_spent_by_category: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/month_end.py",
+    "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+   ]
+  },
+  "gate, reference": {
+   "exit": 2,
+   "rules told": [
+    "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+   ]
+  }
+ },
+ "checks": {
+  "gate sends the left-behind variant back naming the dependent": true,
+  "note never sends a rule back": true,
+  "gate sends the reference back, but not for the dependent": true,
+  "harm stages found": true
+ },
+ "harm stages": [
+  {
+   "case": "gradebook",
+   "stage": 2,
+   "rules left behind by the reference": [
+    "rule-category-category",
+    "rule-category-category-3",
+    "rule-_counted_items-_category_progress",
+    "rule-reweighted-_check_categories",
+    "rule-explain_grade-weighted"
+   ]
+  },
+  {
+   "case": "fleet_service",
+   "stage": 6,
+   "rules left behind by the reference": [
+    "rule-_next_id-_next_id",
+    "rule-import_timesheet-add_line",
+    "rule-add_line-add_part",
+    "rule-_maintenance-order_charges"
+   ]
+  },
+  {
+   "case": "fleet_service",
+   "stage": 3,
+   "rules left behind by the reference": [
+    "rule-_next_id-_next_id",
+    "rule-add_line-add_part",
+    "rule-_maintenance-order_charges"
+   ]
+  },
+  {
+   "case": "fleet_service",
+   "stage": 5,
+   "rules left behind by the reference": [
+    "rule-_next_id-_next_id",
+    "rule-add_line-add_part",
+    "rule-_maintenance-order_charges"
+   ]
+  },
+  {
+   "case": "gradebook",
+   "stage": 7,
+   "rules left behind by the reference": [
+    "rule-category-category",
+    "rule-category-category-2",
+    "rule-reweighted-_check_categories"
+   ]
+  },
+  {
+   "case": "gradebook",
+   "stage": 8,
+   "rules left behind by the reference": [
+    "rule-category-category-2",
+    "rule-category-category-3",
+    "rule-_counted_items-_category_progress"
+   ]
+  },
+  {
+   "case": "greenhouse_monitor",
+   "stage": 4,
+   "rules left behind by the reference": [
+    "rule-digest_text-timed",
+    "rule-describe-alert_record",
+    "rule-status_rows-evaluate"
+   ]
+  },
+  {
+   "case": "fleet_service",
+   "stage": 2,
+   "rules left behind by the reference": [
+    "rule-_next_id-_next_id",
+    "rule-add_line-add_part"
+   ]
+  }
+ ],
+ "all reference findings": [
+  {
+   "case": "gradebook",
+   "stage": 2,
+   "rules left behind by the reference": [
+    "rule-category-category",
+    "rule-category-category-3",
+    "rule-_counted_items-_category_progress",
+    "rule-reweighted-_check_categories",
+    "rule-explain_grade-weighted"
+   ]
+  },
+  {
+   "case": "fleet_service",
+   "stage": 6,
+   "rules left behind by the reference": [
+    "rule-_next_id-_next_id",
+    "rule-import_timesheet-add_line",
+    "rule-add_line-add_part",
+    "rule-_maintenance-order_charges"
+   ]
+  },
+  {
+   "case": "fleet_service",
+   "stage": 3,
+   "rules left behind by the reference": [
+    "rule-_next_id-_next_id",
+    "rule-add_line-add_part",
+    "rule-_maintenance-order_charges"
+   ]
+  },
+  {
+   "case": "fleet_service",
+   "stage": 5,
+   "rules left behind by the reference": [
+    "rule-_next_id-_next_id",
+    "rule-add_line-add_part",
+    "rule-_maintenance-order_charges"
+   ]
+  },
+  {
+   "case": "gradebook",
+   "stage": 7,
+   "rules left behind by the reference": [
+    "rule-category-category",
+    "rule-category-category-2",
+    "rule-reweighted-_check_categories"
+   ]
+  },
+  {
+   "case": "gradebook",
+   "stage": 8,
+   "rules left behind by the reference": [
+    "rule-category-category-2",
+    "rule-category-category-3",
+    "rule-_counted_items-_category_progress"
+   ]
+  },
+  {
+   "case": "greenhouse_monitor",
+   "stage": 4,
+   "rules left behind by the reference": [
+    "rule-digest_text-timed",
+    "rule-describe-alert_record",
+    "rule-status_rows-evaluate"
+   ]
+  },
+  {
+   "case": "fleet_service",
+   "stage": 2,
+   "rules left behind by the reference": [
+    "rule-_next_id-_next_id",
+    "rule-add_line-add_part"
+   ]
+  },
+  {
+   "case": "gradebook",
+   "stage": 3,
+   "rules left behind by the reference": [
+    "rule-category-category",
+    "rule-category-category-3"
+   ]
+  },
+  {
+   "case": "hotel_desk",
+   "stage": 6,
+   "rules left behind by the reference": [
+    "rule-held-_booked_nights",
+    "rule-forecast_rows-held"
+   ]
+  },
+  {
+   "case": "household_budget",
+   "stage": 1,
+   "rules left behind by the reference": [
+    "rule-import_statement-categorise_open_months",
+    "rule-import_statement-post_due"
+   ]
+  },
+  {
+   "case": "household_budget",
+   "stage": 4,
+   "rules left behind by the reference": [
+    "rule-reopen_month-is_closed",
+    "rule-summarise-_spent_by_category"
+   ]
+  },
+  {
+   "case": "household_budget",
+   "stage": 8,
+   "rules left behind by the reference": [
+    "rule-summarise-_spent_by_category",
+    "rule-cmd_rule_add-find_problems"
+   ]
+  },
+  {
+   "case": "recipe_box",
+   "stage": 5,
+   "rules left behind by the reference": [
+    "rule-_enough-_after_pantry",
+    "rule-convertible-_group"
+   ]
+  },
+  {
+   "case": "survey_tally",
+   "stage": 1,
+   "rules left behind by the reference": [
+    "rule-_submitted-_submitted",
+    "rule-_encode-write_json_responses"
+   ]
+  },
+  {
+   "case": "survey_tally",
+   "stage": 4,
+   "rules left behind by the reference": [
+    "rule-_submitted-_submitted",
+    "rule-percent-_row"
+   ]
+  },
+  {
+   "case": "ticket_office",
+   "stage": 2,
+   "rules left behind by the reference": [
+    "rule-order-_order",
+    "rule-show_performance-_check_open"
+   ]
+  },
+  {
+   "case": "ticket_office",
+   "stage": 3,
+   "rules left behind by the reference": [
+    "rule-order-_order",
+    "rule-show_performance-_check_open"
+   ]
+  },
+  {
+   "case": "ticket_office",
+   "stage": 5,
+   "rules left behind by the reference": [
+    "rule-order-_order",
+    "rule-show_performance-_check_open"
+   ]
+  },
+  {
+   "case": "ticket_office",
+   "stage": 6,
+   "rules left behind by the reference": [
+    "rule-_save-_write",
+    "rule-reprice-performance"
+   ]
+  },
+  {
+   "case": "clinic_booking",
+   "stage": 2,
+   "rules left behind by the reference": [
+    "rule-_clashes-_clashes"
+   ]
+  },
+  {
+   "case": "clinic_booking",
+   "stage": 3,
+   "rules left behind by the reference": [
+    "rule-free_slots-_check_when"
+   ]
+  },
+  {
+   "case": "clinic_booking",
+   "stage": 5,
+   "rules left behind by the reference": [
+    "rule-free_slots-_check_when"
+   ]
+  },
+  {
+   "case": "clinic_booking",
+   "stage": 8,
+   "rules left behind by the reference": [
+    "rule-total-total"
+   ]
+  },
+  {
+   "case": "fleet_service",
+   "stage": 7,
+   "rules left behind by the reference": [
+    "rule-parse_gallons-parse_hours"
+   ]
+  },
+  {
+   "case": "gradebook",
+   "stage": 4,
+   "rules left behind by the reference": [
+    "rule-reweighted-_check_categories"
+   ]
+  },
+  {
+   "case": "gradebook",
+   "stage": 5,
+   "rules left behind by the reference": [
+    "rule-import_lms-import_sheet"
+   ]
+  },
+  {
+   "case": "greenhouse_monitor",
+   "stage": 5,
+   "rules left behind by the reference": [
+    "rule-parse_row-record_manual"
+   ]
+  },
+  {
+   "case": "hotel_desk",
+   "stage": 3,
+   "rules left behind by the reference": [
+    "rule-room_total-room_total"
+   ]
+  },
+  {
+   "case": "hotel_desk",
+   "stage": 5,
+   "rules left behind by the reference": [
+    "rule-_extend-extend_stay"
+   ]
+  },
+  {
+   "case": "hotel_desk",
+   "stage": 7,
+   "rules left behind by the reference": [
+    "rule-_extend-extend_stay"
+   ]
+  },
+  {
+   "case": "library_loans",
+   "stage": 2,
+   "rules left behind by the reference": [
+    "rule-overdue_rows-fine_for"
+   ]
+  },
+  {
+   "case": "library_loans",
+   "stage": 4,
+   "rules left behind by the reference": [
+    "rule-status-summary"
+   ]
+  },
+  {
+   "case": "library_loans",
+   "stage": 5,
+   "rules left behind by the reference": [
+    "rule-overdue_rows-fine_for"
+   ]
+  },
+  {
+   "case": "library_loans",
+   "stage": 6,
+   "rules left behind by the reference": [
+    "rule-write_members_csv-save_members"
+   ]
+  },
+  {
+   "case": "library_loans",
+   "stage": 7,
+   "rules left behind by the reference": [
+    "rule-status-summary"
+   ]
+  },
+  {
+   "case": "parcelpost",
+   "stage": 1,
+   "rules left behind by the reference": [
+    "rule-vat-vat"
+   ]
+  },
+  {
+   "case": "parcelpost",
+   "stage": 2,
+   "rules left behind by the reference": [
+    "rule-_check_digit-_plausible_number"
+   ]
+  },
+  {
+   "case": "parcelpost",
+   "stage": 5,
+   "rules left behind by the reference": [
+    "rule-vat-vat"
+   ]
+  },
+  {
+   "case": "payroll_lite",
+   "stage": 6,
+   "rules left behind by the reference": [
+    "rule-hours_rows-split_hours"
+   ]
+  },
+  {
+   "case": "recipe_box",
+   "stage": 2,
+   "rules left behind by the reference": [
+    "rule-parse_ingredient-parse_quantity"
+   ]
+  },
+  {
+   "case": "recipe_box",
+   "stage": 3,
+   "rules left behind by the reference": [
+    "rule-_to_grams-grams"
+   ]
+  },
+  {
+   "case": "recipe_box",
+   "stage": 8,
+   "rules left behind by the reference": [
+    "rule-parse_ingredient-parse_quantity"
+   ]
+  },
+  {
+   "case": "survey_tally",
+   "stage": 5,
+   "rules left behind by the reference": [
+    "rule-percent-_row"
+   ]
+  },
+  {
+   "case": "ticket_office",
+   "stage": 8,
+   "rules left behind by the reference": [
+    "rule-order-assign_customer"
+   ]
+  }
+ ]
+}

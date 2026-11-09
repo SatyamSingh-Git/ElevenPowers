@@ -36,6 +36,9 @@ from .preservation import _read, _write
 ARMS = ('control', 'rules')
 # The certified rules again, each description replaced by a reviewer's sentence.
 DESCRIBED = 'described'
+# Both carry the rules under `strict`; only `gate` sends the agent back for a rule left behind.
+# docs/superpowers/specs/2026-11-09-declared-rule-gate-design.md
+GATED = ('note', 'gate')
 PROPOSALS = 50
 CASES = TOOL_ROOT / 'eval' / 'multistage_v3'
 MANIFEST = TOOL_ROOT / 'results' / 'multistage-v3' / 'manifest.json'
@@ -98,13 +101,14 @@ def outcome(case, stage, before, after):
 
 def workspace(case, stage, arm, folder, entries):
     """The reference tree before `stage`, set up as the v3 ElevenPowers arm; `rules` adds the declarations."""
-    if arm not in (*ARMS, DESCRIBED):
+    if arm not in (*ARMS, DESCRIBED, *GATED):
         raise ValueError(f'unknown arm {arm}')
     folder = Path(folder)
     work = tree(case, stage - 1, folder / 'work')
     _write(work / '.claude' / 'settings.json', PROJECT_SETTINGS)
     _interpreter(sys.executable, folder)
-    save(work, Config(profile='guide', commands={'tests': f"python -m pytest {case['test_dir']} -q"}))
+    save(work, Config(profile='strict' if arm in GATED else 'guide', rule_gate=arm == 'gate',
+                      commands={'tests': f"python -m pytest {case['test_dir']} -q"}))
     install('claude', work, sys.executable, TOOL_ROOT)
     if arm != 'control':
         _write(work / 'elevenpowers.milestones.json', {'schema': 1, 'milestones': entries})
@@ -120,8 +124,8 @@ def prepare(batch, stages, *, replicates, seconds=900, model='claude-sonnet-5-5'
     `accepted` ({case: [rule id]}) certifies a reviewer's kept pairs in place of the perfect ones."""
     if model not in subscription.SUPPORTED_MODELS['claude']:
         raise ValueError('unsupported subscription model')
-    if len(set(arms)) != len(arms) or len(arms) < 2 or not set(arms) <= {*ARMS, DESCRIBED}:
-        raise ValueError(f'arms must be two or more of {(*ARMS, DESCRIBED)}')
+    if len(set(arms)) != len(arms) or len(arms) < 2 or not set(arms) <= {*ARMS, DESCRIBED, *GATED}:
+        raise ValueError(f'arms must be two or more of {(*ARMS, DESCRIBED, *GATED)}')
     if (DESCRIBED in arms) != (descriptions is not None):
         raise ValueError('the described arm needs descriptions, and descriptions need the described arm')
     root = Path(batch).absolute()

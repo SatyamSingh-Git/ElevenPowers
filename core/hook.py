@@ -193,6 +193,7 @@ def on_prompt(payload: dict, root: Path) -> int:
     ledger.touched = _since_task_opened(ledger, root)
     ledger.risk, ledger.domains = risk_of(ledger.touched, request)
     ledger.blocks = 0
+    ledger.rules_sent = []
     ledger.save()
     _emit("UserPromptSubmit", additionalContext='\n'.join(filter(None, (start_banner(ledger), advice))))
     return 0
@@ -604,7 +605,12 @@ def _complete_stop(payload: dict, root: Path, ledger: Ledger) -> int:
 
     if not ledger.config.speaks:
         return 0
-    if status is Status.VERIFIED:
+    # A declared rule changed in some of its files and not the others. Told only
+    # in the end report, it reached the person and not the agent: the 5 runs of 40
+    # that got the rule note and still lost the dependent all ended this way.
+    behind = _rules_behind(ledger) if ledger.config.rule_gate else []
+    if status is Status.VERIFIED and (not behind or ledger.blocks >= MAX_BLOCKS):
+        ledger.save()
         _emit("Stop", systemMessage=end_report(ledger))
         return 0
 
@@ -612,7 +618,9 @@ def _complete_stop(payload: dict, root: Path, ledger: Ledger) -> int:
     # far recorded only the status, so nothing could say whether the gate kept
     # firing for the same reason.
     unmet = ", ".join(sorted({c.obligation.key for v in ledger.verdicts() for c in v.missing}))
-    detail = f"{status.value}: {unmet or 'stale evidence'}"
+    detail = "; ".join(filter(None, (
+        status is not Status.VERIFIED and f"{status.value}: {unmet or 'stale evidence'}",
+        behind and f"rules left behind: {', '.join(behind)}")))
 
     if not ledger.config.blocks:
         ledger.note("gate reported", detail)
@@ -627,9 +635,25 @@ def _complete_stop(payload: dict, root: Path, ledger: Ledger) -> int:
         return 0
 
     ledger.blocks += 1
+    ledger.rules_sent += behind
     ledger.note("gate blocked", detail)
     ledger.save()
-    return transport.block(gate_message(ledger))
+    told = gate_message(ledger) if status is not Status.VERIFIED else ""
+    if behind:
+        told = "\n".join(filter(None, (told, "Declared rules left behind:", *(f"  {said}" for said in behind),
+                                       "Change the other files to keep each rule, or say in your reply why "
+                                       "they should differ here. This is asked once.")))
+    return transport.block(told)
+
+
+def _rules_behind(ledger: Ledger) -> list[str]:
+    """Rules left behind that the agent has not yet been sent back for; a repeat is let through and logged."""
+    from .milestones.definition import partly_changed
+    said = partly_changed(ledger.root, ledger.touched, ledger.base)
+    released = [s for s in said if s in ledger.rules_sent]
+    if released:
+        ledger.note("rule gate released", "; ".join(released))
+    return [s for s in said if s not in ledger.rules_sent]
 
 
 def _since_task_opened(ledger: Ledger, root: Path) -> list[str]:

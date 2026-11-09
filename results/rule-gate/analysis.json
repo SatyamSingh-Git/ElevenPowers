@@ -1,0 +1,3374 @@
+{
+ "primary": {
+  "dependent lost (gate lost, gate runs, note lost, note runs)": [
+   7,
+   25,
+   10,
+   25
+  ],
+  "p one-sided, gate loses fewer": 0.27561231289506005,
+  "arms": {
+   "note": {
+    "scheduled": 25,
+    "completed": 25,
+    "states": [
+     "completed"
+    ],
+    "cost": 4.38,
+    "mean_seconds": 92.7,
+    "any_group_lost": 10,
+    "rule_blocked": 0,
+    "released": 0
+   },
+   "gate": {
+    "scheduled": 25,
+    "completed": 25,
+    "states": [
+     "completed"
+    ],
+    "cost": 4.9,
+    "mean_seconds": 107.6,
+    "any_group_lost": 7,
+    "rule_blocked": 25,
+    "released": 25
+   }
+  }
+ },
+ "conversion": {
+  "gate runs sent back for the dependent rule": 7,
+  "of those, dependent kept": 0
+ },
+ "harm on the primary stage": {
+  "gate runs that kept the dependent": 18,
+  "of those, another group lost": 0,
+  "of those, src/budgetbook/reports/annual.py changed": 0,
+  "note runs with src/budgetbook/reports/annual.py changed": 0
+ },
+ "harm stages": {
+  "any group lost by stage (note lost, note runs, gate lost, gate runs)": {
+   "gradebook 2": [
+    0,
+    3,
+    1,
+    3
+   ],
+   "gradebook 7": [
+    0,
+    3,
+    0,
+    3
+   ],
+   "gradebook 8": [
+    0,
+    3,
+    0,
+    3
+   ],
+   "fleet_service 2": [
+    0,
+    3,
+    0,
+    3
+   ],
+   "fleet_service 3": [
+    0,
+    3,
+    0,
+    3
+   ],
+   "fleet_service 5": [
+    0,
+    3,
+    0,
+    3
+   ],
+   "fleet_service 6": [
+    0,
+    3,
+    0,
+    3
+   ],
+   "greenhouse_monitor 4": [
+    0,
+    3,
+    0,
+    3
+   ]
+  },
+  "p one-sided, gate loses more": 0.5,
+  "arms": {
+   "note": {
+    "scheduled": 24,
+    "completed": 24,
+    "states": [
+     "completed"
+    ],
+    "cost": 4.35,
+    "mean_seconds": 84.3,
+    "any_group_lost": 0,
+    "rule_blocked": 0,
+    "released": 0
+   },
+   "gate": {
+    "scheduled": 24,
+    "completed": 24,
+    "states": [
+     "completed"
+    ],
+    "cost": 4.73,
+    "mean_seconds": 98.6,
+    "any_group_lost": 1,
+    "rule_blocked": 21,
+    "released": 21
+   }
+  }
+ },
+ "released replies": {
+  "household_budget--7--gate--0": [
+   "declared rule rule-summarise-_spent_by_category: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/month_end.py; declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+  ],
+  "household_budget--7--gate--1": [
+   "declared rule rule-for_workspace-add_category: changed src/budgetbook/services/catalog.py, not src/budgetbook/services/config.py; declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+  ],
+  "household_budget--7--gate--2": [
+   "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+  ],
+  "household_budget--7--gate--3": [
+   "declared rule rule-summarise-_spent_by_category: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/month_end.py; declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+  ],
+  "household_budget--7--gate--4": [
+   "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+  ],
+  "household_budget--7--gate--5": [
+   "declared rule rule-summarise-_spent_by_category: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/month_end.py; declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+  ],
+  "household_budget--7--gate--6": [
+   "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+  ],
+  "household_budget--7--gate--7": [
+   "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+  ],
+  "household_budget--7--gate--8": [
+   "declared rule rule-summarise-_spent_by_category: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/month_end.py; declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+  ],
+  "household_budget--7--gate--9": [
+   "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+  ],
+  "household_budget--7--gate--10": [
+   "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+  ],
+  "household_budget--7--gate--11": [
+   "declared rule rule-summarise-_spent_by_category: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/month_end.py; declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+  ],
+  "household_budget--7--gate--12": [
+   "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+  ],
+  "household_budget--7--gate--13": [
+   "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+  ],
+  "household_budget--7--gate--14": [
+   "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+  ],
+  "household_budget--7--gate--15": [
+   "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+  ],
+  "household_budget--7--gate--16": [
+   "declared rule rule-summarise-_spent_by_category: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/month_end.py; declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+  ],
+  "household_budget--7--gate--17": [
+   "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+  ],
+  "household_budget--7--gate--18": [
+   "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+  ],
+  "household_budget--7--gate--19": [
+   "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+  ],
+  "household_budget--7--gate--20": [
+   "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+  ],
+  "household_budget--7--gate--21": [
+   "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+  ],
+  "household_budget--7--gate--22": [
+   "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+  ],
+  "household_budget--7--gate--23": [
+   "declared rule rule-summarise-_spent_by_category: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/month_end.py; declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+  ],
+  "household_budget--7--gate--24": [
+   "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+  ],
+  "gradebook--2--gate--0": [
+   "declared rule rule-category-category: changed src/gradebook/reports/progress.py, not src/gradebook/model/course.py; declared rule rule-category-category-3: changed src/gradebook/reports/progress.py, not src/gradebook/grading/results.py; declared rule rule-_counted_items-_category_progress: changed src/gradebook/reports/progress.py, not src/gradebook/grading/calculator.py; declared rule rule-reweighted-_check_categories: changed src/gradebook/storage/course_config.py, not src/gradebook/services/what_if.py; declared rule rule-explain_grade-weighted: changed src/gradebook/grading/policies.py, not src/gradebook/grading/explain.py"
+  ],
+  "gradebook--7--gate--0": [
+   "declared rule rule-category-category: changed src/gradebook/model/course.py, not src/gradebook/reports/progress.py; declared rule rule-category-category-2: changed src/gradebook/model/course.py, not src/gradebook/grading/results.py; declared rule rule-reweighted-_check_categories: changed src/gradebook/storage/course_config.py, not src/gradebook/services/what_if.py"
+  ],
+  "fleet_service--2--gate--0": [
+   "declared rule rule-_next_id-_next_id: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/services/inspections.py; declared rule rule-add_line-add_part: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/model/workorder.py"
+  ],
+  "fleet_service--3--gate--0": [
+   "declared rule rule-parse_gallons-parse_hours: changed src/fleetkeep/model/workorder.py, not src/fleetkeep/model/readings.py; declared rule rule-import_timesheet-add_line: changed src/fleetkeep/model/workorder.py, not src/fleetkeep/importers/timesheets.py; declared rule rule-add_line-add_part: changed src/fleetkeep/model/workorder.py, not src/fleetkeep/services/workorders.py"
+  ],
+  "fleet_service--5--gate--0": [
+   "declared rule rule-_next_id-_next_id: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/services/inspections.py; declared rule rule-add_line-add_part: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/model/workorder.py; declared rule rule-_maintenance-order_charges: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/reports/costs.py"
+  ],
+  "fleet_service--6--gate--0": [
+   "declared rule rule-_next_id-_next_id: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/services/inspections.py; declared rule rule-import_timesheet-add_line: changed src/fleetkeep/importers/timesheets.py, not src/fleetkeep/model/workorder.py; declared rule rule-add_line-add_part: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/model/workorder.py; declared rule rule-_maintenance-order_charges: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/reports/costs.py"
+  ],
+  "greenhouse_monitor--4--gate--0": [
+   "declared rule rule-digest_text-timed: changed src/greenhouse/reports/messages.py, not src/greenhouse/reports/digest.py; declared rule rule-describe-alert_record: changed src/greenhouse/reports/messages.py, not src/greenhouse/storage/alerts_log.py; declared rule rule-status_rows-evaluate: changed src/greenhouse/services/alerts.py, not src/greenhouse/reports/status.py"
+  ],
+  "gradebook--2--gate--1": [
+   "declared rule rule-reweighted-_check_categories: changed src/gradebook/storage/course_config.py, not src/gradebook/services/what_if.py; declared rule rule-explain_grade-weighted: changed src/gradebook/grading/policies.py, not src/gradebook/grading/explain.py"
+  ],
+  "gradebook--7--gate--1": [
+   "declared rule rule-category-category: changed src/gradebook/model/course.py, not src/gradebook/reports/progress.py; declared rule rule-category-category-2: changed src/gradebook/model/course.py, not src/gradebook/grading/results.py; declared rule rule-reweighted-_check_categories: changed src/gradebook/storage/course_config.py, not src/gradebook/services/what_if.py"
+  ],
+  "fleet_service--2--gate--1": [
+   "declared rule rule-_next_id-_next_id: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/services/inspections.py; declared rule rule-add_line-add_part: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/model/workorder.py"
+  ],
+  "fleet_service--3--gate--1": [
+   "declared rule rule-parse_gallons-parse_hours: changed src/fleetkeep/model/workorder.py, not src/fleetkeep/model/readings.py; declared rule rule-import_timesheet-add_line: changed src/fleetkeep/model/workorder.py, not src/fleetkeep/importers/timesheets.py; declared rule rule-add_line-add_part: changed src/fleetkeep/model/workorder.py, not src/fleetkeep/services/workorders.py"
+  ],
+  "fleet_service--5--gate--1": [
+   "declared rule rule-_next_id-_next_id: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/services/inspections.py; declared rule rule-add_line-add_part: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/model/workorder.py; declared rule rule-_maintenance-order_charges: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/reports/costs.py"
+  ],
+  "fleet_service--6--gate--1": [
+   "declared rule rule-_next_id-_next_id: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/services/inspections.py; declared rule rule-import_timesheet-add_line: changed src/fleetkeep/importers/timesheets.py, not src/fleetkeep/model/workorder.py; declared rule rule-add_line-add_part: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/model/workorder.py; declared rule rule-_maintenance-order_charges: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/reports/costs.py"
+  ],
+  "greenhouse_monitor--4--gate--1": [
+   "declared rule rule-digest_text-timed: changed src/greenhouse/reports/messages.py, not src/greenhouse/reports/digest.py; declared rule rule-describe-alert_record: changed src/greenhouse/reports/messages.py, not src/greenhouse/storage/alerts_log.py; declared rule rule-status_rows-evaluate: changed src/greenhouse/services/alerts.py, not src/greenhouse/reports/status.py"
+  ],
+  "gradebook--2--gate--2": [
+   "declared rule rule-category-category: changed src/gradebook/reports/progress.py, not src/gradebook/model/course.py; declared rule rule-category-category-3: changed src/gradebook/reports/progress.py, not src/gradebook/grading/results.py; declared rule rule-_counted_items-_category_progress: changed src/gradebook/reports/progress.py, not src/gradebook/grading/calculator.py; declared rule rule-reweighted-_check_categories: changed src/gradebook/storage/course_config.py, not src/gradebook/services/what_if.py; declared rule rule-explain_grade-weighted: changed src/gradebook/grading/policies.py, not src/gradebook/grading/explain.py"
+  ],
+  "gradebook--7--gate--2": [
+   "declared rule rule-category-category: changed src/gradebook/model/course.py, not src/gradebook/reports/progress.py; declared rule rule-category-category-2: changed src/gradebook/model/course.py, not src/gradebook/grading/results.py; declared rule rule-reweighted-_check_categories: changed src/gradebook/storage/course_config.py, not src/gradebook/services/what_if.py"
+  ],
+  "fleet_service--2--gate--2": [
+   "declared rule rule-_next_id-_next_id: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/services/inspections.py; declared rule rule-add_line-add_part: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/model/workorder.py"
+  ],
+  "fleet_service--3--gate--2": [
+   "declared rule rule-parse_gallons-parse_hours: changed src/fleetkeep/model/workorder.py, not src/fleetkeep/model/readings.py; declared rule rule-import_timesheet-add_line: changed src/fleetkeep/model/workorder.py, not src/fleetkeep/importers/timesheets.py; declared rule rule-add_line-add_part: changed src/fleetkeep/model/workorder.py, not src/fleetkeep/services/workorders.py"
+  ],
+  "fleet_service--5--gate--2": [
+   "declared rule rule-_next_id-_next_id: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/services/inspections.py; declared rule rule-add_line-add_part: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/model/workorder.py; declared rule rule-_maintenance-order_charges: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/reports/costs.py"
+  ],
+  "fleet_service--6--gate--2": [
+   "declared rule rule-_next_id-_next_id: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/services/inspections.py; declared rule rule-import_timesheet-add_line: changed src/fleetkeep/importers/timesheets.py, not src/fleetkeep/model/workorder.py; declared rule rule-add_line-add_part: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/model/workorder.py; declared rule rule-_maintenance-order_charges: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/reports/costs.py"
+  ],
+  "greenhouse_monitor--4--gate--2": [
+   "declared rule rule-digest_text-timed: changed src/greenhouse/reports/messages.py, not src/greenhouse/reports/digest.py; declared rule rule-describe-alert_record: changed src/greenhouse/reports/messages.py, not src/greenhouse/storage/alerts_log.py; declared rule rule-status_rows-evaluate: changed src/greenhouse/services/alerts.py, not src/greenhouse/reports/status.py"
+  ]
+ },
+ "rows": {
+  "primary": [
+   {
+    "slot": "household_budget--7--note--0",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "note",
+    "replicate": 0,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": true,
+    "cost": 0.167798,
+    "seconds": 91.907,
+    "lost": [
+     "month_flow"
+    ],
+    "declared_files_briefed": [
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--gate--0",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "gate",
+    "replicate": 0,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": true,
+    "cost": 0.190079,
+    "seconds": 87.218,
+    "lost": [
+     "month_flow"
+    ],
+    "declared_files_briefed": [
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-summarise-_spent_by_category: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/month_end.py",
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-summarise-_spent_by_category: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/month_end.py; declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--gate--1",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "gate",
+    "replicate": 1,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.211204,
+    "seconds": 118.475,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py",
+     "src/budgetbook/services/catalog.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-for_workspace-add_category: changed src/budgetbook/services/catalog.py, not src/budgetbook/services/config.py",
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-for_workspace-add_category: changed src/budgetbook/services/catalog.py, not src/budgetbook/services/config.py; declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py",
+     "src/budgetbook/services/catalog.py",
+     "tests/test_budgets.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--note--1",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "note",
+    "replicate": 1,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.170296,
+    "seconds": 98.616,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--note--2",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "note",
+    "replicate": 2,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.200585,
+    "seconds": 77.753,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--gate--2",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "gate",
+    "replicate": 2,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.193454,
+    "seconds": 85.461,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--gate--3",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "gate",
+    "replicate": 3,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": true,
+    "cost": 0.195276,
+    "seconds": 85.734,
+    "lost": [
+     "month_flow"
+    ],
+    "declared_files_briefed": [
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-summarise-_spent_by_category: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/month_end.py",
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-summarise-_spent_by_category: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/month_end.py; declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--note--3",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "note",
+    "replicate": 3,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.193356,
+    "seconds": 82.391,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py",
+     "tests/test_reports.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--note--4",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "note",
+    "replicate": 4,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": true,
+    "cost": 0.152974,
+    "seconds": 99.165,
+    "lost": [
+     "month_flow"
+    ],
+    "declared_files_briefed": [
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--gate--4",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "gate",
+    "replicate": 4,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.191274,
+    "seconds": 108.436,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py",
+     "tests/test_reports.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--gate--5",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "gate",
+    "replicate": 5,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": true,
+    "cost": 0.16362,
+    "seconds": 101.772,
+    "lost": [
+     "month_flow"
+    ],
+    "declared_files_briefed": [
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-summarise-_spent_by_category: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/month_end.py",
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-summarise-_spent_by_category: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/month_end.py; declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--note--5",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "note",
+    "replicate": 5,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": true,
+    "cost": 0.156176,
+    "seconds": 82.904,
+    "lost": [
+     "month_flow"
+    ],
+    "declared_files_briefed": [
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--note--6",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "note",
+    "replicate": 6,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.13582,
+    "seconds": 157.638,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--gate--6",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "gate",
+    "replicate": 6,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.16482,
+    "seconds": 191.627,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--gate--7",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "gate",
+    "replicate": 7,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.16063,
+    "seconds": 184.605,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--note--7",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "note",
+    "replicate": 7,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": true,
+    "cost": 0.187717,
+    "seconds": 129.327,
+    "lost": [
+     "month_flow"
+    ],
+    "declared_files_briefed": [
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--note--8",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "note",
+    "replicate": 8,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.138155,
+    "seconds": 63.636,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--gate--8",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "gate",
+    "replicate": 8,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": true,
+    "cost": 0.194957,
+    "seconds": 77.855,
+    "lost": [
+     "month_flow"
+    ],
+    "declared_files_briefed": [
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-summarise-_spent_by_category: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/month_end.py",
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-summarise-_spent_by_category: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/month_end.py; declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--gate--9",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "gate",
+    "replicate": 9,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.24038,
+    "seconds": 118.054,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py",
+     "tests/test_reports.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--note--9",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "note",
+    "replicate": 9,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.192365,
+    "seconds": 88.492,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py",
+     "tests/test_reports.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--note--10",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "note",
+    "replicate": 10,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.172023,
+    "seconds": 71.909,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py",
+     "tests/test_reports.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--gate--10",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "gate",
+    "replicate": 10,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.280842,
+    "seconds": 133.621,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py",
+     "tests/test_reports.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--gate--11",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "gate",
+    "replicate": 11,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": true,
+    "cost": 0.172944,
+    "seconds": 85.18,
+    "lost": [
+     "month_flow"
+    ],
+    "declared_files_briefed": [
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-summarise-_spent_by_category: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/month_end.py",
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-summarise-_spent_by_category: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/month_end.py; declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--note--11",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "note",
+    "replicate": 11,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": true,
+    "cost": 0.140273,
+    "seconds": 72.586,
+    "lost": [
+     "month_flow"
+    ],
+    "declared_files_briefed": [
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--note--12",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "note",
+    "replicate": 12,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.149497,
+    "seconds": 92.229,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--gate--12",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "gate",
+    "replicate": 12,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.273749,
+    "seconds": 119.229,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py",
+     "tests/test_reports.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--gate--13",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "gate",
+    "replicate": 13,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.184631,
+    "seconds": 86.833,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--note--13",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "note",
+    "replicate": 13,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": true,
+    "cost": 0.194233,
+    "seconds": 89.72,
+    "lost": [
+     "month_flow"
+    ],
+    "declared_files_briefed": [
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--note--14",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "note",
+    "replicate": 14,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": true,
+    "cost": 0.172114,
+    "seconds": 80.503,
+    "lost": [
+     "month_flow"
+    ],
+    "declared_files_briefed": [
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--gate--14",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "gate",
+    "replicate": 14,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.177013,
+    "seconds": 95.495,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--gate--15",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "gate",
+    "replicate": 15,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.189558,
+    "seconds": 110.027,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--note--15",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "note",
+    "replicate": 15,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": true,
+    "cost": 0.176804,
+    "seconds": 109.67,
+    "lost": [
+     "month_flow"
+    ],
+    "declared_files_briefed": [
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--note--16",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "note",
+    "replicate": 16,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": true,
+    "cost": 0.205722,
+    "seconds": 104.087,
+    "lost": [
+     "month_flow"
+    ],
+    "declared_files_briefed": [
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--gate--16",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "gate",
+    "replicate": 16,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": true,
+    "cost": 0.13818,
+    "seconds": 88.904,
+    "lost": [
+     "month_flow"
+    ],
+    "declared_files_briefed": [
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-summarise-_spent_by_category: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/month_end.py",
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-summarise-_spent_by_category: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/month_end.py; declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--gate--17",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "gate",
+    "replicate": 17,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.171634,
+    "seconds": 98.203,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py",
+     "tests/test_reports.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--note--17",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "note",
+    "replicate": 17,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.21375,
+    "seconds": 122.341,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--note--18",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "note",
+    "replicate": 18,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.136381,
+    "seconds": 80.37,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--gate--18",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "gate",
+    "replicate": 18,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.244921,
+    "seconds": 115.083,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py",
+     "tests/test_reports.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--gate--19",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "gate",
+    "replicate": 19,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.176522,
+    "seconds": 84.81,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py",
+     "tests/test_reports.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--note--19",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "note",
+    "replicate": 19,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.175867,
+    "seconds": 93.987,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--note--20",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "note",
+    "replicate": 20,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.223764,
+    "seconds": 101.597,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py",
+     "tests/test_reports.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--gate--20",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "gate",
+    "replicate": 20,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.197714,
+    "seconds": 86.604,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--gate--21",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "gate",
+    "replicate": 21,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.199463,
+    "seconds": 100.246,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py",
+     "tests/test_reports.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--note--21",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "note",
+    "replicate": 21,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.164625,
+    "seconds": 79.419,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--note--22",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "note",
+    "replicate": 22,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.20943,
+    "seconds": 96.766,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 1,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--gate--22",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "gate",
+    "replicate": 22,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.218211,
+    "seconds": 95.441,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--gate--23",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "gate",
+    "replicate": 23,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": true,
+    "cost": 0.195381,
+    "seconds": 80.641,
+    "lost": [
+     "month_flow"
+    ],
+    "declared_files_briefed": [
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-summarise-_spent_by_category: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/month_end.py",
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-summarise-_spent_by_category: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/month_end.py; declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--note--23",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "note",
+    "replicate": 23,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": true,
+    "cost": 0.181368,
+    "seconds": 72.595,
+    "lost": [
+     "month_flow"
+    ],
+    "declared_files_briefed": [
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--note--24",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "note",
+    "replicate": 24,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.17005,
+    "seconds": 79.131,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py",
+     "tests/test_reports.py"
+    ]
+   },
+   {
+    "slot": "household_budget--7--gate--24",
+    "case": "household_budget",
+    "stage": 7,
+    "arm": "gate",
+    "replicate": 24,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.177756,
+    "seconds": 150.085,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-year_report-_carried_into: changed src/budgetbook/services/budgets.py, not src/budgetbook/reports/annual.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/budgetbook/reports/month_end.py",
+     "src/budgetbook/services/budgets.py",
+     "tests/test_budgets.py",
+     "tests/test_reports.py"
+    ]
+   }
+  ],
+  "harm": [
+   {
+    "slot": "gradebook--2--note--0",
+    "case": "gradebook",
+    "stage": 2,
+    "arm": "note",
+    "replicate": 0,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.146063,
+    "seconds": 92.604,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/gradebook/grading/policies.py",
+     "src/gradebook/reports/progress.py",
+     "src/gradebook/storage/course_config.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/gradebook/grading/policies.py",
+     "src/gradebook/reports/progress.py",
+     "src/gradebook/storage/course_config.py",
+     "tests/test_calculator.py",
+     "tests/test_course_config.py"
+    ]
+   },
+   {
+    "slot": "gradebook--2--gate--0",
+    "case": "gradebook",
+    "stage": 2,
+    "arm": "gate",
+    "replicate": 0,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.160517,
+    "seconds": 90.297,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/gradebook/grading/policies.py",
+     "src/gradebook/reports/progress.py",
+     "src/gradebook/storage/course_config.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-category-category: changed src/gradebook/reports/progress.py, not src/gradebook/model/course.py",
+     "declared rule rule-category-category-3: changed src/gradebook/reports/progress.py, not src/gradebook/grading/results.py",
+     "declared rule rule-_counted_items-_category_progress: changed src/gradebook/reports/progress.py, not src/gradebook/grading/calculator.py",
+     "declared rule rule-reweighted-_check_categories: changed src/gradebook/storage/course_config.py, not src/gradebook/services/what_if.py",
+     "declared rule rule-explain_grade-weighted: changed src/gradebook/grading/policies.py, not src/gradebook/grading/explain.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-category-category: changed src/gradebook/reports/progress.py, not src/gradebook/model/course.py; declared rule rule-category-category-3: changed src/gradebook/reports/progress.py, not src/gradebook/grading/results.py; declared rule rule-_counted_items-_category_progress: changed src/gradebook/reports/progress.py, not src/gradebook/grading/calculator.py; declared rule rule-reweighted-_check_categories: changed src/gradebook/storage/course_config.py, not src/gradebook/services/what_if.py; declared rule rule-explain_grade-weighted: changed src/gradebook/grading/policies.py, not src/gradebook/grading/explain.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/gradebook/grading/policies.py",
+     "src/gradebook/reports/progress.py",
+     "src/gradebook/storage/course_config.py",
+     "tests/test_calculator.py",
+     "tests/test_course_config.py"
+    ]
+   },
+   {
+    "slot": "gradebook--7--gate--0",
+    "case": "gradebook",
+    "stage": 7,
+    "arm": "gate",
+    "replicate": 0,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.144251,
+    "seconds": 87.878,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/gradebook/model/course.py",
+     "src/gradebook/storage/course_config.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-category-category: changed src/gradebook/model/course.py, not src/gradebook/reports/progress.py",
+     "declared rule rule-category-category-2: changed src/gradebook/model/course.py, not src/gradebook/grading/results.py",
+     "declared rule rule-reweighted-_check_categories: changed src/gradebook/storage/course_config.py, not src/gradebook/services/what_if.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-category-category: changed src/gradebook/model/course.py, not src/gradebook/reports/progress.py; declared rule rule-category-category-2: changed src/gradebook/model/course.py, not src/gradebook/grading/results.py; declared rule rule-reweighted-_check_categories: changed src/gradebook/storage/course_config.py, not src/gradebook/services/what_if.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/gradebook/grading/late.py",
+     "src/gradebook/model/course.py",
+     "src/gradebook/storage/course_config.py",
+     "tests/test_calculator.py",
+     "tests/test_reports.py"
+    ]
+   },
+   {
+    "slot": "gradebook--7--note--0",
+    "case": "gradebook",
+    "stage": 7,
+    "arm": "note",
+    "replicate": 0,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.175703,
+    "seconds": 84.314,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/gradebook/model/course.py",
+     "src/gradebook/storage/course_config.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/gradebook/grading/late.py",
+     "src/gradebook/model/course.py",
+     "src/gradebook/reports/course_outline.py",
+     "src/gradebook/storage/course_config.py",
+     "tests/test_calculator.py",
+     "tests/test_course_config.py"
+    ]
+   },
+   {
+    "slot": "gradebook--8--note--0",
+    "case": "gradebook",
+    "stage": 8,
+    "arm": "note",
+    "replicate": 0,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.244103,
+    "seconds": 68.288,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/gradebook/grading/calculator.py",
+     "src/gradebook/grading/results.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/gradebook/grading/calculator.py",
+     "src/gradebook/grading/results.py",
+     "src/gradebook/reports/summary.py",
+     "src/gradebook/services/transcript.py",
+     "src/gradebook/storage/grades_csv.py",
+     "tests/test_calculator.py",
+     "tests/test_cli.py",
+     "tests/test_files.py",
+     "tests/test_reports.py"
+    ]
+   },
+   {
+    "slot": "gradebook--8--gate--0",
+    "case": "gradebook",
+    "stage": 8,
+    "arm": "gate",
+    "replicate": 0,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.248085,
+    "seconds": 65.149,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/gradebook/grading/calculator.py",
+     "src/gradebook/grading/results.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/gradebook/grading/calculator.py",
+     "src/gradebook/grading/results.py",
+     "src/gradebook/services/transcript.py",
+     "tests/test_calculator.py",
+     "tests/test_cli.py",
+     "tests/test_files.py",
+     "tests/test_reports.py",
+     "tests/test_transcript.py"
+    ]
+   },
+   {
+    "slot": "fleet_service--2--gate--0",
+    "case": "fleet_service",
+    "stage": 2,
+    "arm": "gate",
+    "replicate": 0,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.183116,
+    "seconds": 151.56,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/fleetkeep/reports/costs.py",
+     "src/fleetkeep/reports/spend.py",
+     "src/fleetkeep/services/workorders.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-_next_id-_next_id: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/services/inspections.py",
+     "declared rule rule-add_line-add_part: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/model/workorder.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-_next_id-_next_id: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/services/inspections.py; declared rule rule-add_line-add_part: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/model/workorder.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/fleetkeep/cli/commands.py",
+     "src/fleetkeep/config.py",
+     "src/fleetkeep/reports/costs.py",
+     "src/fleetkeep/reports/spend.py",
+     "src/fleetkeep/services/workorders.py",
+     "tests/test_storage.py",
+     "tests/test_workorders.py"
+    ]
+   },
+   {
+    "slot": "fleet_service--2--note--0",
+    "case": "fleet_service",
+    "stage": 2,
+    "arm": "note",
+    "replicate": 0,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.280159,
+    "seconds": 116.246,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/fleetkeep/model/workorder.py",
+     "src/fleetkeep/reports/costs.py",
+     "src/fleetkeep/reports/spend.py",
+     "src/fleetkeep/services/workorders.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/fleetkeep/cli/commands.py",
+     "src/fleetkeep/config.py",
+     "src/fleetkeep/model/workorder.py",
+     "src/fleetkeep/reports/costs.py",
+     "src/fleetkeep/reports/spend.py",
+     "src/fleetkeep/services/workorders.py",
+     "tests/test_cli.py",
+     "tests/test_storage.py",
+     "tests/test_workorders.py"
+    ]
+   },
+   {
+    "slot": "fleet_service--3--note--0",
+    "case": "fleet_service",
+    "stage": 3,
+    "arm": "note",
+    "replicate": 0,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.1009,
+    "seconds": 59.923,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/fleetkeep/model/workorder.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/fleetkeep/errors.py",
+     "src/fleetkeep/model/workorder.py",
+     "tests/test_workorders.py"
+    ]
+   },
+   {
+    "slot": "fleet_service--3--gate--0",
+    "case": "fleet_service",
+    "stage": 3,
+    "arm": "gate",
+    "replicate": 0,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.11634,
+    "seconds": 61.573,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/fleetkeep/model/workorder.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-parse_gallons-parse_hours: changed src/fleetkeep/model/workorder.py, not src/fleetkeep/model/readings.py",
+     "declared rule rule-import_timesheet-add_line: changed src/fleetkeep/model/workorder.py, not src/fleetkeep/importers/timesheets.py",
+     "declared rule rule-add_line-add_part: changed src/fleetkeep/model/workorder.py, not src/fleetkeep/services/workorders.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-parse_gallons-parse_hours: changed src/fleetkeep/model/workorder.py, not src/fleetkeep/model/readings.py; declared rule rule-import_timesheet-add_line: changed src/fleetkeep/model/workorder.py, not src/fleetkeep/importers/timesheets.py; declared rule rule-add_line-add_part: changed src/fleetkeep/model/workorder.py, not src/fleetkeep/services/workorders.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/fleetkeep/errors.py",
+     "src/fleetkeep/model/workorder.py",
+     "tests/test_workorders.py"
+    ]
+   },
+   {
+    "slot": "fleet_service--5--gate--0",
+    "case": "fleet_service",
+    "stage": 5,
+    "arm": "gate",
+    "replicate": 0,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.170035,
+    "seconds": 73.331,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/fleetkeep/services/workorders.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-_next_id-_next_id: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/services/inspections.py",
+     "declared rule rule-add_line-add_part: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/model/workorder.py",
+     "declared rule rule-_maintenance-order_charges: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/reports/costs.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-_next_id-_next_id: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/services/inspections.py; declared rule rule-add_line-add_part: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/model/workorder.py; declared rule rule-_maintenance-order_charges: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/reports/costs.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/fleetkeep/errors.py",
+     "src/fleetkeep/model/catalog.py",
+     "src/fleetkeep/services/workorders.py",
+     "tests/test_workorders.py"
+    ]
+   },
+   {
+    "slot": "fleet_service--5--note--0",
+    "case": "fleet_service",
+    "stage": 5,
+    "arm": "note",
+    "replicate": 0,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.107368,
+    "seconds": 48.147,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/fleetkeep/services/workorders.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/fleetkeep/errors.py",
+     "src/fleetkeep/services/workorders.py",
+     "tests/test_workorders.py"
+    ]
+   },
+   {
+    "slot": "fleet_service--6--note--0",
+    "case": "fleet_service",
+    "stage": 6,
+    "arm": "note",
+    "replicate": 0,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.255665,
+    "seconds": 125.398,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/fleetkeep/importers/timesheets.py",
+     "src/fleetkeep/services/workorders.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/fleetkeep/config.py",
+     "src/fleetkeep/importers/timesheets.py",
+     "src/fleetkeep/services/workorders.py",
+     "tests/test_importers.py",
+     "tests/test_storage.py",
+     "tests/test_workorders.py"
+    ]
+   },
+   {
+    "slot": "fleet_service--6--gate--0",
+    "case": "fleet_service",
+    "stage": 6,
+    "arm": "gate",
+    "replicate": 0,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.198966,
+    "seconds": 106.276,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/fleetkeep/importers/timesheets.py",
+     "src/fleetkeep/services/workorders.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-_next_id-_next_id: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/services/inspections.py",
+     "declared rule rule-import_timesheet-add_line: changed src/fleetkeep/importers/timesheets.py, not src/fleetkeep/model/workorder.py",
+     "declared rule rule-add_line-add_part: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/model/workorder.py",
+     "declared rule rule-_maintenance-order_charges: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/reports/costs.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-_next_id-_next_id: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/services/inspections.py; declared rule rule-import_timesheet-add_line: changed src/fleetkeep/importers/timesheets.py, not src/fleetkeep/model/workorder.py; declared rule rule-add_line-add_part: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/model/workorder.py; declared rule rule-_maintenance-order_charges: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/reports/costs.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/fleetkeep/config.py",
+     "src/fleetkeep/importers/timesheets.py",
+     "src/fleetkeep/services/workorders.py",
+     "tests/test_importers.py",
+     "tests/test_workorders.py"
+    ]
+   },
+   {
+    "slot": "greenhouse_monitor--4--gate--0",
+    "case": "greenhouse_monitor",
+    "stage": 4,
+    "arm": "gate",
+    "replicate": 0,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.158279,
+    "seconds": 78.921,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/greenhouse/reports/messages.py",
+     "src/greenhouse/services/alerts.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-digest_text-timed: changed src/greenhouse/reports/messages.py, not src/greenhouse/reports/digest.py",
+     "declared rule rule-describe-alert_record: changed src/greenhouse/reports/messages.py, not src/greenhouse/storage/alerts_log.py",
+     "declared rule rule-status_rows-evaluate: changed src/greenhouse/services/alerts.py, not src/greenhouse/reports/status.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-digest_text-timed: changed src/greenhouse/reports/messages.py, not src/greenhouse/reports/digest.py; declared rule rule-describe-alert_record: changed src/greenhouse/reports/messages.py, not src/greenhouse/storage/alerts_log.py; declared rule rule-status_rows-evaluate: changed src/greenhouse/services/alerts.py, not src/greenhouse/reports/status.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "limits.high",
+     "src/greenhouse/config/settings.py",
+     "src/greenhouse/reports/messages.py",
+     "src/greenhouse/services/alerts.py",
+     "tests/test_reports.py",
+     "tests/test_services.py"
+    ]
+   },
+   {
+    "slot": "greenhouse_monitor--4--note--0",
+    "case": "greenhouse_monitor",
+    "stage": 4,
+    "arm": "note",
+    "replicate": 0,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.15222,
+    "seconds": 96.337,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/greenhouse/reports/messages.py",
+     "src/greenhouse/services/alerts.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "limits.high",
+     "src/greenhouse/config/settings.py",
+     "src/greenhouse/reports/messages.py",
+     "src/greenhouse/services/alerts.py",
+     "tests/test_reports.py",
+     "tests/test_services.py"
+    ]
+   },
+   {
+    "slot": "gradebook--2--gate--1",
+    "case": "gradebook",
+    "stage": 2,
+    "arm": "gate",
+    "replicate": 1,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": true,
+    "cost": 0.157704,
+    "seconds": 87.035,
+    "lost": [
+     "base_reports"
+    ],
+    "declared_files_briefed": [
+     "src/gradebook/grading/policies.py",
+     "src/gradebook/storage/course_config.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-reweighted-_check_categories: changed src/gradebook/storage/course_config.py, not src/gradebook/services/what_if.py",
+     "declared rule rule-explain_grade-weighted: changed src/gradebook/grading/policies.py, not src/gradebook/grading/explain.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-reweighted-_check_categories: changed src/gradebook/storage/course_config.py, not src/gradebook/services/what_if.py; declared rule rule-explain_grade-weighted: changed src/gradebook/grading/policies.py, not src/gradebook/grading/explain.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/gradebook/grading/policies.py",
+     "src/gradebook/storage/course_config.py",
+     "tests/test_calculator.py",
+     "tests/test_course_config.py"
+    ]
+   },
+   {
+    "slot": "gradebook--2--note--1",
+    "case": "gradebook",
+    "stage": 2,
+    "arm": "note",
+    "replicate": 1,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.166726,
+    "seconds": 64.006,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/gradebook/grading/policies.py",
+     "src/gradebook/reports/progress.py",
+     "src/gradebook/storage/course_config.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/gradebook/grading/policies.py",
+     "src/gradebook/reports/progress.py",
+     "src/gradebook/storage/course_config.py",
+     "tests/test_calculator.py",
+     "tests/test_course_config.py"
+    ]
+   },
+   {
+    "slot": "gradebook--7--note--1",
+    "case": "gradebook",
+    "stage": 7,
+    "arm": "note",
+    "replicate": 1,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.119004,
+    "seconds": 75.143,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/gradebook/model/course.py",
+     "src/gradebook/storage/course_config.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/gradebook/grading/late.py",
+     "src/gradebook/model/course.py",
+     "src/gradebook/reports/course_outline.py",
+     "src/gradebook/storage/course_config.py",
+     "tests/test_calculator.py"
+    ]
+   },
+   {
+    "slot": "gradebook--7--gate--1",
+    "case": "gradebook",
+    "stage": 7,
+    "arm": "gate",
+    "replicate": 1,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.170919,
+    "seconds": 90.034,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/gradebook/model/course.py",
+     "src/gradebook/storage/course_config.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-category-category: changed src/gradebook/model/course.py, not src/gradebook/reports/progress.py",
+     "declared rule rule-category-category-2: changed src/gradebook/model/course.py, not src/gradebook/grading/results.py",
+     "declared rule rule-reweighted-_check_categories: changed src/gradebook/storage/course_config.py, not src/gradebook/services/what_if.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-category-category: changed src/gradebook/model/course.py, not src/gradebook/reports/progress.py; declared rule rule-category-category-2: changed src/gradebook/model/course.py, not src/gradebook/grading/results.py; declared rule rule-reweighted-_check_categories: changed src/gradebook/storage/course_config.py, not src/gradebook/services/what_if.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/gradebook/grading/late.py",
+     "src/gradebook/model/course.py",
+     "src/gradebook/storage/course_config.py",
+     "tests/test_calculator.py",
+     "tests/test_reports.py"
+    ]
+   },
+   {
+    "slot": "gradebook--8--gate--1",
+    "case": "gradebook",
+    "stage": 8,
+    "arm": "gate",
+    "replicate": 1,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.225322,
+    "seconds": 60.48,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/gradebook/grading/calculator.py",
+     "src/gradebook/grading/results.py",
+     "src/gradebook/services/what_if.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "tests/test_cli.py"
+    ]
+   },
+   {
+    "slot": "gradebook--8--note--1",
+    "case": "gradebook",
+    "stage": 8,
+    "arm": "note",
+    "replicate": 1,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.190798,
+    "seconds": 54.647,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/gradebook/grading/calculator.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "tests/test_cli.py"
+    ]
+   },
+   {
+    "slot": "fleet_service--2--note--1",
+    "case": "fleet_service",
+    "stage": 2,
+    "arm": "note",
+    "replicate": 1,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.313844,
+    "seconds": 149.967,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/fleetkeep/reports/costs.py",
+     "src/fleetkeep/reports/spend.py",
+     "src/fleetkeep/services/workorders.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/fleetkeep/cli/commands.py",
+     "src/fleetkeep/config.py",
+     "src/fleetkeep/reports/costs.py",
+     "src/fleetkeep/reports/spend.py",
+     "src/fleetkeep/services/workorders.py",
+     "tests/test_cli.py",
+     "tests/test_storage.py",
+     "tests/test_workorders.py"
+    ]
+   },
+   {
+    "slot": "fleet_service--2--gate--1",
+    "case": "fleet_service",
+    "stage": 2,
+    "arm": "gate",
+    "replicate": 1,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.260414,
+    "seconds": 121.15,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/fleetkeep/reports/costs.py",
+     "src/fleetkeep/reports/spend.py",
+     "src/fleetkeep/services/workorders.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-_next_id-_next_id: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/services/inspections.py",
+     "declared rule rule-add_line-add_part: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/model/workorder.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-_next_id-_next_id: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/services/inspections.py; declared rule rule-add_line-add_part: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/model/workorder.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/fleetkeep/cli/commands.py",
+     "src/fleetkeep/config.py",
+     "src/fleetkeep/reports/costs.py",
+     "src/fleetkeep/reports/spend.py",
+     "src/fleetkeep/services/workorders.py",
+     "tests/test_workorders.py"
+    ]
+   },
+   {
+    "slot": "fleet_service--3--gate--1",
+    "case": "fleet_service",
+    "stage": 3,
+    "arm": "gate",
+    "replicate": 1,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.140773,
+    "seconds": 78.854,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/fleetkeep/model/workorder.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-parse_gallons-parse_hours: changed src/fleetkeep/model/workorder.py, not src/fleetkeep/model/readings.py",
+     "declared rule rule-import_timesheet-add_line: changed src/fleetkeep/model/workorder.py, not src/fleetkeep/importers/timesheets.py",
+     "declared rule rule-add_line-add_part: changed src/fleetkeep/model/workorder.py, not src/fleetkeep/services/workorders.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-parse_gallons-parse_hours: changed src/fleetkeep/model/workorder.py, not src/fleetkeep/model/readings.py; declared rule rule-import_timesheet-add_line: changed src/fleetkeep/model/workorder.py, not src/fleetkeep/importers/timesheets.py; declared rule rule-add_line-add_part: changed src/fleetkeep/model/workorder.py, not src/fleetkeep/services/workorders.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/fleetkeep/errors.py",
+     "src/fleetkeep/model/workorder.py",
+     "tests/test_workorders.py"
+    ]
+   },
+   {
+    "slot": "fleet_service--3--note--1",
+    "case": "fleet_service",
+    "stage": 3,
+    "arm": "note",
+    "replicate": 1,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.099575,
+    "seconds": 64.141,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/fleetkeep/model/workorder.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/fleetkeep/errors.py",
+     "src/fleetkeep/model/workorder.py",
+     "tests/test_workorders.py"
+    ]
+   },
+   {
+    "slot": "fleet_service--5--note--1",
+    "case": "fleet_service",
+    "stage": 5,
+    "arm": "note",
+    "replicate": 1,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.177958,
+    "seconds": 69.263,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/fleetkeep/services/workorders.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/fleetkeep/errors.py",
+     "src/fleetkeep/services/workorders.py",
+     "tests/test_workorders.py"
+    ]
+   },
+   {
+    "slot": "fleet_service--5--gate--1",
+    "case": "fleet_service",
+    "stage": 5,
+    "arm": "gate",
+    "replicate": 1,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.191042,
+    "seconds": 83.527,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/fleetkeep/services/workorders.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-_next_id-_next_id: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/services/inspections.py",
+     "declared rule rule-add_line-add_part: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/model/workorder.py",
+     "declared rule rule-_maintenance-order_charges: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/reports/costs.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-_next_id-_next_id: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/services/inspections.py; declared rule rule-add_line-add_part: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/model/workorder.py; declared rule rule-_maintenance-order_charges: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/reports/costs.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/fleetkeep/errors.py",
+     "src/fleetkeep/services/workorders.py",
+     "tests/test_workorders.py"
+    ]
+   },
+   {
+    "slot": "fleet_service--6--gate--1",
+    "case": "fleet_service",
+    "stage": 6,
+    "arm": "gate",
+    "replicate": 1,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.268164,
+    "seconds": 119.164,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/fleetkeep/importers/timesheets.py",
+     "src/fleetkeep/services/workorders.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-_next_id-_next_id: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/services/inspections.py",
+     "declared rule rule-import_timesheet-add_line: changed src/fleetkeep/importers/timesheets.py, not src/fleetkeep/model/workorder.py",
+     "declared rule rule-add_line-add_part: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/model/workorder.py",
+     "declared rule rule-_maintenance-order_charges: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/reports/costs.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-_next_id-_next_id: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/services/inspections.py; declared rule rule-import_timesheet-add_line: changed src/fleetkeep/importers/timesheets.py, not src/fleetkeep/model/workorder.py; declared rule rule-add_line-add_part: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/model/workorder.py; declared rule rule-_maintenance-order_charges: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/reports/costs.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/fleetkeep/config.py",
+     "src/fleetkeep/importers/timesheets.py",
+     "src/fleetkeep/services/workorders.py",
+     "tests/test_importers.py",
+     "tests/test_workorders.py"
+    ]
+   },
+   {
+    "slot": "fleet_service--6--note--1",
+    "case": "fleet_service",
+    "stage": 6,
+    "arm": "note",
+    "replicate": 1,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.22621,
+    "seconds": 118.908,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/fleetkeep/importers/timesheets.py",
+     "src/fleetkeep/services/workorders.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/fleetkeep/cli/main.py",
+     "src/fleetkeep/config.py",
+     "src/fleetkeep/importers/timesheets.py",
+     "src/fleetkeep/services/workorders.py",
+     "tests/test_importers.py",
+     "tests/test_storage.py",
+     "tests/test_workorders.py"
+    ]
+   },
+   {
+    "slot": "greenhouse_monitor--4--note--1",
+    "case": "greenhouse_monitor",
+    "stage": 4,
+    "arm": "note",
+    "replicate": 1,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.166484,
+    "seconds": 60.846,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/greenhouse/reports/messages.py",
+     "src/greenhouse/services/alerts.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "limits.high",
+     "src/greenhouse/config/settings.py",
+     "src/greenhouse/reports/messages.py",
+     "src/greenhouse/services/alerts.py",
+     "tests/test_services.py"
+    ]
+   },
+   {
+    "slot": "greenhouse_monitor--4--gate--1",
+    "case": "greenhouse_monitor",
+    "stage": 4,
+    "arm": "gate",
+    "replicate": 1,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.185746,
+    "seconds": 81.756,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/greenhouse/reports/messages.py",
+     "src/greenhouse/services/alerts.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-digest_text-timed: changed src/greenhouse/reports/messages.py, not src/greenhouse/reports/digest.py",
+     "declared rule rule-describe-alert_record: changed src/greenhouse/reports/messages.py, not src/greenhouse/storage/alerts_log.py",
+     "declared rule rule-status_rows-evaluate: changed src/greenhouse/services/alerts.py, not src/greenhouse/reports/status.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-digest_text-timed: changed src/greenhouse/reports/messages.py, not src/greenhouse/reports/digest.py; declared rule rule-describe-alert_record: changed src/greenhouse/reports/messages.py, not src/greenhouse/storage/alerts_log.py; declared rule rule-status_rows-evaluate: changed src/greenhouse/services/alerts.py, not src/greenhouse/reports/status.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "limits.high",
+     "src/greenhouse/config/settings.py",
+     "src/greenhouse/reports/messages.py",
+     "src/greenhouse/services/alerts.py",
+     "tests/test_config.py",
+     "tests/test_services.py"
+    ]
+   },
+   {
+    "slot": "gradebook--2--note--2",
+    "case": "gradebook",
+    "stage": 2,
+    "arm": "note",
+    "replicate": 2,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.143349,
+    "seconds": 83.77,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/gradebook/grading/policies.py",
+     "src/gradebook/reports/progress.py",
+     "src/gradebook/storage/course_config.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/gradebook/grading/policies.py",
+     "src/gradebook/reports/progress.py",
+     "src/gradebook/storage/course_config.py",
+     "tests/test_calculator.py",
+     "tests/test_course_config.py"
+    ]
+   },
+   {
+    "slot": "gradebook--2--gate--2",
+    "case": "gradebook",
+    "stage": 2,
+    "arm": "gate",
+    "replicate": 2,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.196159,
+    "seconds": 141.729,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/gradebook/grading/policies.py",
+     "src/gradebook/reports/progress.py",
+     "src/gradebook/storage/course_config.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-category-category: changed src/gradebook/reports/progress.py, not src/gradebook/model/course.py",
+     "declared rule rule-category-category-3: changed src/gradebook/reports/progress.py, not src/gradebook/grading/results.py",
+     "declared rule rule-_counted_items-_category_progress: changed src/gradebook/reports/progress.py, not src/gradebook/grading/calculator.py",
+     "declared rule rule-reweighted-_check_categories: changed src/gradebook/storage/course_config.py, not src/gradebook/services/what_if.py",
+     "declared rule rule-explain_grade-weighted: changed src/gradebook/grading/policies.py, not src/gradebook/grading/explain.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-category-category: changed src/gradebook/reports/progress.py, not src/gradebook/model/course.py; declared rule rule-category-category-3: changed src/gradebook/reports/progress.py, not src/gradebook/grading/results.py; declared rule rule-_counted_items-_category_progress: changed src/gradebook/reports/progress.py, not src/gradebook/grading/calculator.py; declared rule rule-reweighted-_check_categories: changed src/gradebook/storage/course_config.py, not src/gradebook/services/what_if.py; declared rule rule-explain_grade-weighted: changed src/gradebook/grading/policies.py, not src/gradebook/grading/explain.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/gradebook/grading/policies.py",
+     "src/gradebook/reports/progress.py",
+     "src/gradebook/storage/course_config.py",
+     "tests/test_calculator.py",
+     "tests/test_course_config.py",
+     "tests/test_reports.py"
+    ]
+   },
+   {
+    "slot": "gradebook--7--gate--2",
+    "case": "gradebook",
+    "stage": 7,
+    "arm": "gate",
+    "replicate": 2,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.249646,
+    "seconds": 127.487,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/gradebook/model/course.py",
+     "src/gradebook/storage/course_config.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-category-category: changed src/gradebook/model/course.py, not src/gradebook/reports/progress.py",
+     "declared rule rule-category-category-2: changed src/gradebook/model/course.py, not src/gradebook/grading/results.py",
+     "declared rule rule-reweighted-_check_categories: changed src/gradebook/storage/course_config.py, not src/gradebook/services/what_if.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-category-category: changed src/gradebook/model/course.py, not src/gradebook/reports/progress.py; declared rule rule-category-category-2: changed src/gradebook/model/course.py, not src/gradebook/grading/results.py; declared rule rule-reweighted-_check_categories: changed src/gradebook/storage/course_config.py, not src/gradebook/services/what_if.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/gradebook/grading/late.py",
+     "src/gradebook/model/course.py",
+     "src/gradebook/storage/course_config.py",
+     "tests/test_calculator.py",
+     "tests/test_reports.py"
+    ]
+   },
+   {
+    "slot": "gradebook--7--note--2",
+    "case": "gradebook",
+    "stage": 7,
+    "arm": "note",
+    "replicate": 2,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.173303,
+    "seconds": 81.87,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/gradebook/model/course.py",
+     "src/gradebook/storage/course_config.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/gradebook/grading/late.py",
+     "src/gradebook/model/course.py",
+     "src/gradebook/storage/course_config.py",
+     "tests/test_calculator.py",
+     "tests/test_reports.py"
+    ]
+   },
+   {
+    "slot": "gradebook--8--note--2",
+    "case": "gradebook",
+    "stage": 8,
+    "arm": "note",
+    "replicate": 2,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.245671,
+    "seconds": 68.669,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/gradebook/grading/calculator.py",
+     "src/gradebook/grading/results.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/gradebook/grading/calculator.py",
+     "src/gradebook/grading/results.py",
+     "src/gradebook/services/transcript.py",
+     "tests/test_calculator.py",
+     "tests/test_cli.py",
+     "tests/test_files.py",
+     "tests/test_reports.py",
+     "tests/test_transcript.py"
+    ]
+   },
+   {
+    "slot": "gradebook--8--gate--2",
+    "case": "gradebook",
+    "stage": 8,
+    "arm": "gate",
+    "replicate": 2,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.256088,
+    "seconds": 124.244,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/gradebook/grading/calculator.py",
+     "src/gradebook/grading/results.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/gradebook/grading/calculator.py",
+     "src/gradebook/grading/results.py",
+     "src/gradebook/services/transcript.py",
+     "tests/test_calculator.py",
+     "tests/test_cli.py",
+     "tests/test_files.py",
+     "tests/test_reports.py",
+     "tests/test_transcript.py"
+    ]
+   },
+   {
+    "slot": "fleet_service--2--gate--2",
+    "case": "fleet_service",
+    "stage": 2,
+    "arm": "gate",
+    "replicate": 2,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.335341,
+    "seconds": 134.284,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/fleetkeep/reports/costs.py",
+     "src/fleetkeep/reports/spend.py",
+     "src/fleetkeep/services/workorders.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-_next_id-_next_id: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/services/inspections.py",
+     "declared rule rule-add_line-add_part: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/model/workorder.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-_next_id-_next_id: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/services/inspections.py; declared rule rule-add_line-add_part: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/model/workorder.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/fleetkeep/cli/commands.py",
+     "src/fleetkeep/config.py",
+     "src/fleetkeep/reports/costs.py",
+     "src/fleetkeep/reports/spend.py",
+     "src/fleetkeep/services/workorders.py",
+     "tests/test_cli.py",
+     "tests/test_storage.py",
+     "tests/test_workorders.py"
+    ]
+   },
+   {
+    "slot": "fleet_service--2--note--2",
+    "case": "fleet_service",
+    "stage": 2,
+    "arm": "note",
+    "replicate": 2,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.267765,
+    "seconds": 105.972,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/fleetkeep/reports/costs.py",
+     "src/fleetkeep/reports/spend.py",
+     "src/fleetkeep/services/workorders.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "4.7975",
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/fleetkeep/cli/commands.py",
+     "src/fleetkeep/config.py",
+     "src/fleetkeep/model/money.py",
+     "src/fleetkeep/reports/costs.py",
+     "src/fleetkeep/reports/spend.py",
+     "src/fleetkeep/services/workorders.py",
+     "tests/test_cli.py",
+     "tests/test_storage.py",
+     "tests/test_workorders.py"
+    ]
+   },
+   {
+    "slot": "fleet_service--3--note--2",
+    "case": "fleet_service",
+    "stage": 3,
+    "arm": "note",
+    "replicate": 2,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.105544,
+    "seconds": 42.955,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/fleetkeep/services/workorders.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/fleetkeep/errors.py",
+     "src/fleetkeep/services/workorders.py",
+     "tests/test_workorders.py"
+    ]
+   },
+   {
+    "slot": "fleet_service--3--gate--2",
+    "case": "fleet_service",
+    "stage": 3,
+    "arm": "gate",
+    "replicate": 2,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.115938,
+    "seconds": 70.938,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/fleetkeep/model/workorder.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-parse_gallons-parse_hours: changed src/fleetkeep/model/workorder.py, not src/fleetkeep/model/readings.py",
+     "declared rule rule-import_timesheet-add_line: changed src/fleetkeep/model/workorder.py, not src/fleetkeep/importers/timesheets.py",
+     "declared rule rule-add_line-add_part: changed src/fleetkeep/model/workorder.py, not src/fleetkeep/services/workorders.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-parse_gallons-parse_hours: changed src/fleetkeep/model/workorder.py, not src/fleetkeep/model/readings.py; declared rule rule-import_timesheet-add_line: changed src/fleetkeep/model/workorder.py, not src/fleetkeep/importers/timesheets.py; declared rule rule-add_line-add_part: changed src/fleetkeep/model/workorder.py, not src/fleetkeep/services/workorders.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/fleetkeep/errors.py",
+     "src/fleetkeep/model/workorder.py",
+     "tests/test_workorders.py"
+    ]
+   },
+   {
+    "slot": "fleet_service--5--gate--2",
+    "case": "fleet_service",
+    "stage": 5,
+    "arm": "gate",
+    "replicate": 2,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.153591,
+    "seconds": 75.772,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/fleetkeep/services/workorders.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-_next_id-_next_id: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/services/inspections.py",
+     "declared rule rule-add_line-add_part: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/model/workorder.py",
+     "declared rule rule-_maintenance-order_charges: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/reports/costs.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-_next_id-_next_id: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/services/inspections.py; declared rule rule-add_line-add_part: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/model/workorder.py; declared rule rule-_maintenance-order_charges: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/reports/costs.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/fleetkeep/errors.py",
+     "src/fleetkeep/services/workorders.py",
+     "tests/test_workorders.py"
+    ]
+   },
+   {
+    "slot": "fleet_service--5--note--2",
+    "case": "fleet_service",
+    "stage": 5,
+    "arm": "note",
+    "replicate": 2,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.165735,
+    "seconds": 64.105,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/fleetkeep/services/workorders.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/fleetkeep/errors.py",
+     "src/fleetkeep/services/workorders.py",
+     "tests/test_workorders.py"
+    ]
+   },
+   {
+    "slot": "fleet_service--6--note--2",
+    "case": "fleet_service",
+    "stage": 6,
+    "arm": "note",
+    "replicate": 2,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.174609,
+    "seconds": 141.969,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/fleetkeep/importers/timesheets.py",
+     "src/fleetkeep/services/workorders.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/fleetkeep/cli/main.py",
+     "src/fleetkeep/config.py",
+     "src/fleetkeep/importers/timesheets.py",
+     "src/fleetkeep/services/workorders.py",
+     "tests/test_workorders.py"
+    ]
+   },
+   {
+    "slot": "fleet_service--6--gate--2",
+    "case": "fleet_service",
+    "stage": 6,
+    "arm": "gate",
+    "replicate": 2,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.254979,
+    "seconds": 130.101,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/fleetkeep/importers/timesheets.py",
+     "src/fleetkeep/services/workorders.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-_next_id-_next_id: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/services/inspections.py",
+     "declared rule rule-import_timesheet-add_line: changed src/fleetkeep/importers/timesheets.py, not src/fleetkeep/model/workorder.py",
+     "declared rule rule-add_line-add_part: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/model/workorder.py",
+     "declared rule rule-_maintenance-order_charges: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/reports/costs.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-_next_id-_next_id: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/services/inspections.py; declared rule rule-import_timesheet-add_line: changed src/fleetkeep/importers/timesheets.py, not src/fleetkeep/model/workorder.py; declared rule rule-add_line-add_part: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/model/workorder.py; declared rule rule-_maintenance-order_charges: changed src/fleetkeep/services/workorders.py, not src/fleetkeep/reports/costs.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "src/fleetkeep/cli/main.py",
+     "src/fleetkeep/config.py",
+     "src/fleetkeep/importers/timesheets.py",
+     "src/fleetkeep/services/workorders.py",
+     "tests/test_importers.py",
+     "tests/test_workorders.py"
+    ]
+   },
+   {
+    "slot": "greenhouse_monitor--4--gate--2",
+    "case": "greenhouse_monitor",
+    "stage": 4,
+    "arm": "gate",
+    "replicate": 2,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.191669,
+    "seconds": 124.856,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/greenhouse/reports/messages.py",
+     "src/greenhouse/services/alerts.py"
+    ],
+    "rules_sent": [
+     "declared rule rule-digest_text-timed: changed src/greenhouse/reports/messages.py, not src/greenhouse/reports/digest.py",
+     "declared rule rule-describe-alert_record: changed src/greenhouse/reports/messages.py, not src/greenhouse/storage/alerts_log.py",
+     "declared rule rule-status_rows-evaluate: changed src/greenhouse/services/alerts.py, not src/greenhouse/reports/status.py"
+    ],
+    "rule_blocks": 1,
+    "blocks": 1,
+    "released": [
+     "declared rule rule-digest_text-timed: changed src/greenhouse/reports/messages.py, not src/greenhouse/reports/digest.py; declared rule rule-describe-alert_record: changed src/greenhouse/reports/messages.py, not src/greenhouse/storage/alerts_log.py; declared rule rule-status_rows-evaluate: changed src/greenhouse/services/alerts.py, not src/greenhouse/reports/status.py"
+    ],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "limits.high",
+     "src/greenhouse/config/settings.py",
+     "src/greenhouse/reports/messages.py",
+     "src/greenhouse/services/alerts.py",
+     "tests/test_config.py",
+     "tests/test_reports.py",
+     "tests/test_services.py"
+    ]
+   },
+   {
+    "slot": "greenhouse_monitor--4--note--2",
+    "case": "greenhouse_monitor",
+    "stage": 4,
+    "arm": "note",
+    "replicate": 2,
+    "state": "completed",
+    "comparable": true,
+    "dependent_lost": false,
+    "cost": 0.151233,
+    "seconds": 86.817,
+    "lost": [],
+    "declared_files_briefed": [
+     "src/greenhouse/reports/messages.py",
+     "src/greenhouse/services/alerts.py"
+    ],
+    "rules_sent": [],
+    "rule_blocks": 0,
+    "blocks": 0,
+    "released": [],
+    "touched": [
+     "CHANGELOG.md",
+     "docs/reference.md",
+     "limits.high",
+     "src/greenhouse/config/settings.py",
+     "src/greenhouse/reports/messages.py",
+     "src/greenhouse/services/alerts.py",
+     "tests/test_reports.py",
+     "tests/test_services.py"
+    ]
+   }
+  ]
+ }
+}
