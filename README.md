@@ -34,7 +34,7 @@
 6. **Evidence reports:** exports Markdown or JSON showing what was checked, whether source and selected approved dependencies still qualify the results, where evidence is missing and what needs attention next.
 7. **PatchProof:** plans and runs declared checks, binds patches and command-scoped approved inputs to qualified evidence, and shares impact, compatibility and verification gaps through local bundles and GitHub summaries.
 8. **Five host integrations:** Claude Code, Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI.
-9. **Your rules, at the moment they apply.** A rule you declare ("these files change together") is shown to the agent right before it edits one of them. The agent left the other file behind in 4 of 50 runs instead of 35 of 50, and rarely without telling you. Wording the rule as an instruction leaned further (2 of 20 against 6 of 20), not yet significant. [Details](#behavior-evidence-across-development-milestones).
+9. **Better instruction following.** The rules you write down are shown to the agent at the moment they apply, so it follows them. On test projects, it skipped a required change in 4 of 50 runs instead of 35 of 50, and almost always told you when it did. Rules written as direct instructions did even better in an early test. [Details](#behavior-evidence-across-development-milestones).
 
 ---
 
