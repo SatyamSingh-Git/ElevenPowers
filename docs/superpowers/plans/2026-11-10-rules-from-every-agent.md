@@ -181,7 +181,7 @@
   - `architecture/index.html`, the milestones node, and a new `scoped` node with edges `hook→milestones` (already present) and `milestones→scoped`, plus `meta.updated` and the changelog.
 - Create: `results/scoped-rules/rehearse.py` and `results/scoped-rules/probe.py`, with their outputs.
 
-- [ ] **Step 1: $0 rehearsal.** In a scratch project holding all four formats, through `plugin/bin/ep_hook.py` under the `claude` and `gemini` platforms:
+- [ ] **Step 1: $0 rehearsal.** In a scratch project holding all four formats, through `plugin/bin/ep_hook.py` for Claude and `plugin/bin/ep_host.py gemini BeforeTool` for Gemini:
   - each matching edit is briefed with the expected sources;
   - Claude does not get `.claude/rules` on edit;
   - a non-matching file gets nothing.
