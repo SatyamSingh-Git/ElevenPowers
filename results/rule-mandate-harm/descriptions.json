@@ -1,0 +1,99 @@
+{
+ "clinic_booking": {
+  "rule-_clashes-_clashes": "`_clashes` (src/clinicbook/services/availability.py) and `_clashes` (src/clinicbook/services/checks.py) must stay consistent: change both in the same task.",
+  "rule-free_slots-_check_when": "`free_slots` (src/clinicbook/services/availability.py) and `_check_when` (src/clinicbook/services/desk.py) must stay consistent: change both in the same task.",
+  "rule-total-total": "`total` (src/clinicbook/reports/statement.py) and `total` (src/clinicbook/services/fees.py) must stay consistent: change both in the same task."
+ },
+ "fleet_service": {
+  "rule-_maintenance-order_charges": "`_maintenance` (src/fleetkeep/reports/costs.py) and `order_charges` (src/fleetkeep/services/workorders.py) must stay consistent: change both in the same task.",
+  "rule-_maintenance-spend_rows": "`_maintenance` (src/fleetkeep/reports/costs.py) and `spend_rows` (src/fleetkeep/reports/spend.py) must stay consistent: change both in the same task.",
+  "rule-_next_id-_next_id": "`_next_id` (src/fleetkeep/services/inspections.py) and `_next_id` (src/fleetkeep/services/workorders.py) must stay consistent: change both in the same task.",
+  "rule-add_line-add_part": "`add_line` (src/fleetkeep/model/workorder.py) and `add_part` (src/fleetkeep/services/workorders.py) must stay consistent: change both in the same task.",
+  "rule-import_timesheet-add_line": "`import_timesheet` (src/fleetkeep/importers/timesheets.py) and `add_line` (src/fleetkeep/model/workorder.py) must stay consistent: change both in the same task.",
+  "rule-parse_gallons-parse_hours": "`parse_gallons` (src/fleetkeep/model/readings.py) and `parse_hours` (src/fleetkeep/model/workorder.py) must stay consistent: change both in the same task."
+ },
+ "gradebook": {
+  "rule-_counted_items-_category_progress": "`_counted_items` (src/gradebook/grading/calculator.py) and `_category_progress` (src/gradebook/reports/progress.py) must stay consistent: change both in the same task.",
+  "rule-_spread-category_report": "`_spread` (src/gradebook/reports/assignments.py) and `category_report` (src/gradebook/reports/categories.py) must stay consistent: change both in the same task.",
+  "rule-category-category": "`category` (src/gradebook/model/course.py) and `category` (src/gradebook/reports/progress.py) must stay consistent: change both in the same task.",
+  "rule-category-category-2": "`category` (src/gradebook/grading/results.py) and `category` (src/gradebook/model/course.py) must stay consistent: change both in the same task.",
+  "rule-category-category-3": "`category` (src/gradebook/grading/results.py) and `category` (src/gradebook/reports/progress.py) must stay consistent: change both in the same task.",
+  "rule-explain_grade-weighted": "`explain_grade` (src/gradebook/grading/explain.py) and `weighted` (src/gradebook/grading/policies.py) must stay consistent: change both in the same task.",
+  "rule-import_lms-import_sheet": "`import_lms` (src/gradebook/storage/lms_csv.py) and `import_sheet` (src/gradebook/storage/sheet_csv.py) must stay consistent: change both in the same task.",
+  "rule-reweighted-_check_categories": "`reweighted` (src/gradebook/services/what_if.py) and `_check_categories` (src/gradebook/storage/course_config.py) must stay consistent: change both in the same task."
+ },
+ "greenhouse_monitor": {
+  "rule-describe-alert_record": "`describe` (src/greenhouse/reports/messages.py) and `alert_record` (src/greenhouse/storage/alerts_log.py) must stay consistent: change both in the same task.",
+  "rule-digest_text-timed": "`digest_text` (src/greenhouse/reports/digest.py) and `timed` (src/greenhouse/reports/messages.py) must stay consistent: change both in the same task.",
+  "rule-parse_row-record_manual": "`parse_row` (src/greenhouse/services/ingest.py) and `record_manual` (src/greenhouse/services/manual.py) must stay consistent: change both in the same task.",
+  "rule-planned_minutes-write_plan": "`planned_minutes` (src/greenhouse/services/valves.py) and `write_plan` (src/greenhouse/storage/plans.py) must stay consistent: change both in the same task.",
+  "rule-status_rows-evaluate": "`status_rows` (src/greenhouse/reports/status.py) and `evaluate` (src/greenhouse/services/alerts.py) must stay consistent: change both in the same task."
+ },
+ "hotel_desk": {
+  "rule-_extend-extend_stay": "`_extend` (src/hoteldesk/services/night_audit.py) and `extend_stay` (src/hoteldesk/services/stays.py) must stay consistent: change both in the same task.",
+  "rule-add_room-_rooms": "`add_room` (src/hoteldesk/services/rooms_admin.py) and `_rooms` (src/hoteldesk/storage/setup.py) must stay consistent: change both in the same task.",
+  "rule-forecast_rows-held": "`forecast_rows` (src/hoteldesk/reports/forecast.py) and `held` (src/hoteldesk/services/inventory.py) must stay consistent: change both in the same task.",
+  "rule-held-_booked_nights": "`held` (src/hoteldesk/services/inventory.py) and `_booked_nights` (src/hoteldesk/services/rooms_admin.py) must stay consistent: change both in the same task.",
+  "rule-room_total-room_total": "`room_total` (src/hoteldesk/model/reservations.py) and `room_total` (src/hoteldesk/services/pricing.py) must stay consistent: change both in the same task."
+ },
+ "household_budget": {
+  "rule-add_category-rename_category": "`add_category` (src/budgetbook/services/config.py) and `rename_category` (src/budgetbook/services/renames.py) must stay consistent: change both in the same task.",
+  "rule-categorise_open_months-file_transfers": "`categorise_open_months` (src/budgetbook/services/ledger.py) and `file_transfers` (src/budgetbook/services/transfers.py) must stay consistent: change both in the same task.",
+  "rule-cmd_rule_add-find_problems": "`cmd_rule_add` (src/budgetbook/cli.py) and `find_problems` (src/budgetbook/services/health.py) must stay consistent: change both in the same task.",
+  "rule-find_problems-rename_category": "`find_problems` (src/budgetbook/services/health.py) and `rename_category` (src/budgetbook/services/renames.py) must stay consistent: change both in the same task.",
+  "rule-for_workspace-add_category": "`for_workspace` (src/budgetbook/services/catalog.py) and `add_category` (src/budgetbook/services/config.py) must stay consistent: change both in the same task.",
+  "rule-forecast-upcoming": "`forecast` (src/budgetbook/services/forecast.py) and `upcoming` (src/budgetbook/services/recurring.py) must stay consistent: change both in the same task.",
+  "rule-import_statement-categorise_open_months": "`import_statement` (src/budgetbook/services/importing.py) and `categorise_open_months` (src/budgetbook/services/ledger.py) must stay consistent: change both in the same task.",
+  "rule-import_statement-post_due": "`import_statement` (src/budgetbook/services/importing.py) and `post_due` (src/budgetbook/services/recurring.py) must stay consistent: change both in the same task.",
+  "rule-reopen_month-is_closed": "`reopen_month` (src/budgetbook/services/closing.py) and `is_closed` (src/budgetbook/storage/workspace.py) must stay consistent: change both in the same task.",
+  "rule-summarise-_spent_by_category": "`summarise` (src/budgetbook/reports/month_end.py) and `_spent_by_category` (src/budgetbook/services/budgets.py) must stay consistent: change both in the same task.",
+  "rule-year_report-_carried_into": "`year_report` (src/budgetbook/reports/annual.py) and `_carried_into` (src/budgetbook/services/budgets.py) must stay consistent: change both in the same task."
+ },
+ "library_loans": {
+  "rule-_check_loans-replay": "`_check_loans` (src/lending/services/audit.py) and `replay` (src/lending/services/library.py) must stay consistent: change both in the same task.",
+  "rule-overdue_rows-fine_for": "`overdue_rows` (src/lending/reports/overdue.py) and `fine_for` (src/lending/services/fines.py) must stay consistent: change both in the same task.",
+  "rule-parse_date-_day": "`parse_date` (src/lending/model/dates.py) and `_day` (src/lending/storage/member_import.py) must stay consistent: change both in the same task.",
+  "rule-spells-replay": "`spells` (src/lending/services/history.py) and `replay` (src/lending/services/library.py) must stay consistent: change both in the same task.",
+  "rule-status-summary": "`status` (src/lending/cli/commands.py) and `summary` (src/lending/services/accounts.py) must stay consistent: change both in the same task.",
+  "rule-write_members_csv-save_members": "`write_members_csv` (src/lending/storage/member_export.py) and `save_members` (src/lending/storage/members_store.py) must stay consistent: change both in the same task."
+ },
+ "parcelpost": {
+  "rule-_check_digit-_plausible_number": "`_check_digit` (src/parcelpost/core/ids.py) and `_plausible_number` (src/parcelpost/services/scans.py) must stay consistent: change both in the same task.",
+  "rule-base_rate-render_rate_card": "`base_rate` (src/parcelpost/rating/tariff.py) and `render_rate_card` (src/parcelpost/reports/ratecard.py) must stay consistent: change both in the same task.",
+  "rule-render_text-render_zpl": "`render_text` (src/parcelpost/formats/labels.py) and `render_zpl` (src/parcelpost/formats/zpl.py) must stay consistent: change both in the same task.",
+  "rule-vat-vat": "`vat` (src/parcelpost/reports/statement.py) and `vat` (src/parcelpost/services/billing.py) must stay consistent: change both in the same task."
+ },
+ "payroll_lite": {
+  "rule-_employee-_employee": "`_employee` (src/payroll/storage/employee_csv.py) and `_employee` (src/payroll/storage/employee_store.py) must stay consistent: change both in the same task.",
+  "rule-add_employee-_employee": "`add_employee` (src/payroll/services/employees.py) and `_employee` (src/payroll/storage/employee_csv.py) must stay consistent: change both in the same task.",
+  "rule-add_employee-_employee-2": "`add_employee` (src/payroll/services/employees.py) and `_employee` (src/payroll/storage/employee_store.py) must stay consistent: change both in the same task.",
+  "rule-hours_rows-split_hours": "`hours_rows` (src/payroll/reports/hours.py) and `split_hours` (src/payroll/rules/overtime.py) must stay consistent: change both in the same task."
+ },
+ "recipe_box": {
+  "rule-_enough-_after_pantry": "`_enough` (src/recipebox/services/cookable.py) and `_after_pantry` (src/recipebox/services/shopping.py) must stay consistent: change both in the same task.",
+  "rule-_read_recipe-recipe_from_dict": "`_read_recipe` (src/recipebox/services/importer.py) and `recipe_from_dict` (src/recipebox/storage/library.py) must stay consistent: change both in the same task.",
+  "rule-_to_grams-grams": "`_to_grams` (src/recipebox/services/conversion.py) and `grams` (src/recipebox/services/nutrition.py) must stay consistent: change both in the same task.",
+  "rule-convertible-_group": "`convertible` (src/recipebox/core/units.py) and `_group` (src/recipebox/services/shopping.py) must stay consistent: change both in the same task.",
+  "rule-parse_ingredient-parse_quantity": "`parse_ingredient` (src/recipebox/core/ingredients.py) and `parse_quantity` (src/recipebox/core/quantity.py) must stay consistent: change both in the same task.",
+  "rule-recipe_id-_title_key": "`recipe_id` (src/recipebox/core/recipe.py) and `_title_key` (src/recipebox/storage/plan_file.py) must stay consistent: change both in the same task.",
+  "rule-recipe_markdown-recipe_html": "`recipe_markdown` (src/recipebox/reports/markdown.py) and `recipe_html` (src/recipebox/reports/recipe_html.py) must stay consistent: change both in the same task.",
+  "rule-recipe_markdown-render_recipe": "`recipe_markdown` (src/recipebox/reports/markdown.py) and `render_recipe` (src/recipebox/reports/recipe_card.py) must stay consistent: change both in the same task.",
+  "rule-render_recipe-recipe_html": "`render_recipe` (src/recipebox/reports/recipe_card.py) and `recipe_html` (src/recipebox/reports/recipe_html.py) must stay consistent: change both in the same task."
+ },
+ "survey_tally": {
+  "rule-_encode-write_json_responses": "`_encode` (src/surveytally/files/store.py) and `write_json_responses` (src/surveytally/reports/responses_export.py) must stay consistent: change both in the same task.",
+  "rule-_submitted-_submitted": "`_submitted` (src/surveytally/files/csv_responses.py) and `_submitted` (src/surveytally/files/json_responses.py) must stay consistent: change both in the same task.",
+  "rule-banner_table-crosstab_table": "`banner_table` (src/surveytally/reports/banner.py) and `crosstab_table` (src/surveytally/reports/tables.py) must stay consistent: change both in the same task.",
+  "rule-percent-_row": "`percent` (src/surveytally/services/coding.py) and `_row` (src/surveytally/services/tally.py) must stay consistent: change both in the same task.",
+  "rule-percent-percent": "`percent` (src/surveytally/services/coding.py) and `percent` (src/surveytally/services/crosstab.py) must stay consistent: change both in the same task."
+ },
+ "ticket_office": {
+  "rule-_save-_write": "`_save` (src/boxoffice/storage/customers.py) and `_write` (src/boxoffice/storage/jsonstore.py) must stay consistent: change both in the same task.",
+  "rule-concession_price-price_list": "`concession_price` (src/boxoffice/model/concessions.py) and `price_list` (src/boxoffice/reports/price_list.py) must stay consistent: change both in the same task.",
+  "rule-order-_order": "`order` (src/boxoffice/services/boxoffice.py) and `_order` (src/boxoffice/services/refunds.py) must stay consistent: change both in the same task.",
+  "rule-order-assign_customer": "`order` (src/boxoffice/services/boxoffice.py) and `assign_customer` (src/boxoffice/services/sales.py) must stay consistent: change both in the same task.",
+  "rule-production_summary-season_summary": "`production_summary` (src/boxoffice/reports/productions.py) and `season_summary` (src/boxoffice/reports/season.py) must stay consistent: change both in the same task.",
+  "rule-reprice-performance": "`reprice` (src/boxoffice/services/schedule.py) and `performance` (src/boxoffice/storage/jsonstore.py) must stay consistent: change both in the same task.",
+  "rule-show_performance-_check_open": "`show_performance` (src/boxoffice/cli/commands.py) and `_check_open` (src/boxoffice/services/refunds.py) must stay consistent: change both in the same task."
+ }
+}
