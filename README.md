@@ -642,8 +642,12 @@ instruction, because the correct change touches only one side. The arms
 were level: 3 against 3 runs lost behaviour, and 2 against 2 made a needless
 edit (p = 0.75) ([harm check](results/rule-mandate-harm/README.md)).
 
-It is one model (Sonnet 5.5) on built cases
-([results](results/rule-mandate-confirm/README.md)).
+The benefit is on Sonnet 5.5, on built cases
+([results](results/rule-mandate-confirm/README.md)). On Sonnet 5 there was
+nothing to improve: with either wording it made the matching change in 40 of
+40 runs ([results](results/rule-mandate-sonnet5/README.md)). The instruction
+matters where a model reads a request narrowly, and costs nothing where it
+does not.
 
 Sending the agent back at Stop for a rule left behind did **not** help. All
 7 agents sent back explained a scope choice and kept it

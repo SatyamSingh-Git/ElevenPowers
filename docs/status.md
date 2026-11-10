@@ -1,5 +1,16 @@
 # Current delivery status
 
+**2026-11-10 — On Sonnet 5 the instruction wording had nothing to improve.**
+- The confirmation stage was rerun on `claude-sonnet-5`, 40 per arm, after
+  the design's cost trigger cut it from 60.
+- **The result:** 0 of 40 lost with the description and 0 of 40 with the
+  instruction. All 80 runs changed both files ($31.73)
+  ([results](../results/rule-mandate-sonnet5/README.md)).
+- **The decision:** by the rule fixed in advance, the benefit is stated for
+  Sonnet 5.5 only. On Sonnet 5 it did not fail; there was no narrow reading
+  to correct. The proposer default stays: it helps one model and harms
+  neither.
+
 **2026-11-10 — "Change both" does no measured harm where only one side should change.**
 - **The check.** On all 45 v3 stages whose correct change leaves a reviewed
   rule's other file alone, the description and the instruction were run one

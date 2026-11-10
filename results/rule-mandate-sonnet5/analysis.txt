@@ -1,0 +1,41 @@
+{
+ "dependent lost (described lost, described runs, rules lost, rules runs)": [
+  0,
+  40,
+  0,
+  40
+ ],
+ "p one-sided, described loses fewer": 1.0,
+ "arms": {
+  "described": {
+   "scheduled": 60,
+   "completed": 40,
+   "states": [
+    "completed",
+    "not_launched"
+   ],
+   "dependent lost": 0,
+   "silent losses (final message never names month_end)": 0,
+   "losses that offer the change or ask": 0,
+   "annual.py changed": 0,
+   "another group lost": 0,
+   "cost": 15.9,
+   "mean seconds": 192.0
+  },
+  "rules": {
+   "scheduled": 60,
+   "completed": 40,
+   "states": [
+    "completed",
+    "not_launched"
+   ],
+   "dependent lost": 0,
+   "silent losses (final message never names month_end)": 0,
+   "losses that offer the change or ask": 0,
+   "annual.py changed": 0,
+   "another group lost": 0,
+   "cost": 15.83,
+   "mean seconds": 185.9
+  }
+ }
+}
