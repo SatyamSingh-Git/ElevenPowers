@@ -63,6 +63,18 @@ test, α = 0.05.
    If one run costs more than $0.50, the batch is cut to 40 per arm before
    launch, and that is recorded here.
 
+## Amendment before launch: cut to 40 per arm
+
+- **The trigger.** The harness-check slot (`described--0`) cost **$0.58** and
+  took 219 s. The host accepted `claude-sonnet-5`, `observation.models` was
+  exactly it, and the slot completed. $0.58 is above the $0.50 fixed above,
+  so the batch is cut to 40 per arm.
+- **How.** Slots with replicate 40–59 stay in the sealed protocol and are
+  never launched; the analysis counts them as not launched.
+- **The new estimate.** 79 more runs, about $46 and 75 minutes.
+- **The cost to power.** It is lower than at 60. At Sonnet 5.5's rates (38%
+  against 8%), 40 per arm still gives about 0.75.
+
 ## Bounds, known now
 
 - **One stage,** chosen because the request and a rule conflict there.
