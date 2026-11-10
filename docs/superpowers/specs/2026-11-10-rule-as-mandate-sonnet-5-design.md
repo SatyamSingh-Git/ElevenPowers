@@ -72,8 +72,10 @@ test, α = 0.05.
 - **How.** Slots with replicate 40–59 stay in the sealed protocol and are
   never launched; the analysis counts them as not launched.
 - **The new estimate.** 79 more runs, about $46 and 75 minutes.
-- **The cost to power.** It is lower than at 60. At Sonnet 5.5's rates (38%
-  against 8%), 40 per arm still gives about 0.75.
+- **The cost to power.** It is lower than at 60. At 40 per arm, computed
+  exactly:
+  - 0.93 if Sonnet 5 matches Sonnet 5.5's rates (38% against 8%);
+  - 0.66 for 30% against 10%.
 
 ## Bounds, known now
 
