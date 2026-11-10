@@ -1,5 +1,18 @@
 # Current delivery status
 
+**2026-11-10 — "Change both" does no measured harm where only one side should change.**
+- **The check.** On all 45 v3 stages whose correct change leaves a reviewed
+  rule's other file alone, the description and the instruction were run one
+  each.
+- **The result.** The arms were level:
+  - 3 against 3 runs lost a group (one-sided p = 0.75);
+  - 2 against 2 made a needless edit, in identical pairs on the same stages.
+  - $13.21 ([results](../results/rule-mandate-harm/README.md)).
+- **The decision.** By the rule fixed in advance, the proposer's instruction
+  default stays.
+- **The host.** Claude Code updated itself to 2.1.319 overnight and added the
+  built-in `cc-plugin-privacy`. All 90 runs share it.
+
 **2026-11-09 — Confirmed: a rule worded as an instruction is followed over a narrow request.**
 - **The run.** It was a fresh, sealed replication, designed before it ran
   and never pooled with the first. 60 runs per arm on `household_budget` 7.

@@ -1,0 +1,1212 @@
+{
+ "p one-sided, described loses more": 0.75,
+ "stages compared": 45,
+ "arms": {
+  "rules": {
+   "scheduled": 45,
+   "completed": 45,
+   "states": [
+    "completed"
+   ],
+   "any group lost": 3,
+   "dependent lost": 3,
+   "runs with a needless edit": 2,
+   "needless edits (files)": 2,
+   "cost": 6.42,
+   "mean seconds": 80.0
+  },
+  "described": {
+   "scheduled": 45,
+   "completed": 45,
+   "states": [
+    "completed"
+   ],
+   "any group lost": 3,
+   "dependent lost": 3,
+   "runs with a needless edit": 2,
+   "needless edits (files)": 2,
+   "cost": 6.79,
+   "mean seconds": 80.4
+  }
+ },
+ "stages with a needless-edit target": 45,
+ "needless_files": {
+  "gradebook--2": [
+   "src/gradebook/grading/calculator.py",
+   "src/gradebook/grading/explain.py",
+   "src/gradebook/grading/results.py",
+   "src/gradebook/model/course.py",
+   "src/gradebook/services/what_if.py"
+  ],
+  "fleet_service--6": [
+   "src/fleetkeep/model/workorder.py",
+   "src/fleetkeep/reports/costs.py",
+   "src/fleetkeep/services/inspections.py"
+  ],
+  "fleet_service--3": [
+   "src/fleetkeep/model/workorder.py",
+   "src/fleetkeep/reports/costs.py",
+   "src/fleetkeep/services/inspections.py"
+  ],
+  "fleet_service--5": [
+   "src/fleetkeep/model/workorder.py",
+   "src/fleetkeep/reports/costs.py",
+   "src/fleetkeep/services/inspections.py"
+  ],
+  "gradebook--7": [
+   "src/gradebook/grading/results.py",
+   "src/gradebook/reports/progress.py",
+   "src/gradebook/services/what_if.py"
+  ],
+  "gradebook--8": [
+   "src/gradebook/model/course.py",
+   "src/gradebook/reports/progress.py"
+  ],
+  "greenhouse_monitor--4": [
+   "src/greenhouse/reports/digest.py",
+   "src/greenhouse/reports/status.py",
+   "src/greenhouse/storage/alerts_log.py"
+  ],
+  "fleet_service--2": [
+   "src/fleetkeep/model/workorder.py",
+   "src/fleetkeep/services/inspections.py"
+  ],
+  "gradebook--3": [
+   "src/gradebook/grading/results.py",
+   "src/gradebook/model/course.py"
+  ],
+  "hotel_desk--6": [
+   "src/hoteldesk/reports/forecast.py",
+   "src/hoteldesk/services/rooms_admin.py"
+  ],
+  "household_budget--1": [
+   "src/budgetbook/services/ledger.py",
+   "src/budgetbook/services/recurring.py"
+  ],
+  "household_budget--4": [
+   "src/budgetbook/reports/month_end.py",
+   "src/budgetbook/storage/workspace.py"
+  ],
+  "household_budget--8": [
+   "src/budgetbook/services/budgets.py",
+   "src/budgetbook/services/health.py"
+  ],
+  "recipe_box--5": [
+   "src/recipebox/core/units.py",
+   "src/recipebox/services/cookable.py"
+  ],
+  "survey_tally--1": [
+   "src/surveytally/files/json_responses.py",
+   "src/surveytally/files/store.py"
+  ],
+  "survey_tally--4": [
+   "src/surveytally/files/json_responses.py",
+   "src/surveytally/services/coding.py"
+  ],
+  "ticket_office--2": [
+   "src/boxoffice/cli/commands.py",
+   "src/boxoffice/services/boxoffice.py"
+  ],
+  "ticket_office--3": [
+   "src/boxoffice/cli/commands.py",
+   "src/boxoffice/services/boxoffice.py"
+  ],
+  "ticket_office--5": [
+   "src/boxoffice/cli/commands.py",
+   "src/boxoffice/services/boxoffice.py"
+  ],
+  "ticket_office--6": [
+   "src/boxoffice/services/schedule.py",
+   "src/boxoffice/storage/customers.py"
+  ],
+  "clinic_booking--2": [
+   "src/clinicbook/services/checks.py"
+  ],
+  "clinic_booking--3": [
+   "src/clinicbook/services/availability.py"
+  ],
+  "clinic_booking--5": [
+   "src/clinicbook/services/availability.py"
+  ],
+  "clinic_booking--8": [
+   "src/clinicbook/reports/statement.py"
+  ],
+  "fleet_service--7": [
+   "src/fleetkeep/model/workorder.py"
+  ],
+  "gradebook--4": [
+   "src/gradebook/services/what_if.py"
+  ],
+  "gradebook--5": [
+   "src/gradebook/storage/lms_csv.py"
+  ],
+  "greenhouse_monitor--5": [
+   "src/greenhouse/services/manual.py"
+  ],
+  "hotel_desk--3": [
+   "src/hoteldesk/model/reservations.py"
+  ],
+  "hotel_desk--5": [
+   "src/hoteldesk/services/night_audit.py"
+  ],
+  "hotel_desk--7": [
+   "src/hoteldesk/services/stays.py"
+  ],
+  "library_loans--2": [
+   "src/lending/reports/overdue.py"
+  ],
+  "library_loans--4": [
+   "src/lending/services/accounts.py"
+  ],
+  "library_loans--5": [
+   "src/lending/reports/overdue.py"
+  ],
+  "library_loans--6": [
+   "src/lending/storage/members_store.py"
+  ],
+  "library_loans--7": [
+   "src/lending/cli/commands.py"
+  ],
+  "parcelpost--1": [
+   "src/parcelpost/reports/statement.py"
+  ],
+  "parcelpost--2": [
+   "src/parcelpost/core/ids.py"
+  ],
+  "parcelpost--5": [
+   "src/parcelpost/reports/statement.py"
+  ],
+  "payroll_lite--6": [
+   "src/payroll/rules/overtime.py"
+  ],
+  "recipe_box--2": [
+   "src/recipebox/core/ingredients.py"
+  ],
+  "recipe_box--3": [
+   "src/recipebox/services/conversion.py"
+  ],
+  "recipe_box--8": [
+   "src/recipebox/core/ingredients.py"
+  ],
+  "survey_tally--5": [
+   "src/surveytally/services/coding.py"
+  ],
+  "ticket_office--8": [
+   "src/boxoffice/services/boxoffice.py"
+  ]
+ },
+ "rows": [
+  {
+   "slot": "gradebook--2--rules--0",
+   "stage": "gradebook--2",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.140184,
+   "seconds": 71.164,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "gradebook--2--described--0",
+   "stage": "gradebook--2",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.163055,
+   "seconds": 68.044,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "fleet_service--6--described--0",
+   "stage": "fleet_service--6",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.114933,
+   "seconds": 88.136,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "fleet_service--6--rules--0",
+   "stage": "fleet_service--6",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.18124,
+   "seconds": 91.129,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "fleet_service--3--rules--0",
+   "stage": "fleet_service--3",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.104889,
+   "seconds": 59.704,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": [
+    "src/fleetkeep/model/workorder.py"
+   ]
+  },
+  {
+   "slot": "fleet_service--3--described--0",
+   "stage": "fleet_service--3",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.093718,
+   "seconds": 70.11,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": [
+    "src/fleetkeep/model/workorder.py"
+   ]
+  },
+  {
+   "slot": "fleet_service--5--described--0",
+   "stage": "fleet_service--5",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.115104,
+   "seconds": 71.516,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "fleet_service--5--rules--0",
+   "stage": "fleet_service--5",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.152766,
+   "seconds": 72.657,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "gradebook--7--rules--0",
+   "stage": "gradebook--7",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.117778,
+   "seconds": 67.165,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "gradebook--7--described--0",
+   "stage": "gradebook--7",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.114959,
+   "seconds": 62.954,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "gradebook--8--described--0",
+   "stage": "gradebook--8",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.21987,
+   "seconds": 67.288,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "gradebook--8--rules--0",
+   "stage": "gradebook--8",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.191156,
+   "seconds": 83.069,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "greenhouse_monitor--4--rules--0",
+   "stage": "greenhouse_monitor--4",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.125007,
+   "seconds": 72.353,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "greenhouse_monitor--4--described--0",
+   "stage": "greenhouse_monitor--4",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.139086,
+   "seconds": 77.266,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "fleet_service--2--described--0",
+   "stage": "fleet_service--2",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.261294,
+   "seconds": 143.566,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "fleet_service--2--rules--0",
+   "stage": "fleet_service--2",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.171499,
+   "seconds": 106.681,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "gradebook--3--rules--0",
+   "stage": "gradebook--3",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.137143,
+   "seconds": 113.937,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "gradebook--3--described--0",
+   "stage": "gradebook--3",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.154509,
+   "seconds": 75.495,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "hotel_desk--6--described--0",
+   "stage": "hotel_desk--6",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.093451,
+   "seconds": 68.375,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "hotel_desk--6--rules--0",
+   "stage": "hotel_desk--6",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.108591,
+   "seconds": 74.097,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "household_budget--1--rules--0",
+   "stage": "household_budget--1",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.158535,
+   "seconds": 102.09,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": [
+    "src/budgetbook/services/ledger.py"
+   ]
+  },
+  {
+   "slot": "household_budget--1--described--0",
+   "stage": "household_budget--1",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.16633,
+   "seconds": 115.096,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": [
+    "src/budgetbook/services/ledger.py"
+   ]
+  },
+  {
+   "slot": "household_budget--4--described--0",
+   "stage": "household_budget--4",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.182786,
+   "seconds": 79.777,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "household_budget--4--rules--0",
+   "stage": "household_budget--4",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.239856,
+   "seconds": 116.903,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "household_budget--8--rules--0",
+   "stage": "household_budget--8",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.12933,
+   "seconds": 77.964,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "household_budget--8--described--0",
+   "stage": "household_budget--8",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.17609,
+   "seconds": 113.409,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "recipe_box--5--described--0",
+   "stage": "recipe_box--5",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.117376,
+   "seconds": 80.048,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "recipe_box--5--rules--0",
+   "stage": "recipe_box--5",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.116122,
+   "seconds": 73.217,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "survey_tally--1--rules--0",
+   "stage": "survey_tally--1",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.117286,
+   "seconds": 68.003,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "survey_tally--1--described--0",
+   "stage": "survey_tally--1",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.124085,
+   "seconds": 60.009,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "survey_tally--4--described--0",
+   "stage": "survey_tally--4",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.136335,
+   "seconds": 79.043,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "survey_tally--4--rules--0",
+   "stage": "survey_tally--4",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.138358,
+   "seconds": 79.917,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "ticket_office--2--rules--0",
+   "stage": "ticket_office--2",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.13517,
+   "seconds": 70.075,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "ticket_office--2--described--0",
+   "stage": "ticket_office--2",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.112426,
+   "seconds": 62.327,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "ticket_office--3--described--0",
+   "stage": "ticket_office--3",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.155188,
+   "seconds": 88.111,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "ticket_office--3--rules--0",
+   "stage": "ticket_office--3",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.146752,
+   "seconds": 100.178,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "ticket_office--5--rules--0",
+   "stage": "ticket_office--5",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.210316,
+   "seconds": 95.553,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "ticket_office--5--described--0",
+   "stage": "ticket_office--5",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.191383,
+   "seconds": 95.557,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "ticket_office--6--described--0",
+   "stage": "ticket_office--6",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.156282,
+   "seconds": 77.529,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "ticket_office--6--rules--0",
+   "stage": "ticket_office--6",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.15378,
+   "seconds": 103.694,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "clinic_booking--2--rules--0",
+   "stage": "clinic_booking--2",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.166597,
+   "seconds": 86.167,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "clinic_booking--2--described--0",
+   "stage": "clinic_booking--2",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.180147,
+   "seconds": 103.186,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "clinic_booking--3--described--0",
+   "stage": "clinic_booking--3",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.20191,
+   "seconds": 90.331,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "clinic_booking--3--rules--0",
+   "stage": "clinic_booking--3",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.17043,
+   "seconds": 85.889,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "clinic_booking--5--rules--0",
+   "stage": "clinic_booking--5",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.147223,
+   "seconds": 80.007,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "clinic_booking--5--described--0",
+   "stage": "clinic_booking--5",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.159838,
+   "seconds": 72.325,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "clinic_booking--8--described--0",
+   "stage": "clinic_booking--8",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.16218,
+   "seconds": 80.206,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "clinic_booking--8--rules--0",
+   "stage": "clinic_booking--8",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.156094,
+   "seconds": 98.32,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "fleet_service--7--rules--0",
+   "stage": "fleet_service--7",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.081265,
+   "seconds": 50.481,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "fleet_service--7--described--0",
+   "stage": "fleet_service--7",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.085805,
+   "seconds": 56.517,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "gradebook--4--described--0",
+   "stage": "gradebook--4",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.084375,
+   "seconds": 50.532,
+   "lost": [
+    "base_reports"
+   ],
+   "dependent_lost": true,
+   "needless": []
+  },
+  {
+   "slot": "gradebook--4--rules--0",
+   "stage": "gradebook--4",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.077184,
+   "seconds": 52.52,
+   "lost": [
+    "base_reports"
+   ],
+   "dependent_lost": true,
+   "needless": []
+  },
+  {
+   "slot": "gradebook--5--rules--0",
+   "stage": "gradebook--5",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.131166,
+   "seconds": 88.085,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "gradebook--5--described--0",
+   "stage": "gradebook--5",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.162187,
+   "seconds": 72.342,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "greenhouse_monitor--5--described--0",
+   "stage": "greenhouse_monitor--5",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.176188,
+   "seconds": 44.676,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "greenhouse_monitor--5--rules--0",
+   "stage": "greenhouse_monitor--5",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.186614,
+   "seconds": 48.268,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "hotel_desk--3--rules--0",
+   "stage": "hotel_desk--3",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.118505,
+   "seconds": 72.97,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "hotel_desk--3--described--0",
+   "stage": "hotel_desk--3",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.132121,
+   "seconds": 56.337,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "hotel_desk--5--described--0",
+   "stage": "hotel_desk--5",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.121228,
+   "seconds": 31.63,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "hotel_desk--5--rules--0",
+   "stage": "hotel_desk--5",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.087078,
+   "seconds": 30.119,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "hotel_desk--7--rules--0",
+   "stage": "hotel_desk--7",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.167153,
+   "seconds": 79.382,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "hotel_desk--7--described--0",
+   "stage": "hotel_desk--7",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.134133,
+   "seconds": 68.43,
+   "lost": [
+    "base_stays"
+   ],
+   "dependent_lost": true,
+   "needless": []
+  },
+  {
+   "slot": "library_loans--2--described--0",
+   "stage": "library_loans--2",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.347851,
+   "seconds": 196.692,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "library_loans--2--rules--0",
+   "stage": "library_loans--2",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.300574,
+   "seconds": 173.64,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "library_loans--4--rules--0",
+   "stage": "library_loans--4",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.158767,
+   "seconds": 92.183,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "library_loans--4--described--0",
+   "stage": "library_loans--4",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.147098,
+   "seconds": 86.917,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "library_loans--5--described--0",
+   "stage": "library_loans--5",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.223984,
+   "seconds": 123.237,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "library_loans--5--rules--0",
+   "stage": "library_loans--5",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.140262,
+   "seconds": 114.083,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "library_loans--6--rules--0",
+   "stage": "library_loans--6",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.11415,
+   "seconds": 88.509,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "library_loans--6--described--0",
+   "stage": "library_loans--6",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.124615,
+   "seconds": 92.127,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "library_loans--7--described--0",
+   "stage": "library_loans--7",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.200097,
+   "seconds": 136.76,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "library_loans--7--rules--0",
+   "stage": "library_loans--7",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.142028,
+   "seconds": 96.303,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "parcelpost--1--rules--0",
+   "stage": "parcelpost--1",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.161027,
+   "seconds": 70.954,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "parcelpost--1--described--0",
+   "stage": "parcelpost--1",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.116693,
+   "seconds": 66.149,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "parcelpost--2--described--0",
+   "stage": "parcelpost--2",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.118576,
+   "seconds": 43.143,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "parcelpost--2--rules--0",
+   "stage": "parcelpost--2",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.116011,
+   "seconds": 55.085,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "parcelpost--5--rules--0",
+   "stage": "parcelpost--5",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.099131,
+   "seconds": 35.828,
+   "lost": [
+    "base_cli_day",
+    "base_shipping_day"
+   ],
+   "dependent_lost": true,
+   "needless": []
+  },
+  {
+   "slot": "parcelpost--5--described--0",
+   "stage": "parcelpost--5",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.113745,
+   "seconds": 63.088,
+   "lost": [
+    "base_cli_day",
+    "base_shipping_day"
+   ],
+   "dependent_lost": true,
+   "needless": []
+  },
+  {
+   "slot": "payroll_lite--6--described--0",
+   "stage": "payroll_lite--6",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.127173,
+   "seconds": 79.975,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "payroll_lite--6--rules--0",
+   "stage": "payroll_lite--6",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.085957,
+   "seconds": 51.502,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "recipe_box--2--rules--0",
+   "stage": "recipe_box--2",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.109541,
+   "seconds": 73.388,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "recipe_box--2--described--0",
+   "stage": "recipe_box--2",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.122359,
+   "seconds": 75.395,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "recipe_box--3--described--0",
+   "stage": "recipe_box--3",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.142031,
+   "seconds": 70.753,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "recipe_box--3--rules--0",
+   "stage": "recipe_box--3",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.103295,
+   "seconds": 53.621,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "recipe_box--8--rules--0",
+   "stage": "recipe_box--8",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.205102,
+   "seconds": 112.892,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "recipe_box--8--described--0",
+   "stage": "recipe_box--8",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.194065,
+   "seconds": 91.881,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "survey_tally--5--described--0",
+   "stage": "survey_tally--5",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.124333,
+   "seconds": 79.662,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "survey_tally--5--rules--0",
+   "stage": "survey_tally--5",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.094647,
+   "seconds": 44.766,
+   "lost": [
+    "base_analysis"
+   ],
+   "dependent_lost": true,
+   "needless": []
+  },
+  {
+   "slot": "ticket_office--8--rules--0",
+   "stage": "ticket_office--8",
+   "arm": "rules",
+   "state": "completed",
+   "cost": 0.124274,
+   "seconds": 67.696,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  },
+  {
+   "slot": "ticket_office--8--described--0",
+   "stage": "ticket_office--8",
+   "arm": "described",
+   "state": "completed",
+   "cost": 0.09409,
+   "seconds": 40.995,
+   "lost": [],
+   "dependent_lost": false,
+   "needless": []
+  }
+ ]
+}

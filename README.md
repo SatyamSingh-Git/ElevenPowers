@@ -635,8 +635,14 @@ p = 8.3 × 10⁻⁵). That was a fresh run fixed in advance, after a first run o
 2 of 20 against 6 of 20 that leaned the same way but did not count.
 
 The instruction was on all 11 rules, and no run made a needless edit because
-of it. `ep_milestones --propose` now writes entries this way. It is one stage
-and one model (Sonnet 5.5)
+of it. `ep_milestones --propose` now writes entries this way.
+
+**Checked for harm across 45 stages** where "change both" is the wrong
+instruction, because the correct change touches only one side. The arms
+were level: 3 against 3 runs lost behaviour, and 2 against 2 made a needless
+edit (p = 0.75) ([harm check](results/rule-mandate-harm/README.md)).
+
+It is one model (Sonnet 5.5) on built cases
 ([results](results/rule-mandate-confirm/README.md)).
 
 Sending the agent back at Stop for a rule left behind did **not** help. All

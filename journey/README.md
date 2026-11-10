@@ -6,6 +6,7 @@ explained a scope choice and stopped. Primary 7 of 25 lost against 10 of 25 (p =
 tenth more cost. The losses the note leaves are disagreements, not misses; the gate stays opt-in, off.
 The same rules worded as instructions ("must stay consistent: change both") were then followed: 5 of 60
 lost against 23 of 60 (p = 8.3 × 10⁻⁵) in a fresh run fixed in advance, and the proposer now writes them so.
+On 45 stages where "change both" is the wrong instruction, it did no measured harm (3 against 3 lost, p = 0.75).
 
 Previous: [99 — what an import already knew](99-what-an-import-already-knew.md): on 160 quiet
 co-changes from four real projects' history, rule-group proposals covered 60 at K = 50, as did a
