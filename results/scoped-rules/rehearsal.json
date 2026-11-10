@@ -1,0 +1,23 @@
+{
+ "said": {
+  "claude": {
+   "src/api/handler.ts": [
+    "CURSOR-RULE",
+    "COPILOT-RULE"
+   ],
+   "lib/util.ts": []
+  },
+  "gemini": {
+   "src/api/handler.ts": [
+    "CLAUDE-RULE",
+    "CURSOR-RULE"
+   ],
+   "lib/util.ts": []
+  }
+ },
+ "checks": {
+  "claude gets two other agents' rules, not its own": true,
+  "gemini gets the first two by source, Claude's included": true,
+  "a non-matching file gets no project rule, either host": true
+ }
+}

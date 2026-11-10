@@ -1,5 +1,27 @@
 # Current delivery status
 
+**2026-11-10 — One set of project rules, delivered in every agent.**
+- **What it reads.** `core/milestones/scoped.py` reads, read-only:
+  - Claude Code's `.claude/rules` (`paths:`);
+  - Cursor's `.cursor/rules` (`globs:`);
+  - Copilot's `.github/instructions` (`applyTo:`);
+  - `AGENTS.md` in subfolders.
+- **How it delivers them.**
+  - The rule note adds at most two per file, cut to 600 characters, with the
+    source named.
+  - The Edit brief skips what the running host loads itself. The post-shell
+    note skips nothing.
+- **New commands.** `ep_milestones --add-rule A B` declares a pair in one
+  line, as the measured instruction. `--scoped` lists what was found and what
+  could not be read.
+- **Checks:**
+  - a $0 rehearsal through the real launchers, 3 of 3;
+  - a real Claude Code session quoted a Cursor rule it never opened, and the
+    control said `NONE` ($0.13) ([results](../results/scoped-rules/README.md));
+  - tests, with 13 of 13 and 8 of 8 mutants killed.
+- **Bound:** the Cursor and Copilot CLIs are assumed, from their docs, to
+  load their own formats. Only Claude Code was probed.
+
 **2026-11-10 — The rule note now reaches Cursor, Copilot and Codex.**
 - **The defect.** Found by a builder check of the next design, then
   confirmed in code.

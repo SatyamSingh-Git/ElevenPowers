@@ -1,0 +1,33 @@
+{
+ "rows": [
+  {
+   "arm": "rule",
+   "exit": 0,
+   "tools": [
+    "Read",
+    "Edit"
+   ],
+   "quotes_marker": true,
+   "reply": "Project rule from .cursor/rules/overtime.mdc (applies to src/payroll/rules/overtime.py): PROBE-4417: overtime multipliers are read from settings, never written as literals.\n\nI appended `# probe` to the end of `src/payroll/rules/overtime.py` with one Edit. I didn't run the test suite, because you limited me to Edit and Read. A hook says `python -m pytest tests -q` needs to pass before this counts as done.",
+   "read_the_rule_file": false,
+   "cost": 0.07629240000000001
+  },
+  {
+   "arm": "control",
+   "exit": 0,
+   "tools": [
+    "Read",
+    "Edit"
+   ],
+   "quotes_marker": false,
+   "reply": "NONE\n\nI appended `# probe` to `src/payroll/rules/overtime.py`. I didn't run the test suite (`python -m pytest tests -q`) that the post-edit hook asked for, because you limited me to Read and a single Edit.",
+   "read_the_rule_file": false,
+   "cost": 0.052448699999999994
+  }
+ ],
+ "checks": {
+  "rule arm quotes the marker it could only get from the hook": true,
+  "control arm received no project rule": true
+ },
+ "total_cost": 0.1287
+}

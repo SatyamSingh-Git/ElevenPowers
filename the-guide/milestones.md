@@ -177,6 +177,59 @@ abseil-py it lists two rules, on TFX 18 and on TF-GNN 26.
 - **Marking** is a new way into that note. It has not been measured with
   agents on its own.
 
+### Rules other agents already have
+
+If your project already has scoped rules written for another agent,
+ElevenPowers delivers them to whichever agent is running. You do not need to
+write anything new:
+
+| Format | Read from | Scoped by |
+|---|---|---|
+| Claude Code | `.claude/rules/**/*.md` | `paths:` |
+| Cursor | `.cursor/rules/**/*.mdc` | `globs:` (rules with `alwaysApply: true` are not scoped, and are left to Cursor) |
+| GitHub Copilot | `.github/instructions/**/*.instructions.md` | `applyTo:` |
+| `AGENTS.md` in a subfolder | that folder | the closest one to the file wins |
+
+**When it arrives.** Before an agent first changes a matching file, the note
+carries the rule's own text, cut to 600 characters, with its source named.
+It arrives after the change on hosts that cannot take text before one (Cursor,
+Copilot), and after a shell command that wrote the file.
+
+**What is skipped.**
+- At most two scoped rules are added per file.
+- On an edit, a host is not handed its own format, because it loads that
+  itself: Claude Code is not handed `.claude/rules`, Cursor not
+  `.cursor/rules`, Copilot not its instructions. After a shell write nothing
+  is skipped, because no host loads rules for a file a script wrote.
+- A root `AGENTS.md` and rules without a scope are not repeated. Hosts load
+  those at the start.
+
+**Checked:** a real Claude Code session quoted a Cursor rule it had never
+opened, and the same project without the rule got nothing
+([probe](../results/scoped-rules/README.md)).
+
+**Seeing what was found.** `ep_milestones.py --scoped` lists every rule found
+and every file that could not be read; an unreadable rule is never delivered.
+
+```bash
+python plugin/bin/ep_milestones.py --project PATH --scoped
+```
+
+### Declare a rule in one line
+
+```bash
+python plugin/bin/ep_milestones.py --project PATH --add-rule src/money.py src/pricing.py --why "Both round tax half-up."
+```
+
+It writes an entry worded as the measured instruction, "`src/money.py` and
+`src/pricing.py` must stay consistent: change both in the same task", with
+the project's tests command as its check. It creates
+`elevenpowers.milestones.json` if it is missing. It refuses:
+- a missing file;
+- the same file twice;
+- a pair already declared;
+- a project with no tests command.
+
 ### Or declare it, with a check
 
 An entry in `elevenpowers.milestones.json` also carries the check that
