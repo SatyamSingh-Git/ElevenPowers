@@ -318,6 +318,7 @@ def main(argv=None):
     p.add_argument('--arm', action='append', help=f'repeatable; default {" and ".join(ARMS)}')
     p.add_argument('--descriptions', type=Path, help='JSON {case: {rule id: sentence}} for the described arm')
     p.add_argument('--accepted', type=Path, help="JSON {case: [rule id]}: a reviewer's kept pairs, certified as given")
+    p.add_argument('--model', default='claude-sonnet-5-5', choices=subscription.SUPPORTED_MODELS['claude'])
     e = sub.add_parser('execute')
     e.add_argument('batch', type=Path)
     e.add_argument('slot')
@@ -327,7 +328,7 @@ def main(argv=None):
     args = parser.parse_args(argv)
     if args.action == 'prepare':
         stages = [(item.split(':')[0], int(item.split(':')[1])) for item in args.stage]
-        value = prepare(args.batch, stages, replicates=args.replicates, seconds=args.seconds,
+        value = prepare(args.batch, stages, replicates=args.replicates, seconds=args.seconds, model=args.model,
                         arms=tuple(args.arm or ARMS),
                         descriptions=json.loads(args.descriptions.read_text(encoding='utf-8')) if args.descriptions else None,
                         accepted=json.loads(args.accepted.read_text(encoding='utf-8')) if args.accepted else None)
