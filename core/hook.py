@@ -250,7 +250,7 @@ def on_pre_tool(payload: dict, root: Path) -> int:
         # every time, and only a direct blind edit ever saw one.
         brief = ""
         if here not in ledger.briefed and payload.get('_ep_platform', 'claude') in PRE_EDIT_CONTEXT:
-            brief = _brief(root, here)
+            brief = _brief(root, here, payload)
         if brief:
             ledger.briefed.append(here)
             ledger.save()
@@ -274,11 +274,21 @@ def on_pre_tool(payload: dict, root: Path) -> int:
     return 0
 
 
-def _brief(root: Path, path: str) -> str:
+def _brief(root: Path, path: str, payload: dict) -> str:
     # A rule a person declared across files outranks the import map: it names the
     # copy an import graph cannot see (20 of 31 v3 losses were such copies).
     from .milestones.definition import rules_naming
-    return "\n".join(filter(None, (rules_naming(root, path), neighbourhood(root, path))))
+    note = rules_naming(root, path, payload.get('_ep_platform', 'claude'), 'edit', _cwd(payload, root))
+    return "\n".join(filter(None, (note, neighbourhood(root, path))))
+
+
+def _cwd(payload: dict, root: Path) -> str:
+    """Where the host runs, relative to the project: Codex loads AGENTS.md from the root down to it."""
+    try:
+        where = Path(payload.get('cwd') or root).resolve().relative_to(root.resolve()).as_posix()
+    except ValueError:
+        return ''
+    return '' if where == '.' else where
 
 
 def _brief_after_edit(payload: dict, root: Path) -> None:
@@ -296,7 +306,7 @@ def _brief_after_edit(payload: dict, root: Path) -> None:
     else:
         return
     briefed = Ledger.load(root).briefed
-    notes = {path: _brief(root, path) for path in dict.fromkeys(paths) if path not in briefed}
+    notes = {path: _brief(root, path, payload) for path in dict.fromkeys(paths) if path not in briefed}
     said = {}
 
     def record(current):
@@ -328,14 +338,14 @@ def on_post_tool(payload: dict, root: Path) -> int:
                 if text:
                     _emit('PostToolUse', additionalContext=text)
             if tool in COMMAND_TOOLS:
-                _rule_notes_after_shell(root)
+                _rule_notes_after_shell(root, payload.get('_ep_platform', 'claude'))
         fields = transport.fields_of(messages)
         if fields:
             _emit('PostToolUse', **fields)
         return code
 
 
-def _rule_notes_after_shell(root: Path) -> None:
+def _rule_notes_after_shell(root: Path, platform: str) -> None:
     """Agents also write files by running scripts, and no Edit brief fires for those: in the
     acted-on pilot, three of six rules-arm runs never saw the rule this way."""
     from .milestones.definition import configured, rules_naming
@@ -348,7 +358,11 @@ def _rule_notes_after_shell(root: Path) -> None:
         found = present(root)
         if found is not None:
             ledger = Ledger.update(root, lambda current: setattr(current, 'marked', found))
-    if not (configured(root) or ledger.marked):
+    if ledger.scoped is None:
+        from .milestones.scoped import read
+        found = bool(read(root)[0])
+        ledger = Ledger.update(root, lambda current: setattr(current, 'scoped', found))
+    if not (configured(root) or ledger.marked or ledger.scoped):
         return
     started = time.time()
     notes = {}
@@ -359,7 +373,7 @@ def _rule_notes_after_shell(root: Path) -> None:
                 continue
         except OSError:
             continue
-        note = rules_naming(root, path)
+        note = rules_naming(root, path, platform, 'shell')
         if note:
             notes[path] = note
     said = {}

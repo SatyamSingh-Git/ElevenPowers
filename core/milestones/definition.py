@@ -103,9 +103,11 @@ def load(root, *, deadline=None):
     return result
 
 
-def rules_naming(root, path):
-    """Rules a person declared or marked that keep `path` in step with other files: the rule note."""
+def rules_naming(root, path, platform='claude', kind='edit', cwd=''):
+    """Rules a person declared or marked that keep `path` in step with other files, then the rules other
+    agents' files scope to it that this host would not load itself: the rule note."""
     from .marked import read
+    from .scoped import lines_for
     lines = []
     for item in load(root)['milestones'] if configured(root) else []:
         others = [p for p in item['inputs'] if p != path]
@@ -120,7 +122,7 @@ def rules_naming(root, path):
             shown = ', '.join(t['path'] + (f":{t['label']}" if t['label'] else '') for t in targets[:4])
             lines.append(f"Marked rule {block['label'] or 'unnamed'} ({path} lines {block['start']}-{block['end']}) "
                          f'is also kept in {shown}. Change them together, or say why one should differ.')
-    return '\n'.join(lines[:3])
+    return '\n'.join(lines[:3] + lines_for(root, path, platform, kind, cwd))
 
 
 

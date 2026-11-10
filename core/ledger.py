@@ -196,6 +196,8 @@ class Ledger:
     suppressed by the most common way anyone works.
     """
     marked: bool | None = None
+    scoped: bool | None = None
+    """Does the project hold another agent's path-scoped rule? Asked on the task's first shell command, once."""
     """Does the project hold a `LINT.ThenChange`? Asked on the task's first shell command, once."""
     rules_checked_at: float = 0.0
     """When files changed through the shell were last read for a rule note: later commands read only newer ones."""
@@ -302,6 +304,7 @@ class Ledger:
             passed_before=raw.get("passed_before", []) or [],
             briefed=raw.get("briefed", []) or [],
             marked=raw.get("marked"),
+            scoped=raw.get("scoped"),
             rules_checked_at=raw.get("rules_checked_at", 0.0) or 0.0,
             rules_sent=raw.get("rules_sent", []) or [],
             discrimination_inputs=raw.get("discrimination_inputs", {}) or {},
@@ -409,6 +412,7 @@ class Ledger:
             "passed_before": self.passed_before,
             "briefed": self.briefed,
             "marked": self.marked,
+            "scoped": self.scoped,
             "rules_checked_at": self.rules_checked_at,
             "rules_sent": self.rules_sent,
             "discrimination_inputs": self.discrimination_inputs,
