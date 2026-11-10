@@ -103,6 +103,49 @@ def load(root, *, deadline=None):
     return result
 
 
+def add_rule(root, a, b, why=''):
+    """Declare that two files keep one rule, worded as the instruction that was measured to be
+    followed (5 of 60 dependents lost against 23 of 60 for a description,
+    results/rule-mandate-confirm). Returns the entry written."""
+    from ..config import load as load_config
+    root = Path(root)
+    if a == b:
+        raise ValueError('a rule needs two different files')
+    for name in (a, b):
+        if not safe_path(root, name).is_file():
+            raise ValueError(f'no such file: {name}')
+    command = load_config(root).command_for('tests')
+    if not command:
+        raise ValueError('no tests command: declare one in .elevenpowers/config.json; a rule needs a check')
+    declared = load(root)
+    if declared['issues']:
+        raise ValueError(f"{FILE} cannot be read: {'; '.join(declared['issues'])}")
+    if any({a, b} <= set(m['inputs']) for m in declared['milestones']):
+        raise ValueError(f'{a} and {b} are already declared together')
+    base = re.sub(r'[^A-Za-z0-9_-]', '-', f'rule-{PurePosixPath(a).stem}-{PurePosixPath(b).stem}')[:60]
+    taken, rule_id, number = {m['id'] for m in declared['milestones']}, base, 1
+    while rule_id in taken:
+        number += 1
+        rule_id = f'{base}-{number}'
+    entry = {'id': rule_id,
+             'description': f'`{a}` and `{b}` must stay consistent: change both in the same task.'
+                            + (f' {why.strip()}' if why.strip() else ''),
+             'inputs': [a, b], 'checks': [{'kind': 'test_suite', 'command': command}]}
+    path = root / FILE
+    before = path.read_text(encoding='utf-8') if path.exists() else None
+    value = json.loads(before) if before else {'schema': 1, 'milestones': []}
+    value['milestones'].append(entry)
+    path.write_text(json.dumps(value, indent=2) + '\n', encoding='utf-8')
+    issues = load(root)['issues']
+    if issues:
+        if before is None:
+            path.unlink()
+        else:
+            path.write_text(before, encoding='utf-8')
+        raise ValueError(f"the rule was not written: {'; '.join(issues)}")
+    return entry
+
+
 def rules_naming(root, path, platform='claude', kind='edit', cwd=''):
     """Rules a person declared or marked that keep `path` in step with other files, then the rules other
     agents' files scope to it that this host would not load itself: the rule note."""

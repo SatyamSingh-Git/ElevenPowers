@@ -426,3 +426,66 @@ def test_a_proposed_id_never_repeats_one_already_declared(tmp_path):
     first = propose(root)['proposals'][0]
     assert first['files'] == ['app/money.py', 'app/services/pricing.py']
     assert first['entry']['id'] != 'rule-lodging_tax-quote_tax'
+
+
+# --- declaring a rule in one line ---
+
+def _with_tests(root):
+    from core.config import Config, save
+    save(root, Config(commands={'tests': 'python -m pytest -q'}, auto_detect=False))
+    return root
+
+
+def test_add_rule_writes_the_instruction_with_the_tests_command(tmp_path):
+    from core.milestones.definition import add_rule, load
+    root = _with_tests(project(tmp_path))
+    entry = add_rule(root, 'app/money.py', 'app/services/pricing.py', why='Both round lodging tax half-up.')
+    assert entry['description'] == ('`app/money.py` and `app/services/pricing.py` must stay consistent: '
+                                    'change both in the same task. Both round lodging tax half-up.')
+    assert entry['checks'] == [{'kind': 'test_suite', 'command': 'python -m pytest -q'}]
+    assert entry['id'] == 'rule-money-pricing'
+    declared = load(root)
+    assert declared['issues'] == [] and declared['milestones'][0]['inputs'] == ['app/money.py', 'app/services/pricing.py']
+
+
+def test_add_rule_keeps_existing_rules_and_gives_a_new_id(tmp_path):
+    from core.milestones.definition import add_rule, load
+    root = _with_tests(project(tmp_path, {'app/other/pricing.py': QUOTE}))
+    add_rule(root, 'app/money.py', 'app/services/pricing.py')
+    second = add_rule(root, 'app/money.py', 'app/other/pricing.py')
+    assert second['id'] == 'rule-money-pricing-2'
+    assert [m['id'] for m in load(root)['milestones']] == ['rule-money-pricing', 'rule-money-pricing-2']
+
+
+def test_add_rule_refuses_what_it_cannot_declare(tmp_path):
+    import pytest
+    from core.config import Config, save
+    from core.milestones.definition import add_rule
+    root = _with_tests(project(tmp_path))
+    with pytest.raises(ValueError, match='no such file'):
+        add_rule(root, 'app/money.py', 'app/missing.py')
+    with pytest.raises(ValueError, match='two different files'):
+        add_rule(root, 'app/money.py', 'app/money.py')
+    add_rule(root, 'app/money.py', 'app/services/pricing.py')
+    with pytest.raises(ValueError, match='already declared'):
+        add_rule(root, 'app/services/pricing.py', 'app/money.py')
+    other = project(tmp_path / 'other')
+    save(other, Config(commands={}, auto_detect=False))
+    with pytest.raises(ValueError, match='tests command'):
+        add_rule(other, 'app/money.py', 'app/services/pricing.py')
+
+
+def test_the_added_rule_reaches_the_brief(tmp_path):
+    from core.milestones.definition import add_rule, rules_naming
+    root = _with_tests(project(tmp_path))
+    add_rule(root, 'app/money.py', 'app/services/pricing.py')
+    note = rules_naming(root, 'app/money.py')
+    assert 'app/services/pricing.py' in note and 'must stay consistent' in note
+
+
+def test_the_command_adds_a_rule_and_refuses_a_bad_one(tmp_path):
+    root = _with_tests(project(tmp_path))
+    done = _cli('--project', str(root), '--add-rule', 'app/money.py', 'app/services/pricing.py')
+    assert done.returncode == 0 and 'rule-money-pricing' in done.stdout, done.stderr
+    again = _cli('--project', str(root), '--add-rule', 'app/money.py', 'app/services/pricing.py')
+    assert again.returncode == 2 and 'already declared' in again.stderr

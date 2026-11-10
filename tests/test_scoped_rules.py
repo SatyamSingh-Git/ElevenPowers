@@ -172,6 +172,21 @@ def test_a_long_rule_is_cut_and_names_its_source(tmp_path):
     assert text.endswith('… (rest in .cursor/rules/api.mdc)') and text.count('x') == 600
 
 
+def test_the_command_lists_scoped_rules_and_the_files_it_could_not_read(tmp_path):
+    import json
+    from tests.test_rule_groups import _cli
+    root = write(tmp_path, {**FOUR, '.cursor/rules/bad.mdc': '---\nglobs src/**\n---\nx\n'})
+    done = _cli('--project', str(root), '--scoped', '--json')
+    assert done.returncode == 0, done.stderr
+    value = json.loads(done.stdout)
+    assert {r['source'] for r in value['rules']} == {'.claude/rules/api.md', '.cursor/rules/api.mdc',
+                                                     '.github/instructions/api.instructions.md',
+                                                     'src/api/AGENTS.md', 'src/AGENTS.md'}
+    assert any('.cursor/rules/bad.mdc' in issue for issue in value['issues'])
+    text = _cli('--project', str(root), '--scoped').stdout
+    assert '.cursor/rules/api.mdc' in text and 'src/api/**' in text and 'bad.mdc' in text
+
+
 def test_through_the_hook_a_script_written_file_brings_the_rule_in_a_project_with_no_declarations(tmp_path):
     from tests.test_rule_groups import _hook, _shell
     root = write(tmp_path, FOUR)

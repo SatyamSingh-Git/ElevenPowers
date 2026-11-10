@@ -28,8 +28,30 @@ def main():
     parser.add_argument('--limit', type=int, default=50, help='with --propose: how many pairs to list')
     parser.add_argument('--marked', action='store_true',
                         help='list the rules marked in the code with LINT.IfChange / LINT.ThenChange')
+    parser.add_argument('--scoped', action='store_true',
+                        help="list other agents' path-scoped rules (Cursor, Copilot, Claude, nested AGENTS.md)")
+    parser.add_argument('--add-rule', nargs=2, metavar=('FILE', 'OTHER'),
+                        help='declare that two files keep one rule: change both in the same task')
+    parser.add_argument('--why', default='', help='with --add-rule: the rule, in your words')
     args = parser.parse_args()
     try:
+        if args.add_rule:
+            from core.milestones.definition import FILE, add_rule
+            entry = add_rule(args.project, *args.add_rule, why=args.why)
+            print(json.dumps(entry, indent=2, ensure_ascii=False))
+            print(f'Added to {args.project / FILE}')
+            return 0
+        if args.scoped:
+            from core.milestones.scoped import read
+            rules, issues = read(args.project)
+            value = {'rules': [{k: r[k] for k in ('source', 'format', 'patterns')} for r in rules],
+                     'issues': issues}
+            text = (json.dumps(value, indent=2, ensure_ascii=False) + '\n' if args.json else
+                    ''.join(f"{r['source']} ({r['format']}): {', '.join(r['patterns'])}\n" for r in rules)
+                    + ''.join(f'not delivered: {issue}\n' for issue in issues)
+                    or 'No path-scoped rules from other agents found.\n')
+            print(text, end='')
+            return 0
         if args.marked:
             from core.milestones.marked import listing, listing_text
             value = listing(args.project)
