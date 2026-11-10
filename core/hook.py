@@ -32,6 +32,9 @@ from .wiring import COMMAND_TOOLS, EDIT_TOOLS, FILE_TOOLS
 from .hosts import transport
 
 MAX_BLOCKS = 2
+# Hosts whose adapter carries text on a pre-tool event. Cursor's and Copilot's drop it, so there
+# the brief rides the edit's result instead (core/hosts/cursor.py, copilot.py `render`).
+PRE_EDIT_CONTEXT = frozenset({'claude', 'gemini'})
 DESTRUCTIVE = (
     "rm -rf /", "rm -rf ~", "git push --force", "git push -f",
     "DROP DATABASE", "DROP TABLE", "mkfs", "dd if=", ":(){",
@@ -246,11 +249,8 @@ def on_pre_tool(payload: dict, root: Path) -> int:
         # meant for the first edit was suppressed by the read that preceded it,
         # every time, and only a direct blind edit ever saw one.
         brief = ""
-        if here not in ledger.briefed:
-            # A rule a person declared across files outranks the import map: it names the
-            # copy an import graph cannot see (20 of 31 v3 losses were such copies).
-            from .milestones.definition import rules_naming
-            brief = "\n".join(filter(None, (rules_naming(root, here), neighbourhood(root, here))))
+        if here not in ledger.briefed and payload.get('_ep_platform', 'claude') in PRE_EDIT_CONTEXT:
+            brief = _brief(root, here)
         if brief:
             ledger.briefed.append(here)
             ledger.save()
@@ -274,6 +274,39 @@ def on_pre_tool(payload: dict, root: Path) -> int:
     return 0
 
 
+def _brief(root: Path, path: str) -> str:
+    # A rule a person declared across files outranks the import map: it names the
+    # copy an import graph cannot see (20 of 31 v3 losses were such copies).
+    from .milestones.definition import rules_naming
+    return "\n".join(filter(None, (rules_naming(root, path), neighbourhood(root, path))))
+
+
+def _brief_after_edit(payload: dict, root: Path) -> None:
+    """The brief for hosts that cannot carry it before the edit, and for Codex patches, whose
+    paths are only known from the patch: delivered with the edit's result, and only then
+    recorded as briefed."""
+    tool = payload.get('tool_name', '')
+    if tool == 'Patch':
+        from .hosts.edits import targets
+        paths = targets(payload, root)[0]
+    # Not on hosts that briefed before the edit: the file is already marked, and asking again
+    # would only recompute the import map after every edit.
+    elif payload.get('_ep_platform', 'claude') not in PRE_EDIT_CONTEXT and target_file(payload):
+        paths = [normalise(target_file(payload), root)]
+    else:
+        return
+    briefed = Ledger.load(root).briefed
+    notes = {path: _brief(root, path) for path in dict.fromkeys(paths) if path not in briefed}
+    said = {}
+
+    def record(current):
+        said.update({path: note for path, note in notes.items() if note and path not in current.briefed})
+        current.briefed.extend(said)
+    Ledger.update(root, record)
+    if said:
+        _emit('PostToolUse', additionalContext='\n'.join(said.values()))
+
+
 def on_post_tool(payload: dict, root: Path) -> int:
     # Both direct Claude invocation and adapter collectors receive one combined
     # context message. Guidance and native attribution gaps must survive advice.
@@ -289,6 +322,7 @@ def on_post_tool(payload: dict, root: Path) -> int:
             tool = payload.get('tool_name', '')
             edited = tool in EDIT_TOOLS or (tool == 'Patch' and payload.get('_ep_platform'))
             if edited and payload.get('hook_event_name') != 'PostToolUseFailure':
+                _brief_after_edit(payload, root)
                 from .milestones.automatic import deliver
                 text = deliver(Ledger.load(root))
                 if text:

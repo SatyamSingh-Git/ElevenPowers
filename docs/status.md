@@ -1,5 +1,24 @@
 # Current delivery status
 
+**2026-11-10 — The rule note now reaches Cursor, Copilot and Codex.**
+- **The defect.** Found by a builder check of the next design, then
+  confirmed in code.
+  - Cursor's and Copilot's adapters drop `additionalContext` on
+    `preToolUse`, yet the hook recorded the file as briefed. The note was
+    lost, and the post-shell note then skipped the file.
+  - Codex edits through `apply_patch`, which never asked for a brief.
+  - So the measured rule note reached only Claude Code and Gemini.
+- **The fix.** On hosts that cannot carry text before an edit, and for
+  Codex's patched files, the brief rides the edit's result. A file is marked
+  briefed only when its brief is sent.
+- **Tests.** Six in `tests/test_rule_delivery_hosts.py`, through each
+  adapter. Claude Code and Gemini are the forward controls, unchanged.
+  - 252 host, edit, advice and rule tests pass.
+  - Mutation check: 5 of 6 killed. The survivor removes the platform
+    condition on the post-edit brief. It is equivalent, because those hosts
+    have already marked the file. It only saves recomputing the import map
+    after each edit, and the code says so.
+
 **2026-11-10 — On Sonnet 5 the instruction wording had nothing to improve.**
 - The confirmation stage was rerun on `claude-sonnet-5`, 40 per arm, after
   the design's cost trigger cut it from 60.
