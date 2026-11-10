@@ -85,9 +85,10 @@ the other agent never sees them.
   - `.claude/rules` files without `paths`.
 
   Hosts load these at start, or by the model's own choice.
-- **Checking whether a free-text rule was followed.** It cannot be computed.
-  The end report lists which scoped rules were delivered for which files,
-  nothing more.
+- **Checking whether a free-text rule was followed.** It cannot be computed,
+  so nothing about free-text rules is said at the end. (An end-report
+  listing of delivered rules was considered and dropped: it tells the
+  person nothing they can act on.)
 - **Writing or converting any rule file.** This is read-only.
 
 ## Anti-goals: a failure even if it technically works
