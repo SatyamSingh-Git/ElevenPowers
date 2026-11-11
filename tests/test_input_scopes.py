@@ -125,15 +125,17 @@ def test_explicit_patch_reuses_only_independent_command(scoped_project):
     base=commit(root,'independent command scopes')
     (root/'service.py').write_text('value=3\n')
     head=commit(root,'service change')
-    first=verify(root,base,head,seconds=120)
+    # A budget, not a speed requirement: on a loaded machine the final verify
+    # passed 120 s and came back incomplete (2026-11-11 full suite).
+    first=verify(root,base,head,seconds=300)
     assert first['state']=='passed',first['issues']
     assert (root/'.elevenpowers/count.txt').read_text()=='1'
     assert (root/'.elevenpowers/other-count.txt').read_text()=='1'
     target.write_text('value=9\n' if target.suffix=='.py' else 'module.exports={value:9};\n')
-    choices=plan(root,base,head,seconds=120)
+    choices=plan(root,base,head,seconds=300)
     actions={c['properties'][0]:c['action'] for c in choices['checks']}
     assert actions=={'tests':'run','build':'reuse'},choices['bundle']['execution']
-    final=verify(root,base,head,seconds=120)
+    final=verify(root,base,head,seconds=300)
     assert final['state']=='failed',final['issues']
     assert (root/'.elevenpowers/count.txt').read_text()=='2'
     assert (root/'.elevenpowers/other-count.txt').read_text()=='1'
