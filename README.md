@@ -34,7 +34,7 @@
 6. **Evidence reports:** exports Markdown or JSON showing what was checked, whether source and selected approved dependencies still qualify the results, where evidence is missing and what needs attention next.
 7. **PatchProof:** plans and runs declared checks, binds patches and command-scoped approved inputs to qualified evidence, and shares impact, compatibility and verification gaps through local bundles and GitHub summaries.
 8. **Five host integrations:** Claude Code, Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI.
-9. **Better instruction following.** The rules you write down are shown to the agent at the moment they apply, so it follows them. That includes rules you already wrote for another agent: Cursor rules, Copilot instructions and `AGENTS.md` files reach Claude Code and the rest, and `ep_milestones --add-rule A B` declares a new one in one line. On test projects, it skipped a required change in 4 of 50 runs instead of 35 of 50, and almost always told you when it did. Even when your request pulled the other way, a rule written as a direct instruction was followed about four times as often as a plain description (skipped in 5 of 60 runs against 23 of 60). [Details](#behavior-evidence-across-development-milestones).
+9. **Better instruction following:** shows your project's rules to the agent at the moment they apply, including rules written for other agents (Cursor, Copilot, `AGENTS.md`), so they are followed rather than forgotten. [Details](#behavior-evidence-across-development-milestones).
 
 ---
 
