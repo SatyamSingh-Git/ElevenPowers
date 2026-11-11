@@ -1,0 +1,9 @@
+{"slot": "cachetools-95e6addb--assisted--0", "config": "default", "stop_seconds": 11.6, "decision": "allow", "phases": {"working tree inspection": 0.7, "verification": 2.8, "baseline preparation": 0.3, "baseline": 3.0, "confirmation": 1.6}}
+{"slot": "cachetools-95e6addb--assisted--0", "config": "at_stop", "stop_seconds": 11.8, "decision": "allow", "phases": {"working tree inspection": 0.2, "verification": 1.7, "baseline preparation": 0.3, "baseline": 2.6, "confirmation": 1.1, "test strength": 3.8}}
+{"slot": "more-itertools-0e6acdf9--assisted--0", "config": "default", "stop_seconds": 48.6, "decision": "allow", "phases": {"working tree inspection": 0.3, "verification": 23.8, "baseline preparation": 0.2, "baseline": 20.8, "confirmation": 1.5}}
+{"slot": "more-itertools-0e6acdf9--assisted--0", "config": "at_stop", "stop_seconds": 57.5, "decision": "allow", "phases": {"working tree inspection": 0.2, "verification": 19.6, "baseline preparation": 0.2, "baseline": 18.2, "confirmation": 1.1, "test strength": 16.4}}
+{"slot": "uvicorn-4a959207--assisted--0", "config": "default", "stop_seconds": 140.2, "decision": "allow", "phases": {"working tree inspection": 0.2, "verification": 61.2, "baseline preparation": 0.8, "baseline": 72.0}}
+{"slot": "uvicorn-4a959207--assisted--0", "config": "at_stop", "stop_seconds": 153.2, "decision": "allow", "phases": {"working tree inspection": 0.5, "verification": 116.9, "test strength": 25.8}}
+{"slot": "wrapt-15068aae--assisted--2", "config": "default", "stop_seconds": 34.8, "decision": "allow", "phases": {"working tree inspection": 0.4, "verification": 10.0, "baseline preparation": 0.8, "baseline": 12.4, "confirmation": 2.6}}
+{"slot": "wrapt-15068aae--assisted--2", "config": "at_stop", "stop_seconds": 78.0, "decision": "allow", "phases": {"working tree inspection": 0.3, "verification": 4.3, "baseline preparation": 0.4, "baseline": 6.5, "confirmation": 1.3, "test strength": 60.2}}
+

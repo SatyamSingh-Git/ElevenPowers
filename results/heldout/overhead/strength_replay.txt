@@ -1,0 +1,4 @@
+{"slot": "cachetools-95e6addb--assisted--0", "seconds": 5.7, "state": "incomplete", "attempts": 0, "baseline": "incomplete", "issues": ["baseline did not report positive passing test counts"]}
+{"slot": "more-itertools-0e6acdf9--assisted--0", "seconds": 17.2, "state": "incomplete", "attempts": 0, "baseline": "incomplete", "issues": ["baseline timed_out"]}
+{"slot": "uvicorn-4a959207--assisted--0", "seconds": 19.1, "state": "incomplete", "attempts": 0, "baseline": "incomplete", "issues": ["baseline timed_out"]}
+{"slot": "wrapt-15068aae--assisted--2", "seconds": 60.5, "state": "deferred", "attempts": 7, "baseline": "passed", "issues": ["strength deadline reached reading inputs"]}

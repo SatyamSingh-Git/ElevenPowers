@@ -172,7 +172,9 @@ deserves: a 64-run, four-hour comparison was launched on 2026-09-17 with about
 1% of the week left and had to be killed. State the estimated runs, wall time
 and cost before starting. Calibration from the held-out sweep of 2026-10-22/23:
 Sonnet 5.5 at medium effort averaged **$0.079 and 85 s wall per run** (240 runs,
-$18.91; assisted runs take about 3x the model time of ordinary ones). That sweep,
+$18.91; assisted runs took about 3x the wall time of ordinary ones, but only 1.3x
+the model time; an 18 s Stop mutation step, now off by default, was the largest
+part of the rest — [overhead](results/heldout/overhead/README.md)). That sweep,
 vacuity by arm on held-out tasks, is done
 ([`results/heldout/sweep-2026-10-22/`](results/heldout/sweep-2026-10-22/README.md)).
 The next experiment,

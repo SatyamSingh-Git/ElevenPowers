@@ -1,5 +1,22 @@
 # Current delivery status
 
+**2026-11-11 — Test strength no longer runs at every Stop.**
+- **Why.** On the held-out sweep, assisted runs took 83.6 s against 25.3 s.
+  Model time was 31.5 s against 23.9 s; the rest was spent outside the model.
+  - Test strength took 18.3 s of each assisted run's Stop, the largest phase.
+  - It ended incomplete in 110 of 119 runs.
+  - The agent never sees it.
+- **The change.** `strength.at_stop`, default false. `ep_strength` and
+  `ep_review --strength` run it on request.
+- **Checks:**
+  - tests, with 5 of 5 mutants killed;
+  - four of the sweep's runs replayed from base through the real hook. With
+    the default, Stop recorded no strength phase; with `at_stop`, 3.8–60.2 s
+    of it.
+- **Bound:** the saving is an estimate from the sweep's records, not a new
+  sweep. The untested-fix benefit rests on the base-tree suite, which still
+  runs ([results](../results/heldout/overhead/README.md)).
+
 **2026-11-10 — One set of project rules, delivered in every agent.**
 - **What it reads.** `core/milestones/scoped.py` reads, read-only:
   - Claude Code's `.claude/rules` (`paths:`);

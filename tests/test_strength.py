@@ -34,7 +34,7 @@ def test_strength_config_preserved_and_validated(tmp_path):
 
 
 @pytest.mark.parametrize('raw', [{'seconds': float('nan')}, {'max_mutants': -1},
-                                 {'enabled': 'yes'}, {'dependencies': ['../elsewhere']}])
+                                 {'enabled': 'yes'}, {'at_stop': 1}, {'dependencies': ['../elsewhere']}])
 def test_strength_settings_reject_invalid_limits(raw):
     from core.strength.settings import settings
     with pytest.raises(ValueError):
@@ -367,14 +367,31 @@ def test_automatic_strength_is_shared_silent_and_passive_when_off(tmp_path, monk
     from core.ledger import Ledger
     from core.config import Config
     ledger = Ledger(root=tmp_path, task='t')
-    ledger._config = Config(profile='guide')
+    ledger._config = Config(profile='guide', strength={'at_stop': True})
     calls = []
     monkeypatch.setattr(runner, 'analyze', lambda current: calls.append(current.task))
     assert runner.consider(ledger) is None and calls == ['t']
-    ledger._config = Config(profile='off')
+    ledger._config = Config(profile='off', strength={'at_stop': True})
     runner.consider(ledger)
     assert calls == ['t']
-    ledger._config = Config(strength={'enabled':False})
+    ledger._config = Config(strength={'enabled':False, 'at_stop': True})
+    runner.consider(ledger)
+    assert calls == ['t']
+
+
+def test_stop_leaves_strength_to_a_request_unless_the_project_asks(tmp_path, monkeypatch):
+    # Held-out sweep, 2026-10-22: 18 s of every assisted run's Stop, 110 of 119
+    # runs incomplete, and nothing of it reaches the agent.
+    from core.strength import runner
+    from core.ledger import Ledger
+    from core.config import Config
+    ledger = Ledger(root=tmp_path, task='t')
+    ledger._config = Config(profile='guide')
+    calls = []
+    monkeypatch.setattr(runner, 'analyze', lambda current: calls.append(current.task))
+    runner.consider(ledger)
+    assert calls == []
+    ledger._config = Config(profile='guide', strength={'at_stop': True})
     runner.consider(ledger)
     assert calls == ['t']
 
@@ -466,7 +483,7 @@ def test_shared_completion_never_emits_mutant_feedback(tmp_path, monkeypatch):
     from core.obligations import Claim
     from core.hosts import edits
     ledger = Ledger(root=tmp_path, task='t', claims=[Claim.DOCS_CHANGED])
-    ledger._config = Config(profile='guide')
+    ledger._config = Config(profile='guide', strength={'at_stop': True})
     monkeypatch.setattr(edits,'reconcile',lambda *args: None)
     monkeypatch.setattr(hook,'_since_task_opened',lambda *args: [])
     monkeypatch.setattr(Ledger,'settle',lambda *args: Status.VERIFIED)

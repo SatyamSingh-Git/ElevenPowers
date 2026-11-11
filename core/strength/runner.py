@@ -165,11 +165,17 @@ def summary_from(value):
 
 
 def consider(ledger):
-    """Automatic completion work. Individual mutations never enter agent feedback."""
+    """Automatic completion work. Individual mutations never enter agent feedback.
+
+    Off unless the project sets `at_stop`: on the held-out sweep it took 18 s of
+    every Stop and ended incomplete in 110 of 119 runs, while the agent, which
+    never sees it, waited. `ep_strength` and `ep_review --strength` run it on request.
+    """
     if not ledger.config.verifies:
         return
     try:
-        if settings(ledger.config.strength).enabled:
+        options = settings(ledger.config.strength)
+        if options.enabled and options.at_stop:
             analyze(ledger)
     except (OSError, ValueError, jobs.Busy, jobs.Superseded):
         # Advisory execution/persistence must not change the completion verdict.

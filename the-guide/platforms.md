@@ -51,8 +51,8 @@ across all five host launchers. Successful context emission and subsequent nativ
 checks remain separate from model comprehension and installed-session acceptance.
 
 Optional changed-file test strength uses one backend across all five platforms.
-The shared completion handler considers it after ordinary verification and
-confirmation; host choice does not change operators, isolation, limits or report
+It runs on request; with `strength.at_stop` set, the shared completion handler
+runs it after ordinary verification and confirmation. Host choice does not change operators, isolation, limits or report
 format. Native live acceptance remains a separate readiness requirement. Passing
 mutation fixtures does not establish native delivery in an installed host.
 

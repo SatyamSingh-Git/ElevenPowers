@@ -7,6 +7,7 @@ from .model import relative
 @dataclass(frozen=True)
 class Settings:
     enabled: bool = True
+    at_stop: bool = False
     seconds: float = 60
     max_mutants: int = 8
     test_seconds: float = 15
@@ -24,8 +25,9 @@ def settings(raw):
     if not isinstance(raw.get('dependencies', []), (list, tuple)):
         raise ValueError('dependencies must be relative paths')
     value = Settings(**{**raw, 'dependencies': tuple(raw.get('dependencies', []))})
-    if type(value.enabled) is not bool:
-        raise ValueError('strength.enabled must be boolean')
+    for name in ('enabled', 'at_stop'):
+        if type(getattr(value, name)) is not bool:
+            raise ValueError(f'strength.{name} must be boolean')
     for name, maximum in [('seconds', 480), ('test_seconds', 300)]:
         number = getattr(value, name)
         if type(number) not in (float, int) or not math.isfinite(number) or not 0 < number <= maximum:

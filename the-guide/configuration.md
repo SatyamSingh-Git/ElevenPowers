@@ -58,14 +58,22 @@ selected ancestor fixture scopes are modeled; plugins, custom collection and
 dynamic registrations remain gaps. `test_selection.safe_to_exclude_fallback`
 stays false, and the existing scan/query budgets still apply.
 
-Optional changed-region test strength is shared by every host and considered at
-completion in guide/strict mode. Off stays passive; runtime never installs engines.
+Optional changed-region test strength is shared by every host. It runs when you
+ask for it (`ep_strength`, `ep_review --strength`). It runs at completion in
+guide/strict mode only when `at_stop` is true. Off stays passive; runtime never
+installs engines.
+
+`at_stop` is off by default because the agent waited for it at every stop and
+never saw what it found. On the held-out sweep of 2026-10-22 it took 18 s of
+each assisted run's Stop, and ended incomplete in 110 of 119 runs.
+
 Project-owned `.elevenpowers/config.json` can include:
 
 ```json
 {
   "strength": {
     "enabled": true,
+    "at_stop": false,
     "seconds": 60,
     "max_mutants": 8,
     "test_seconds": 15,

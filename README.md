@@ -669,10 +669,10 @@ only the analyzed command was measured. Deleted behavior remains a coverage gap;
 available current source can still be examined. Legacy records remain readable
 as whole-file samples without invented attribution.
 
-After explicit optional engine setup, `guide` and `strict` completion consider
-the shared runner automatically across all five hosts. There is no new completion
-blocker and no individual mutant target sent to the coding agent. You can also
-run it explicitly:
+It runs when you ask for it, on any of the five hosts. Completion runs it
+only if the project sets `"strength": {"at_stop": true}`. The agent never sees
+its findings, yet on the held-out sweep it made the agent wait 18 s at every
+stop, so it is off by default. It never blocks completion. Run it explicitly:
 
 ```bash
 python plugin/bin/ep_strength.py --root PATH

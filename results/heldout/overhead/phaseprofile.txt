@@ -1,0 +1,8 @@
+Counter({'runs': 119}) mean check seconds per run 33.3
+test strength                            runs=119 mean=  18.3 total= 2178.3
+baseline                                 runs=114 mean=   6.9 total=  789.7
+declared check tests                     runs= 80 mean=   7.0 total=  562.2
+verification                             runs= 54 mean=   5.7 total=  308.0
+confirmation                             runs= 71 mean=   1.0 total=   70.8
+baseline preparation                     runs=114 mean=   0.2 total=   26.1
+working tree inspection                  runs=119 mean=   0.2 total=   25.1

@@ -1,0 +1,14 @@
+assisted 119 {'edit': 2.7, 'read': 1.7, 'bash-test': 11.6, 'bash-ep': 7.1, 'bash-other': 1.1, 'nonapi': 52.1, 'residual': 27.9}
+ordinary 120 {'edit': 0.0, 'read': 0.3, 'bash-test': 2.3, 'bash-ep': 0, 'bash-other': 0.5, 'nonapi': 1.4, 'residual': -1.8}
+('uvicorn-31e3e00f--assisted--0', 'assisted', 122.4, {'read': 2.8, 'edit': 6.2, 'bash-test': 34.0, 'bash-ep': 34.0})
+('more-itertools-0e6acdf9--assisted--0', 'assisted', 116.0, {'read': 0.8, 'edit': 2.2, 'bash-test': 39.0, 'bash-ep': 21.1})
+('uvicorn-4a959207--assisted--0', 'assisted', 113.8, {'read': 0.8, 'edit': 1.4, 'bash-test': 30.6, 'bash-ep': 31.8})
+('uvicorn-4a959207--assisted--2', 'assisted', 110.3, {'read': 0.7, 'edit': 1.2, 'bash-test': 30.4, 'bash-ep': 29.5})
+('uvicorn-5ac6265a--assisted--2', 'assisted', 109.4, {'read': 0.2, 'bash-other': 2.8, 'bash-test': 29.9, 'bash-ep': 31.7})
+('uvicorn-5ac6265a--assisted--1', 'assisted', 106.2, {'read': 0.2, 'bash-other': 2.5, 'bash-test': 23.7, 'bash-ep': 31.0})
+('cachetools-bcf9e817--assisted--0', 'assisted', 102.6, {'read': 2.3, 'edit': 4.9, 'bash-test': 8.5, 'bash-ep': 27.2})
+('more-itertools-d64a7d69--assisted--2', 'assisted', 98.2, {'read': 1.0, 'edit': 4.5, 'bash-test': 39.9})
+('uvicorn-cc6fea5b--assisted--0', 'assisted', 97.2, {'read': 0.2, 'edit': 1.4, 'bash-test': 37.1})
+('cachetools-bcf9e817--assisted--2', 'assisted', 95.7, {'read': 1.6, 'edit': 4.2, 'bash-test': 8.6, 'bash-ep': 22.4})
+('more-itertools-842a2b17--assisted--0', 'assisted', 95.3, {'read': 5.6, 'edit': 10.1, 'bash-test': 20.8, 'bash-ep': 20.2})
+('wrapt-15068aae--assisted--2', 'assisted', 94.1, {'read': 5.1, 'edit': 10.9, 'bash-other': 4.3, 'bash-test': 23.2, 'bash-ep': 6.1})

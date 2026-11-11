@@ -336,8 +336,8 @@ incomplete. No extra relevance flag or project-specific setup is required.
 
 The command writes diagnostic state and never edits original source or installs
 packages. It requires positive passing test counts in the private baseline, then
-runs every mutation from clean inputs. Automatic completion considers this same
-runner. Human `ep_report.py --project PATH` reads saved results without executing
+runs every mutation from clean inputs. Completion runs this same runner only
+when the project sets `strength.at_stop`. Human `ep_report.py --project PATH` reads saved results without executing
 engines or tests. Its additive schema-v1 `test_strength` section contains counts,
 operator/path/line metadata, independent freshness, sampling limits and incomplete
 execution. New saved records are schema 2, with source spans, edit relationship,

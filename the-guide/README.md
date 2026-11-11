@@ -74,8 +74,8 @@ without rerunning checks. See [commands](commands.md#ep_report--evidence-to-shar
 for coverage, privacy, deadline and exit-status details.
 
 Reports also show optional changed-region test strength: engine-generated changes
-detected or missed by passing tests. After explicit engine setup, completion
-considers the bounded shared runner automatically. Git hunks/functions, complete
+detected or missed by passing tests. It runs when asked, or at completion if
+the project sets `strength.at_stop`. Git hunks/functions, complete
 source spans, file/function rotation and measured-command qualifications relate
 the sample to the edit. Deleted behavior and exhausted budgets stay incomplete;
 legacy whole-file records remain readable. Use `ep_strength.py --root PATH`

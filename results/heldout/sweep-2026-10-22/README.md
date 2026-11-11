@@ -36,7 +36,10 @@ Assisted had the lower VACUOUS fraction on 17 tasks, ordinary on 1
 
 **Secondary:** resolve rates did not differ (assisted better on 3 tasks, ordinary
 on 1, 36 tied; sign test p = 0.625). Assisted runs took about 3.1× the
-model-process time and 1.4× the cost.
+model-process time and 1.4× the cost. That is the process's wall time. The
+model's own time was 1.3×; the rest was hooks and tests, most of all an
+18 s mutation step at Stop that is now off by default (2026-11-11,
+[overhead](../overhead/README.md)).
 
 **Mechanism, descriptive:** 106 of the 107 VACUOUS patches contained no test file,
 and 69 of the 70 non-VACUOUS ones did. Resolved ordinary patches added a test in
