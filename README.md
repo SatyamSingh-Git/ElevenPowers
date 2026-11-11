@@ -34,7 +34,7 @@
 6. **Evidence reports:** exports Markdown or JSON showing what was checked, whether source and selected approved dependencies still qualify the results, where evidence is missing and what needs attention next.
 7. **PatchProof:** plans and runs declared checks, binds patches and command-scoped approved inputs to qualified evidence, and shares impact, compatibility and verification gaps through local bundles and GitHub summaries.
 8. **Five host integrations:** Claude Code, Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI.
-9. **Better instruction following:** shows your project's rules to the agent at the moment they apply, including rules written for other agents (Cursor, Copilot, `AGENTS.md`), so they are followed rather than forgotten: in tests, from about 30% of the time to about 90%. [Details](#behavior-evidence-across-development-milestones).
+9. **Better instruction following:** shows your project's rules to the agent at the moment they apply, leading to better instruction following, from about 30% to 90%. [Details](#behavior-evidence-across-development-milestones).
 
 ---
 
