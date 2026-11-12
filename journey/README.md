@@ -1,8 +1,13 @@
 # The journey
 
-Latest: [101 — the agent waited for a report it never read](101-the-agent-waited-for-a-report-it-never-read.md): on the held-out sweep, assisted runs spent 52 of 84 seconds outside the model, and the largest Stop phase was a mutation step the agent never sees: 18.3 s at every Stop, incomplete in 110 of 119 runs. It now runs on request, or at Stop only with strength.at_stop.
+Latest: [102 — a healthy install that read as broken](102-a-healthy-install-that-read-as-broken.md): setup
+printed 40 lines of staged health that read as failure on a healthy fresh install, and never said it had found
+no test command. It now ends with a dozen plain lines of what it found, real problems with the command that fixes
+each, and `--tests` to declare a missing test command. Discovery still does not guess.
 
-Previous: [100 — told twice, and chose the same](100-told-twice-and-chose-the-same.md): a Stop gate
+Previous: [101 — the agent waited for a report it never read](101-the-agent-waited-for-a-report-it-never-read.md): on the held-out sweep, assisted runs spent 52 of 84 seconds outside the model, and the largest Stop phase was a mutation step the agent never sees: 18.3 s at every Stop, incomplete in 110 of 119 runs. It now runs on request, or at Stop only with strength.at_stop.
+
+Before that: [100 — told twice, and chose the same](100-told-twice-and-chose-the-same.md): a Stop gate
 that sends the agent back once for a declared rule left behind converted 0 of 7 such runs; each
 explained a scope choice and stopped. Primary 7 of 25 lost against 10 of 25 (p = 0.28), no harm, about a
 tenth more cost. The losses the note leaves are disagreements, not misses; the gate stays opt-in, off.
@@ -10,7 +15,7 @@ The same rules worded as instructions ("must stay consistent: change both") were
 lost against 23 of 60 (p = 8.3 × 10⁻⁵) in a fresh run fixed in advance, and the proposer now writes them so.
 On 45 stages where "change both" is the wrong instruction, it did no measured harm (3 against 3 lost, p = 0.75).
 
-Before that: [99 — what an import already knew](99-what-an-import-already-knew.md): on 160 quiet
+Earlier: [99 — what an import already knew](99-what-an-import-already-knew.md): on 160 quiet
 co-changes from four real projects' history, rule-group proposals covered 60 at K = 50, as did a
 control; co-change history 93 against 90. Both beat their controls only where an import already
 joins the files. Module and class bodies were tried and not built; the v3 figure is now qualified.

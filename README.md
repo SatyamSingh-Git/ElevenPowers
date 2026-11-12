@@ -698,10 +698,21 @@ and [journey 58](journey/58-the-lead-must-belong-to-the-edit.md).
 
 ```bash
 git clone https://github.com/SatyamSingh-Git/ElevenPowers.git
-claude --plugin-dir ElevenPowers/plugin
+cd your-project
+python ../ElevenPowers/plugin/bin/ep_setup.py
 ```
 
-Nothing to configure. Ask for a change the way you normally would.
+Setup picks your agent when only one is installed (otherwise name it:
+`claude`, `codex`, `gemini`, `cursor` or `copilot`). It then prints a short
+summary:
+- the checks it found;
+- the project rules it will show the agent;
+- anything that needs you, such as a missing test command, with the line that
+  fixes it (`--tests "python -m pytest"`).
+
+Then start a new session and ask for a change the way you normally would.
+For Claude Code, `claude --plugin-dir ElevenPowers/plugin` also works with no
+setup.
 
 ```bash
 python plugin/bin/ep_doctor.py    # is the runtime seeing what the host sends?

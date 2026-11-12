@@ -56,7 +56,8 @@ python ElevenPowers/plugin/bin/ep_check.py tests --project .  # run the exact co
 Check the doctor's reported results rather than a fixed line count. For the four additional hosts, use `ep_doctor.py --platform PLATFORM --cwd PATH`; this checks configuration and launcher availability, not live delivery. See [troubleshooting.md](troubleshooting.md) for failures.
 
 For any of the five hosts, `ep_setup.py HOST --project PATH` installs reversible
-project wiring and prints readiness. `ep_ready.py HOST --project PATH` reports
+project wiring and prints a short summary of what it found, including a missing
+test command and the `--tests` line that declares it. `ep_ready.py HOST --project PATH` reports
 activation, effective commands, environment/coverage issues and next actions.
 Each project supplies its own manifests and overrides. See [installation](installation.md)
 for auto selection and removal.

@@ -354,15 +354,17 @@ checkout (or a bundle containing them). Setup/doctor `PLATFORM` includes `claude
 four additions:
 
 ```sh
-python plugin/bin/ep_setup.py PLATFORM --project PATH
+python plugin/bin/ep_setup.py PLATFORM --project PATH [--tests "COMMAND"]
 python plugin/bin/ep_doctor.py --platform PLATFORM --cwd PATH
 python plugin/bin/ep_ready.py PLATFORM --project PATH [--json]
 python plugin/bin/ep_setup.py PLATFORM --project PATH --remove
 python -m core.hosts.package PLATFORM NEW_OUTPUT_DIRECTORY
 ```
 
-The doctor checks subscriptions, matchers and interpreter/launcher paths and
-reports callback activation. `ep_ready` adds project commands, runtimes, coverage,
+Setup ends with a short summary of what it found and what needs you; `--tests`
+declares a test command when none was found. The doctor checks subscriptions,
+matchers and interpreter/launcher paths and reports callback activation.
+`ep_ready` adds project commands, runtimes, coverage,
 latest declared execution, current input freshness, staged health and next actions.
 Omitting the setup platform uses
 unambiguous PATH detection. Readiness is a report command; configuration health

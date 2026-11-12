@@ -16,8 +16,8 @@ npm install --save-dev @stryker-mutator/instrumenter@9.5.1
 ```
 
 These are explicit setup steps. Runtime never downloads packages or alters a
-manifest. After setup, guide/strict completion automatically considers bounded
-analysis against that project's commands. Missing engines remain unavailable while
+manifest. After setup, `ep_strength` runs the bounded analysis against that
+project's commands; completion runs it only with `strength.at_stop`. Missing engines remain unavailable while
 ordinary verification continues. See [configuration](configuration.md) for focused
 commands, interpreter paths and copy limits; [commands](commands.md) covers manual
 execution. JavaScript/TypeScript commands must execute or rebuild copied source.
@@ -53,8 +53,21 @@ python plugin/bin/ep_ready.py HOST --project /absolute/path/to/project
 automatically only when exactly one host executable is available. Multiple hosts
 require an explicit choice. Desktop/custom installations can choose their host
 even when its executable is absent from PATH. Setup preserves foreign hooks and
-settings, discovers the project's own commands, and prints environment/coverage
-issues plus next actions. It does not install dependencies or change host trust.
+settings and discovers the project's own commands. It does not install
+dependencies or change host trust. It ends with a short summary:
+- the mode (`strict` can send the agent back at most twice when a check is
+  missing or failing);
+- the checks it found;
+- other agents' rules it will deliver (Cursor, Copilot, Claude Code, `AGENTS.md`);
+- declared rules, and how many files it read;
+- only real problems, each with a command to fix it;
+- the next step.
+
+When no test command is found, declare one in the same command with
+`--tests "python -m pytest"`. That writes only `commands.tests` to
+`.elevenpowers/config.json`, and keeps everything else in the file. Discovered
+commands are not frozen into it, and an unreadable file is refused rather than
+overwritten. `ep_ready` keeps the full staged view.
 
 Review hook enablement in the host, then start a new project session. Readiness
 distinguishes waiting, received callbacks, processed startup, processing errors,

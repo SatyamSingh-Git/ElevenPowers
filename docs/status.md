@@ -1,5 +1,30 @@
 # Current delivery status
 
+**2026-11-12 — Setup says what it found.**
+- **Why.** `ep_setup` ended with the 40-line staged readiness view.
+  - On a healthy fresh install it read "Pipeline health: attention" with
+    six "Next action" lines that only meant "waiting".
+  - It never named the test command. On a fresh copy of cachetools,
+    discovery found none (no `pytest.ini` or `[tool.pytest.ini_options]`),
+    and setup did not say so.
+- **The change.** Setup ends with a dozen plain lines:
+  - the mode;
+  - the checks found;
+  - other agents' rules it will deliver;
+  - declared rules, and how many files it read;
+  - only real problems, each with a command that fixes it;
+  - the next step.
+
+  `ep_ready` keeps the full view. `ep_setup --tests "COMMAND"` declares a
+  missing test command without freezing the discovered ones.
+- **Checks:**
+  - 7 tests, with 10 of 10 mutants killed;
+  - run on cachetools, a Node project with Cursor and Copilot rules, a
+    folder that is not a Git repository, and this repository (1.65 s for
+    3,362 files).
+- **Bound:** discovery is unchanged. A project without a recognized
+  manifest still needs `--tests`; the summary says so instead of guessing.
+
 **2026-11-11 — Test strength no longer runs at every Stop.**
 - **Why.** On the held-out sweep, assisted runs took 83.6 s against 25.3 s.
   Model time was 31.5 s against 23.9 s; the rest was spent outside the model.

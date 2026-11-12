@@ -160,6 +160,23 @@ def discover_commands(root: Path) -> dict[str, str]:
     return commands
 
 
+def declare(root: Path, need: str, command: str) -> None:
+    """Set one command in the project's own file, leaving everything else as written.
+
+    `save` would write the discovered commands into the file too, freezing them.
+    """
+    command = command.strip()
+    if not command:
+        raise ValueError(f"the {need} command is empty")
+    path = root / ".elevenpowers" / FILE
+    raw = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+    if not isinstance(raw, dict) or not isinstance(raw.get("commands", {}), dict):
+        raise ValueError(f"{path} is not a settings object")
+    raw.setdefault("commands", {})[need] = command
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(raw, indent=2), encoding="utf-8")
+
+
 def save(root: Path, config: Config) -> None:
     path = root / ".elevenpowers" / FILE
     path.parent.mkdir(parents=True, exist_ok=True)
