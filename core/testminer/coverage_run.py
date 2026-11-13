@@ -31,7 +31,47 @@ def _beside(executable: str) -> str:
     return 'python'
 
 
-def wrap(command: str, rcfile: Path) -> list[str]:
+def _workers(options: list[str]) -> str:
+    """'parallel', 'serial' (an explicit -n 0) or '' for pytest-xdist options."""
+    found = ''
+    for i, option in enumerate(options):
+        value = None
+        if option in {'-n', '--numprocesses'}:
+            value = options[i + 1] if i + 1 < len(options) else ''
+        elif option.startswith('--numprocesses='):
+            value = option.split('=', 1)[1]
+        elif option.startswith('-n') and option[2:]:
+            value = option[2:]
+        elif option == '-p' and options[i + 1:i + 2] and options[i + 1].startswith('xdist'):
+            found = found or 'parallel'
+        if value is not None:
+            found = 'serial' if value == '0' else 'parallel'
+    return found
+
+
+def _addopts(root: Path) -> list[str]:
+    """`addopts` from every file pytest reads its configuration from."""
+    import configparser
+    import tomllib
+    words = []
+    for name, section in (('pytest.ini', 'pytest'), ('tox.ini', 'pytest'), ('setup.cfg', 'tool:pytest')):
+        parser = configparser.ConfigParser(interpolation=None, strict=False)
+        try:
+            parser.read(root / name, encoding='utf-8')
+        except (configparser.Error, UnicodeError):
+            continue
+        if parser.has_option(section, 'addopts'):
+            words += shlex.split(parser.get(section, 'addopts'))
+    try:
+        value = tomllib.loads((root / 'pyproject.toml').read_text(encoding='utf-8'))
+        value = value.get('tool', {}).get('pytest', {}).get('ini_options', {}).get('addopts', [])
+        words += shlex.split(value) if isinstance(value, str) else [str(v) for v in value]
+    except (OSError, ValueError, AttributeError):
+        pass
+    return words
+
+
+def wrap(command: str, rcfile: Path, root: Path | None = None) -> list[str]:
     """`python -m coverage run --rcfile RC -m RUNNER OPTIONS…` for a direct pytest or unittest command."""
     words = _words(command)
     name = Path(words[0]).name.removesuffix('.exe') if words else ''
@@ -42,9 +82,14 @@ def wrap(command: str, rcfile: Path) -> list[str]:
     else:
         raise ValueError(f'{command!r} {REFUSAL}')
     # Workers in other processes would record their lines without this run's contexts.
-    if '-n' in options or any(o.startswith('-n') and o[2:].isdigit() for o in options) \
-            or any(a == '-p' and b.startswith('xdist') for a, b in zip(options, options[1:])):
-        raise ValueError(f'{command!r} runs tests in parallel workers; pass a serial command with --command')
+    # The command line comes after addopts, so its `-n 0` wins.
+    workers = _workers(options)
+    if workers == 'parallel':
+        raise ValueError(f'{command!r} runs tests in parallel workers; pass a serial command with --command, '
+                         'for example with -n 0')
+    if runner == 'pytest' and root is not None and not workers and _workers(_addopts(root)) == 'parallel':
+        raise ValueError("the project's pytest addopts run tests in parallel workers; pass --command with -n 0, "
+                         'for example --command "python -m pytest -n 0"')
     return [python, '-m', 'coverage', 'run', '--rcfile', str(rcfile), '-m', runner, *options]
 
 

@@ -120,7 +120,7 @@ def mine(root: Path, *, base: str = '', names=(), paths=(), command: str = '', s
     settings = Settings()
     with tempfile.TemporaryDirectory(prefix='ep-testminer-') as folder:
         rc = Path(folder) / 'rc'
-        argv = wrap(command, rc)
+        argv = wrap(command, rc, root)
         plain = argv[:1] + argv[6:]
         targets = _selected(root, base, names, paths, deadline)
         result = {'schema': 1, 'command': command, 'issues': [], 'functions': []}

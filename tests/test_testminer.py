@@ -81,6 +81,22 @@ def test_wrap_keeps_options_and_refuses_other_runners():
             wrap(bad, Path('rc'))
 
 
+@pytest.mark.parametrize('name, text', [
+    ('pytest.ini', '[pytest]\naddopts = -q -n auto\n'),
+    ('pyproject.toml', '[tool.pytest.ini_options]\naddopts = ["-n", "4"]\n'),
+    ('tox.ini', '[pytest]\naddopts = --numprocesses=auto\n'),
+    ('setup.cfg', '[tool:pytest]\naddopts = -p xdist -n2\n'),
+])
+def test_parallel_workers_from_the_project_config_are_refused_and_n0_is_the_way_out(tmp_path, name, text):
+    from pathlib import Path
+    from core.testminer.coverage_run import wrap
+    (tmp_path / name).write_text(text)
+    with pytest.raises(ValueError, match='-n 0'):
+        wrap('python -m pytest -q', Path('rc'), tmp_path)
+    assert wrap('python -m pytest -q -n 0', Path('rc'), tmp_path)[-3:] == ['-q', '-n', '0']
+    assert wrap('python -m pytest -q', Path('rc'), tmp_path.parent / 'elsewhere')[-1] == '-q'
+
+
 def test_quoted_options_lose_their_quotes_on_every_platform():
     from pathlib import Path
     from core.testminer.coverage_run import wrap
