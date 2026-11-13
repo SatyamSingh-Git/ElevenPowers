@@ -87,3 +87,27 @@ def test_the_runtime_records_a_test_whose_subtests_failed_as_failing(tmp_path):
 def test_a_reproduction_is_not_credited_to_a_test_whose_subtests_failed():
     from core.stress import _passed
     assert _passed(FORMS) == {"tests/test_forms.py::T::test_ok"}
+
+
+# Printed by pytest 9.1.1 with -q on 2026-11-13: a scratch suite, then cachetools' own (366 tests).
+QUIET_SUBTESTS = [
+    ('2 passed, 3 subtests passed in 0.01s', 2, 0),
+    ('1 failed, 3 passed, 5 subtests passed in 0.05s', 3, 1),
+    ('366 passed, 8 subtests passed in 2.39s', 366, 0),
+]
+
+
+def test_quiet_summary_with_subtests_is_counted():
+    from pathlib import Path
+    from core.evidence import Kind, SourceScan
+    from core.parsers import LOOKS_LIKE_TESTS, parse, pytest_counts
+    for line, passed, failed in QUIET_SUBTESTS:
+        output = '...\n' + line + '\n'
+        records = parse('python -m pytest -q', output, int(bool(failed)), Path('.'), snapshot=(SourceScan(), ''))
+        suites = [r for r in records if r.kind is Kind.SUITE and r.counted]
+        assert [(r.passed, r.failed) for r in suites] == [(passed, failed)], line
+        counts = pytest_counts(output)
+        assert (counts['passed'], counts['failed']) == (passed, failed), line
+        assert LOOKS_LIKE_TESTS.search(output), line
+    # The default mode leaves subtests out; it was already read.
+    assert pytest_counts('== 1 failed, 3 passed in 0.05s ==\n')['passed'] == 3

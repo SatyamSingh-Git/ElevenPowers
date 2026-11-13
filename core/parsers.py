@@ -39,7 +39,10 @@ PYTEST_SUBFAILED = re.compile(r"^SUBFAILED[\[(].*?(?<!\S)(?P<node>\S+?\.py::[^\s
 # `pytest -q` ends with a bare summary and no rule of equals signs around it, so
 # the decorated pattern above recovers no counts from the quiet mode that most
 # agents actually use.
-PYTEST_QUIET = re.compile(r"^(?P<body>\d+ [a-z]+(?:, \d+ [a-z]+)*)\s+in\s+[\d.]+s", re.MULTILINE)
+# pytest 9's -q summary counts subtests in two words: `366 passed, 8 subtests passed in 2.39s`.
+PYTEST_QUIET = re.compile(
+    r"^(?P<body>\d+ [a-z]+(?: (?:passed|failed|skipped))?(?:, \d+ [a-z]+(?: (?:passed|failed|skipped))?)*)"
+    r"\s+in\s+[\d.]+s", re.MULTILINE)
 
 
 def pytest_counts(output: str) -> dict[str, int]:
@@ -103,7 +106,7 @@ WRAPPER = re.compile(
 # signal: `python run_tests.py` is a test run whatever it is called.
 LOOKS_LIKE_TESTS = re.compile(
     r"""(?: ^=+.*\b\d+\s+(?:passed|failed)\b.*=+$
-       | ^\d+\s+(?:passed|failed)(?:,\s*\d+\s+[a-z]+)*\s+in\s+[\d.]+s
+       | ^\d+\s+(?:passed|failed)(?:,\s*\d+\s+[a-z]+(?:\s+(?:passed|failed|skipped))?)*\s+in\s+[\d.]+s
        | ^\s*Tests:\s+\d
        | \b\d+\s+examples?,\s+\d+\s+failures?\b
        | \bTests\s+run:\s*\d+
