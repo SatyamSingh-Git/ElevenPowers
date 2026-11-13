@@ -417,12 +417,21 @@ def test_a_file_python_cannot_parse_is_refused_by_name(tmp_path):
     from pathlib import Path
     from core.testminer.runner import mine
     (tmp_path / 'bad.py').write_text('def broken(:\n    return 1\n')
+    subprocess.run(['git', 'init', '-q'], cwd=tmp_path, check=True)
     with pytest.raises(ValueError, match=r'bad\.py: Python cannot parse it'):
         mine(tmp_path, paths=('bad.py',), command='python -m pytest')
     cli = Path(__file__).resolve().parents[1] / 'plugin/bin/ep_testminer.py'
     done = subprocess.run([sys.executable, str(cli), '--project', str(tmp_path), '--path', 'bad.py',
                            '--command', 'python -m pytest'], capture_output=True, text=True)
     assert done.returncode == 2 and 'Traceback' not in done.stderr and 'bad.py' in done.stderr
+
+
+def test_a_project_outside_git_is_refused_with_the_reason(tmp_path):
+    from core.testminer.runner import mine
+    (tmp_path / 'svc.py').write_text(SERVICE)
+    for selection in ({'paths': ('svc.py',)}, {'base': 'HEAD'}):
+        with pytest.raises(ValueError, match='not a Git repository'):
+            mine(tmp_path, command='python -m pytest', **selection)
 
 
 def test_base_refuses_a_project_below_its_repository_root(tmp_path):

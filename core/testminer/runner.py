@@ -110,6 +110,8 @@ def mine(root: Path, *, base: str = '', names=(), paths=(), command: str = '', s
     root = Path(root).resolve()
     if not (base or names or paths):
         raise ValueError('name what to examine: --base COMMIT, --function FILE::NAME or --path FILE')
+    if subprocess.run(['git', 'rev-parse', '--git-dir'], cwd=root, capture_output=True).returncode:
+        raise ValueError('the project is not a Git repository; TestMiner copies it with git ls-files')
     command = command or load(root).command_for('tests')
     if not command:
         raise ValueError('no test command found; pass one with --command')
