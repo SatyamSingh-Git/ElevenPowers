@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import os
 import shlex
+import shutil
 from pathlib import Path
 
 RCFILE = '[run]\ndynamic_context = test_function\n'
@@ -17,12 +18,22 @@ def _words(command: str) -> list[str]:
         raise ValueError(f'{command!r} {REFUSAL}') from exc
 
 
+def _beside(executable: str) -> str:
+    """The interpreter installed beside a pytest executable: the one whose site-packages it uses."""
+    found = executable if Path(executable).parent != Path('.') else shutil.which(executable)
+    if found:
+        sibling = Path(found).parent / ('python.exe' if os.name == 'nt' else 'python')
+        if sibling.is_file():
+            return str(sibling)
+    return 'python'
+
+
 def wrap(command: str, rcfile: Path) -> list[str]:
     """`python -m coverage run --rcfile RC -m RUNNER OPTIONS…` for a direct pytest or unittest command."""
     words = _words(command)
     name = Path(words[0]).name.removesuffix('.exe') if words else ''
     if name in {'pytest', 'py.test'}:
-        python, runner, options = 'python', 'pytest', words[1:]
+        python, runner, options = _beside(words[0]), 'pytest', words[1:]
     elif name.startswith('python') and words[1:2] == ['-m'] and words[2:3] in (['pytest'], ['unittest']):
         python, runner, options = words[0], words[2], words[3:]
     else:

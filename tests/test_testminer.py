@@ -81,6 +81,22 @@ def test_wrap_keeps_options_and_refuses_other_runners():
             wrap(bad, Path('rc'))
 
 
+def test_a_pytest_executable_runs_under_the_python_beside_it(tmp_path, monkeypatch):
+    import os
+    from pathlib import Path
+    from core.testminer.coverage_run import wrap
+    scripts = tmp_path / 'venv' / ('Scripts' if os.name == 'nt' else 'bin')
+    scripts.mkdir(parents=True)
+    suffix = '.exe' if os.name == 'nt' else ''
+    (scripts / ('pytest' + suffix)).write_text('')
+    (scripts / ('python' + suffix)).write_text('')
+    assert wrap(f'"{scripts / "pytest"}" -q', Path('rc'))[0] == str(scripts / ('python' + suffix))
+    monkeypatch.setenv('PATH', str(scripts))
+    assert wrap('pytest -q', Path('rc'))[0] == str(scripts / ('python' + suffix))
+    monkeypatch.setenv('PATH', str(tmp_path))
+    assert wrap('pytest -q', Path('rc'))[0] == 'python'
+
+
 def test_reached_reads_contexts_and_flags_fixture_only_lines():
     from core.testminer.coverage_run import reached
     from core.testminer.functions import Function
