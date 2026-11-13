@@ -1,0 +1,157 @@
+[
+ {
+  "project": "cachetools",
+  "kind": "held-out",
+  "before": null,
+  "after": "python -m pytest",
+  "source": "tox.ini",
+  "exit": 0,
+  "seconds": 1.2,
+  "last": "============================= 366 passed in 0.59s ============================="
+ },
+ {
+  "project": "charset_normalizer",
+  "kind": "held-out",
+  "before": "python -m pytest",
+  "after": "python -m pytest",
+  "source": null
+ },
+ {
+  "project": "iniconfig",
+  "kind": "held-out",
+  "before": "python -m pytest",
+  "after": "python -m pytest",
+  "source": null
+ },
+ {
+  "project": "more-itertools",
+  "kind": "held-out",
+  "before": null,
+  "after": "python -m unittest",
+  "source": "tox.ini",
+  "exit": 0,
+  "seconds": 14.4,
+  "last": "OK (skipped=5)"
+ },
+ {
+  "project": "oauthlib",
+  "kind": "held-out",
+  "before": null,
+  "after": "python -m pytest tests/",
+  "source": "tox.ini",
+  "exit": 0,
+  "seconds": 3.5,
+  "last": "================= 722 passed, 2 skipped, 10 warnings in 2.88s ================="
+ },
+ {
+  "project": "pycparser",
+  "kind": "held-out",
+  "before": null,
+  "after": "python -m unittest discover",
+  "source": "Makefile",
+  "exit": 0,
+  "seconds": 0.8,
+  "last": "OK (skipped=6)"
+ },
+ {
+  "project": "pyjwt",
+  "kind": "held-out",
+  "before": "python -m pytest",
+  "after": "python -m pytest",
+  "source": null
+ },
+ {
+  "project": "tenacity",
+  "kind": "held-out",
+  "before": "python -m pytest",
+  "after": "python -m pytest",
+  "source": null
+ },
+ {
+  "project": "tomli",
+  "kind": "held-out",
+  "before": null,
+  "after": "python -m unittest",
+  "source": ".github/workflows/tests.yaml",
+  "exit": 0,
+  "seconds": 0.4,
+  "last": "OK (skipped=1)"
+ },
+ {
+  "project": "uvicorn",
+  "kind": "held-out",
+  "before": "python -m pytest",
+  "after": "python -m pytest",
+  "source": null
+ },
+ {
+  "project": "wheel",
+  "kind": "held-out",
+  "before": "python -m pytest",
+  "after": "python -m pytest",
+  "source": null
+ },
+ {
+  "project": "wrapt",
+  "kind": "held-out",
+  "before": "python -m pytest",
+  "after": "python -m pytest",
+  "source": null
+ },
+ {
+  "project": "Trade",
+  "kind": "control",
+  "before": "python -m pytest",
+  "after": "python -m pytest",
+  "source": null
+ },
+ {
+  "project": "snag",
+  "kind": "control",
+  "before": "npm run ci",
+  "after": "npm run ci",
+  "source": null
+ },
+ {
+  "project": "snag-role-coverage",
+  "kind": "control",
+  "before": "npm run ci",
+  "after": "npm run ci",
+  "source": null
+ },
+ {
+  "project": "HelpAssistant",
+  "kind": "control",
+  "before": null,
+  "after": null,
+  "source": null
+ },
+ {
+  "project": "Financial-Data-Agent-main",
+  "kind": "control",
+  "before": null,
+  "after": null,
+  "source": null
+ },
+ {
+  "project": "next_level_brain",
+  "kind": "control",
+  "before": null,
+  "after": null,
+  "source": null
+ },
+ {
+  "project": "snag-learning",
+  "kind": "control",
+  "before": null,
+  "after": null,
+  "source": null
+ },
+ {
+  "project": "ElevenPowers",
+  "kind": "control",
+  "before": null,
+  "after": "python -m pytest",
+  "source": ".github/workflows/tests.yml"
+ }
+]

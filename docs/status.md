@@ -1,5 +1,24 @@
 # Current delivery status
 
+**2026-11-13 — The test command a project already declares is found.**
+- **Why.** Discovery found no test command in 6 of the 12 held-out projects.
+  Each one declares its test run in `tox.ini`, a `Makefile` or a CI workflow.
+- **The change.** `core/test_command.py` borrows that line when no manifest
+  names a test command. It reduces the line to `python -m pytest PATHS` or
+  `python -m unittest [discover]`. The setup summary names the source.
+- **Checks:**
+  - a $0 rehearsal: 5 of the 6 now get a command, and all 5 pass in their own
+    environments (cachetools 366 tests, oauthlib 722, more-itertools,
+    pycparser, tomli). iniconfig already had one;
+  - the 7 held-out projects that already had a command keep it unchanged;
+  - 7 unrelated local projects: 6 unchanged. This repository newly finds
+    `python -m pytest`, which is switched off on this machine by its local
+    config ([rehearsal](../results/declared-tests/rehearsal.txt));
+  - 22 tests, with 13 of 13 mutants killed. One false positive was found by
+    the rehearsal and fixed: `pip install pytest` had been read as a test run.
+- **Bound:** Python runners only. A path argument that is really an option's
+  value would be kept as a path.
+
 **2026-11-12 — Setup says what it found.**
 - **Why.** `ep_setup` ended with the 40-line staged readiness view.
   - On a healthy fresh install it read "Pipeline health: attention" with

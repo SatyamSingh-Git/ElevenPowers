@@ -84,8 +84,8 @@ def summary(host, root, hooks, bin_dir):
         counts[rule['format']] = counts.get(rule['format'], 0) + 1
     lines = [f'ElevenPowers is set up for {name} in {root}.', f'Hooks: {hooks}',
              f'Mode: {config.profile} - {MODES[config.profile]}.', '', 'Found in this project:',
-             '  Checks: ' + ('; '.join(f'{need}: {command}' for need, command in sorted(config.commands.items()))
-                             or 'none'),
+             '  Checks: ' + ('; '.join(f'{need}: {command}' + (f' (from {config.origins[need]})' if need in config.origins else '')
+                                       for need, command in sorted(config.commands.items())) or 'none'),
              '  Project rules: ' + (', '.join(f'{n} {RULE_NAMES[f]}' for f, n in counts.items())
                                     + ' (shown to the agent when they apply)' if counts else 'none'),
              '  Declared rules: ' + (f"{len(declared['milestones'])} in {definition.FILE}" if declared['configured']

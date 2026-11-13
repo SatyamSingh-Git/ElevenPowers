@@ -33,6 +33,8 @@ class Config:
     milestone_advice: dict = field(default_factory=dict)
     rule_gate: bool = False
     """Under `strict`, may a declared rule left behind stop the agent once? Off until measured against the note."""
+    origins: dict[str, str] = field(default_factory=dict)
+    """Commands borrowed from a project's tox, make or CI declaration, by the file they came from."""
 
     @property
     def blocks(self) -> bool:
@@ -84,10 +86,13 @@ def load(root: Path) -> Config:
     if not isinstance(commands, dict):
         commands = {}
     auto_detect = raw.get("auto_detect", True) is not False
-    effective = discover_commands(root) if auto_detect else {}
+    origins: dict[str, str] = {}
+    effective = discover_commands(root, origins) if auto_detect else {}
     # An empty explicit command disables discovery for that need.
-    effective.update({k: v.strip() for k, v in commands.items() if isinstance(v, str)})
+    explicit = {k: v.strip() for k, v in commands.items() if isinstance(v, str)}
+    effective.update(explicit)
     return Config(
+        origins={k: v for k, v in origins.items() if k not in explicit},
         profile=profile,
         scan=raw.get("scan", {}),
         auto_detect=auto_detect,
@@ -136,8 +141,12 @@ def _node_commands(root: Path) -> dict[str, str]:
     return {}
 
 
-def discover_commands(root: Path) -> dict[str, str]:
-    """Combine conventional root entry points; root package scripts win."""
+def discover_commands(root: Path, origins: dict | None = None) -> dict[str, str]:
+    """Combine conventional root entry points; root package scripts win.
+
+    With none of those naming a test command, the one the project declares in
+    tox, make or CI is borrowed, and `origins` records where it came from.
+    """
     commands = _node_commands(root)
     candidates: list[dict[str, str]] = []
     if (root / "Cargo.toml").is_file():
@@ -157,6 +166,13 @@ def discover_commands(root: Path) -> dict[str, str]:
         values = {candidate[need] for candidate in candidates if need in candidate}
         if need not in commands and len(values) == 1:
             commands[need] = values.pop()
+    if "tests" not in commands:
+        from .test_command import declared
+        found = declared(root)
+        if found:
+            commands["tests"] = found[0]
+            if origins is not None:
+                origins["tests"] = found[1]
     return commands
 
 

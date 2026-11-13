@@ -380,6 +380,23 @@ Command discovery reads only the selected project root:
 | `pytest.ini` or `[tool.pytest.ini_options]` | `python -m pytest` |
 | `Cargo.toml` | `cargo test`, `cargo check`, `cargo build` |
 | `go.mod` | `go test ./...`, `go build ./...` |
+| None of the above names a test command, but `tox.ini` `[testenv] commands`, a `Makefile` `test:` target or a `.github/workflows` `run:` step does | `python -m pytest PATHS` or `python -m unittest [discover]` |
+
+The last row borrows the test command the project already declares, in that
+order of files, and reduces it to the runner and the paths it names. Flags,
+`{posargs}`-style placeholders, make variables and wrappers such as `coverage
+run` or `uv run` are dropped, because they belong to the tool that owns the
+line. For example, cachetools' tox line asks for `--cov`, and it failed with
+exit 4 where pytest-cov was not installed.
+
+It is refused, and no command is set, when the line:
+- changes directory (`&&`, `;`, tox `changedir`, or a workflow that uses
+  `working-directory:` anywhere);
+- runs anything besides one test runner;
+- only installs packages.
+
+Nothing is executed while reading. The setup summary names the file the
+command came from.
 
 Package-manager selection prefers `packageManager`, then a unique recognized lockfile, then npm. Supported managers are npm, pnpm, yarn and bun. Conflicting lockfiles without an explicit manager do not produce a guessed Node command. Root package scripts take priority; another supported manifest can fill missing needs, such as pytest alongside a frontend-only build script. Conflicting native test stacks require a project-selected aggregate command.
 
