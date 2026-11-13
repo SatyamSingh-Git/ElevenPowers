@@ -21,6 +21,7 @@ def main():
     parser.add_argument('--limit', type=int, default=20)
     parser.add_argument('--test-seconds', type=float, default=15)
     parser.add_argument('--json', action='store_true')
+    parser.add_argument('--all', action='store_true', help='also list the functions their tests check')
     args = parser.parse_args()
     try:
         result = mine(args.project, base=args.base, names=tuple(args.function), paths=tuple(args.path),
@@ -34,11 +35,15 @@ def main():
     for issue in result['issues']:
         print('Issue: ' + issue)
     skipped = [item for item in result['functions'] if item['reason'] == 'budget']
+    checked = [item for item in result['functions'] if item['verdict'] == 'checked']
     for item in result['functions']:
-        if item['reason'] == 'budget':
+        if item['reason'] == 'budget' or (item['verdict'] == 'checked' and not args.all):
             continue
         detail = item['reason'] or (', '.join(item['tests']) if item['verdict'] == 'reached, not checked' else '')
         print(f"{item['path']}:{item['line']} {item['name']}: {item['verdict']}" + (f' ({detail})' if detail else ''))
+    if checked and not args.all:
+        print(f"{len(checked)} function{'s' if len(checked) > 1 else ''} checked by "
+              f"{'their' if len(checked) > 1 else 'its'} tests (--all lists them)")
     if skipped:
         print(f'{len(skipped)} more functions not examined (budget); raise --limit or --seconds, or see --json')
     return 0

@@ -345,6 +345,9 @@ gets a verdict:
   docstring only);
 - the budget ran out.
 
+The text report lists what needs a look. `checked` functions are counted on
+one line; `--all` lists them too, and `--json` always has everything.
+
 The test command must be a direct `pytest` or `python -m pytest|unittest`
 call, and not parallel (`-n`). Defaults: `--seconds 60`, `--limit 20`,
 `--test-seconds 15`. A large suite under coverage can need more, for example
