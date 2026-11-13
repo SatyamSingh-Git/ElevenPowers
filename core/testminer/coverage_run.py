@@ -13,9 +13,12 @@ REFUSAL = ("is not a direct pytest or unittest call; pass the command to analyse
 
 def _words(command: str) -> list[str]:
     try:
-        return [w.strip('"') for w in shlex.split(command, posix=os.name != 'nt')]
+        words = shlex.split(command, posix=os.name != 'nt')
     except ValueError as exc:
         raise ValueError(f'{command!r} {REFUSAL}') from exc
+    # Windows splitting keeps a word's quotes, and the argv list goes to no shell
+    # that would remove them; `-k 'a or b'` would reach pytest still quoted.
+    return [w[1:-1] if len(w) > 1 and w[0] == w[-1] and w[0] in '"\'' else w for w in words]
 
 
 def _beside(executable: str) -> str:

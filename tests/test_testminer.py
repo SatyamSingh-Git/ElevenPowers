@@ -81,6 +81,13 @@ def test_wrap_keeps_options_and_refuses_other_runners():
             wrap(bad, Path('rc'))
 
 
+def test_quoted_options_lose_their_quotes_on_every_platform():
+    from pathlib import Path
+    from core.testminer.coverage_run import wrap
+    assert wrap("python -m pytest -k 'a or b' -q", Path('rc'))[-3:] == ['-k', 'a or b', '-q']
+    assert wrap('python -m pytest -k "a or b"', Path('rc'))[-2:] == ['-k', 'a or b']
+
+
 def test_a_pytest_executable_runs_under_the_python_beside_it(tmp_path, monkeypatch):
     import os
     from pathlib import Path
