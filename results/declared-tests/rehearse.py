@@ -48,11 +48,13 @@ for repo in sorted(p for p in REPOS.iterdir() if p.is_dir()):
         tail = (done.stdout + done.stderr).strip().splitlines()[-1:] or ['']
         row.update(exit=done.returncode, seconds=round(time.monotonic() - start, 1), last=tail[0][:100])
     rows.append(row)
-for folder in sys.argv[1:]:
+for number, folder in enumerate(sys.argv[1:], 1):
     root = Path(folder)
     if (root / '.git').exists():
         before, after, source = before_after(root)
-        rows.append({'project': root.name, 'kind': 'control', 'before': before, 'after': after, 'source': source})
+        # The operator's own projects: their names stay off a public record.
+        name = 'ElevenPowers' if root.resolve() == Path(__file__).resolve().parents[2] else f'control-{number}'
+        rows.append({'project': name, 'kind': 'control', 'before': before, 'after': after, 'source': source})
 for row in rows:
     print(json.dumps(row))
 Path(__file__).with_name('rehearsal.json').write_text(json.dumps(rows, indent=1), encoding='utf-8')

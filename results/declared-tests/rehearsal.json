@@ -30,7 +30,7 @@
   "after": "python -m unittest",
   "source": "tox.ini",
   "exit": 0,
-  "seconds": 14.4,
+  "seconds": 13.1,
   "last": "OK (skipped=5)"
  },
  {
@@ -41,7 +41,7 @@
   "source": "tox.ini",
   "exit": 0,
   "seconds": 3.5,
-  "last": "================= 722 passed, 2 skipped, 10 warnings in 2.88s ================="
+  "last": "================= 722 passed, 2 skipped, 10 warnings in 2.89s ================="
  },
  {
   "project": "pycparser",
@@ -99,49 +99,49 @@
   "source": null
  },
  {
-  "project": "Trade",
+  "project": "control-1",
   "kind": "control",
   "before": "python -m pytest",
   "after": "python -m pytest",
   "source": null
  },
  {
-  "project": "snag",
+  "project": "control-2",
   "kind": "control",
   "before": "npm run ci",
   "after": "npm run ci",
   "source": null
  },
  {
-  "project": "snag-role-coverage",
+  "project": "control-3",
   "kind": "control",
   "before": "npm run ci",
   "after": "npm run ci",
   "source": null
  },
  {
-  "project": "HelpAssistant",
+  "project": "control-4",
   "kind": "control",
   "before": null,
   "after": null,
   "source": null
  },
  {
-  "project": "Financial-Data-Agent-main",
+  "project": "control-5",
   "kind": "control",
   "before": null,
   "after": null,
   "source": null
  },
  {
-  "project": "next_level_brain",
+  "project": "control-6",
   "kind": "control",
   "before": null,
   "after": null,
   "source": null
  },
  {
-  "project": "snag-learning",
+  "project": "control-7",
   "kind": "control",
   "before": null,
   "after": null,
