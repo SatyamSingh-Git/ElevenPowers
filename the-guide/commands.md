@@ -350,6 +350,11 @@ call, and not parallel (`-n`). Defaults: `--seconds 60`, `--limit 20`,
 `--test-seconds 15`. A large suite under coverage can need more, for example
 `--test-seconds 300`.
 
+When a test's name cannot be mapped to a runnable test (doctests, for
+example), each emptied function runs the whole command, and any failure
+counts as `checked`. That is PIT's convention: a flaky test elsewhere can
+hide a candidate, never invent one.
+
 `reached, not checked` is a candidate, not proof. A function whose `None` is
 as good as its real result for every test, such as cachetools'
 `__getstate__` returning `{}`, is reported even though its behaviour is

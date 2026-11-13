@@ -23,7 +23,12 @@ def _yields(node: ast.AST) -> bool:
     return False
 
 
-def _function(node, name: str) -> Function:
+def _stub(statement: ast.stmt) -> bool:
+    return isinstance(statement, ast.Pass) or (isinstance(statement, ast.Expr) and isinstance(statement.value, ast.Constant)
+                                               and statement.value.value is Ellipsis)
+
+
+def _function(node, name: str, lines: list[bytes]) -> Function:
     statements = node.body
     docstring = (isinstance(statements[0], ast.Expr) and isinstance(statements[0].value, ast.Constant)
                  and isinstance(statements[0].value.value, str))
@@ -36,7 +41,11 @@ def _function(node, name: str) -> Function:
         refused = 'generator'
     elif not replaceable:
         refused = 'no statement besides a docstring'
-    elif statements[0].lineno == node.lineno:
+    elif all(_stub(s) for s in replaceable):
+        refused = 'body is only pass or ...'
+    # col_offset counts UTF-8 bytes. A body that shares its line with the
+    # signature cannot be replaced line by line.
+    elif lines[statements[0].lineno - 1][:statements[0].col_offset].strip():
         refused = 'one-line function'
     else:
         refused = ''
@@ -46,10 +55,11 @@ def _function(node, name: str) -> Function:
 
 def functions(source: str) -> list[Function]:
     found = []
+    lines = source.encode('utf-8').splitlines()
     for node in ast.parse(source).body:
         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-            found.append(_function(node, node.name))
+            found.append(_function(node, node.name, lines))
         elif isinstance(node, ast.ClassDef):
-            found += [_function(item, f'{node.name}.{item.name}') for item in node.body
+            found += [_function(item, f'{node.name}.{item.name}', lines) for item in node.body
                       if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef))]
     return sorted(found, key=lambda f: f.first)

@@ -22,34 +22,49 @@ from .functions import functions
 
 INSTALL = 'coverage.py 7 is not importable in the test environment; install it there: python -m pip install coverage'
 NOT_RUN = 'the selected tests did not run'
+NEVER_RAN = 'no line of this file ran under the tests: never imported by them, or imported from an installed copy'
+
+
+def _relative(root: Path, value: str) -> str:
+    """The project-relative POSIX spelling coverage.py reports, however the person typed it."""
+    path = Path(value)
+    try:
+        return (path if path.is_absolute() else root / path).resolve().relative_to(root).as_posix()
+    except ValueError:
+        raise ValueError(f'{value}: outside the project') from None
 
 
 def _selected(root: Path, base: str, names, paths, deadline: float) -> list[tuple[str, object]]:
-    found: dict[tuple[str, str], tuple[str, object]] = {}
+    # Keyed by line too: a property's getter and setter share one qualified name.
+    found: dict[tuple[str, int], tuple[str, object]] = {}
 
     def spans(path):
         return functions((root / path).read_text(encoding='utf-8'))
 
-    for path in paths:
+    for path in map(lambda p: _relative(root, p), paths):
         for fn in spans(path):
-            found[path, fn.name] = path, fn
+            found[path, fn.first] = path, fn
     for name in names:
-        path, _, qualified = name.partition('::')
+        typed, _, qualified = name.partition('::')
+        path = _relative(root, typed)
         match = [fn for fn in spans(path) if fn.name == qualified]
         if not match:
             raise ValueError(f'{name}: no such function')
-        found[path, qualified] = path, match[0]
+        for fn in match:
+            found[path, fn.first] = path, fn
     if base:
         sha = subprocess.run(['git', 'rev-parse', '--verify', base + '^{commit}'], cwd=root,
                              capture_output=True, text=True).stdout.strip()
         if not sha:
             raise ValueError(f'{base}: not a commit')
         scope = select(root, sha, deadline)
+        if scope.issues:
+            raise ValueError('; '.join(scope.issues))
         for path in scope.paths:
             if path.endswith('.py'):
                 for fn in spans(path):
                     if any(start <= fn.last and fn.first <= end for start, end in scope.regions.get(path, [])):
-                        found[path, fn.name] = path, fn
+                        found[path, fn.first] = path, fn
     return sorted(found.values(), key=lambda item: (item[0], item[1].first))
 
 
@@ -106,7 +121,7 @@ def mine(root: Path, *, base: str = '', names=(), paths=(), command: str = '', s
         verdicts = {}
 
         def give(path, fn, verdict, reason='', tests=()):
-            verdicts[path, fn.name] = {'path': path, 'name': fn.name, 'line': fn.first, 'verdict': verdict,
+            verdicts[path, fn.first] = {'path': path, 'name': fn.name, 'line': fn.first, 'verdict': verdict,
                                        'reason': reason, 'tests': sorted(tests)}
 
         for path, fn in targets[limit:]:
@@ -123,31 +138,34 @@ def mine(root: Path, *, base: str = '', names=(), paths=(), command: str = '', s
                     reach = {}
                     for path, fn in chosen:
                         tests, outside = reached(report, path, fn)
-                        reach[path, fn.name] = tests
+                        reach[path, fn.first] = tests
                         if fn.refused:
                             give(path, fn, 'unknown', fn.refused)
+                        elif not report['files'].get(path, {}).get('executed_lines'):
+                            # Not even its `def` lines ran: never imported, or imported from elsewhere.
+                            give(path, fn, 'unknown', NEVER_RAN)
                         elif not tests:
                             give(path, fn, *(('unknown', 'reached outside any test (fixture, setUp or import)')
                                              if outside else ('not reached',)))
-                    probe = [(p, f) for p, f in chosen if (p, f.name) not in verdicts]
+                    probe = [(p, f) for p, f in chosen if (p, f.first) not in verdicts]
                     selection = _selection(argv, plain, probe, reach, pristine, settings, deadline, budget,
                                            test_seconds, root)
                     for path, fn in probe:
                         if time.monotonic() >= deadline:
                             give(path, fn, 'unknown', 'budget')
                             continue
-                        run = selection(reach[path, fn.name])
+                        run = selection(reach[path, fn.first])
                         with trial(pristine, settings, deadline) as copy:
                             _empty(copy / path, fn)
                             execution = execute(run, copy, budget, test_seconds, shell=False, original=root)
                             give(path, fn, *_verdict(execution, run, copy, deadline),
-                                 tests=reach[path, fn.name])
+                                 tests=reach[path, fn.first])
         except (OSError, ValueError, TimeoutError) as exc:
             result['issues'].append(str(exc))
             for path, fn in chosen:
-                if (path, fn.name) not in verdicts:
+                if (path, fn.first) not in verdicts:
                     give(path, fn, 'unknown', str(exc))
-    result['functions'] = [verdicts[p, f.name] for p, f in targets]
+    result['functions'] = [verdicts[p, f.first] for p, f in targets]
     state = root / '.elevenpowers'
     state.mkdir(exist_ok=True)
     (state / 'testminer.json').write_text(json.dumps(result, indent=2), encoding='utf-8')
@@ -185,7 +203,7 @@ def _baseline(argv, rc, folder, pristine, settings, deadline, budget, seconds, r
 def _selection(argv, plain, probe, reach, pristine, settings, deadline, budget, seconds, root):
     """A function from a function's tests to the command that runs only those, if that can be trusted."""
     runner = argv[7]
-    every = sorted({t for p, f in probe for t in reach[p, f.name]})
+    every = sorted({t for p, f in probe for t in reach[p, f.first]})
     if runner == 'unittest':
         name = {t: t for t in every}
     else:

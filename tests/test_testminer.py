@@ -309,3 +309,80 @@ def test_mutant_outcomes(tmp_path, code, output, expected):
     from core.testminer.runner import _verdict
     argv = ['python', '-m', 'pytest', '-q']
     assert _verdict(Execution('complete', code, output, ''), argv, tmp_path, time.monotonic() + 60) == expected
+
+
+# Found by the final review, 2026-11-13.
+
+def test_stub_bodies_and_a_body_on_the_signature_line_are_refused():
+    source = ('class A:\n    def stub(self):\n        ...\n\n    def nothing(self):\n        """Doc."""\n        pass\n\n'
+              'def wide(a,\n         b): return a + b\n')
+    found = {f.name: f.refused for f in functions(source)}
+    assert found['A.stub'] == 'body is only pass or ...'
+    assert found['A.nothing'] == 'body is only pass or ...'
+    assert found['wide'] == 'one-line function'
+
+
+def test_a_getter_and_its_setter_are_both_kept():
+    source = ('class P:\n    @property\n    def size(self):\n        return self._s\n\n'
+              '    @size.setter\n    def size(self, v):\n        self._s = v\n')
+    assert [(f.name, f.first) for f in functions(source)] == [('P.size', 4), ('P.size', 8)]
+
+
+@needs_coverage
+def test_any_spelling_of_the_path_gives_the_same_verdicts(tmp_path):
+    import os
+    from core.testminer.runner import mine
+    root = service(tmp_path)
+    plain = verdicts(mine(root, paths=('svc.py',), command=pytest_command()))
+    for spelling in ('./svc.py', '.' + os.sep + 'svc.py', str(root / 'svc.py')):
+        assert verdicts(mine(root, paths=(spelling,), command=pytest_command())) == plain, spelling
+    assert verdicts(mine(root, names=('./svc.py::log',), command=pytest_command())) == {'log': 'reached, not checked'}
+    with pytest.raises(ValueError, match='outside the project'):
+        mine(root, paths=(str(tmp_path.parent / 'elsewhere.py'),), command=pytest_command())
+
+
+@needs_coverage
+def test_both_definitions_of_one_name_get_a_verdict(tmp_path):
+    from core.testminer.runner import mine
+    root = service(tmp_path)
+    (root / 'box.py').write_text('class P:\n    @property\n    def size(self):\n        return self._s\n\n'
+                                 '    @size.setter\n    def size(self, v):\n        self._s = v\n')
+    result = mine(root, paths=('box.py',), command=pytest_command())
+    assert [(f['name'], f['line']) for f in result['functions']] == [('P.size', 4), ('P.size', 8)]
+
+
+@needs_coverage
+def test_a_file_no_test_imported_from_the_copy_is_unknown(tmp_path):
+    from core.testminer.runner import mine
+    root = service(tmp_path)
+    (root / 'orphan.py').write_text('def lonely(x):\n    y = x + 1\n    return y\n')
+    import subprocess
+    subprocess.run(['git', 'add', '-A'], cwd=root, check=True)
+    result = mine(root, paths=('orphan.py',), command=pytest_command())
+    assert [(f['verdict'], f['reason']) for f in result['functions']] == [
+        ('unknown', 'no line of this file ran under the tests: never imported by them, or imported from an installed copy')]
+
+
+@needs_coverage
+def test_base_selects_the_changed_functions_by_ref_name(tmp_path):
+    import subprocess
+    from core.testminer.runner import mine
+    root = service(tmp_path)
+    subprocess.run(['git', 'branch', 'start'], cwd=root, check=True)
+    (root / 'svc.py').write_text(SERVICE.replace('    print(x)\n', '    print(x, end="")\n'))
+    result = mine(root, base='start', command=pytest_command())
+    assert verdicts(result) == {'log': 'reached, not checked'}
+
+
+def test_base_refuses_a_project_below_its_repository_root(tmp_path):
+    import subprocess
+    from core.testminer.runner import mine
+    subprocess.run(['git', 'init', '-q'], cwd=tmp_path, check=True)
+    (tmp_path / 'pkg').mkdir()
+    (tmp_path / 'pkg/svc.py').write_text(SERVICE)
+    subprocess.run(['git', 'add', '-A'], cwd=tmp_path, check=True)
+    subprocess.run(['git', '-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-qm', 'base'], cwd=tmp_path, check=True)
+    with pytest.raises(ValueError, match='repository root'):
+        mine(tmp_path / 'pkg', base='HEAD', command=pytest_command())
+    with pytest.raises(ValueError, match='not a commit'):
+        mine(tmp_path, base='no-such-ref', command=pytest_command())

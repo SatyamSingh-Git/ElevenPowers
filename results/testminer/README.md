@@ -58,5 +58,33 @@ install coverage". There was no false certainty.
   command: correct, but slow.
 - **Equivalent mutants** give false `reached, not checked` candidates, as
   above.
+- **Under that whole-command fallback, any failure counts as `checked`**
+  (PIT's convention). A flaky test elsewhere can hide a candidate, never
+  invent one.
 - **Two projects, eighteen functions in all.** That is an illustration, not
   a rate.
+
+## The final review (2026-11-13)
+
+An independent review of the whole change reproduced one Critical and seven
+Important findings. All but one were fixed, test first. The one ruling is
+the flaky-fallback point above.
+
+- **Critical: `--path ./svc.py`, `.\svc.py` or an absolute path gave
+  `not reached` everywhere.** coverage.py reports POSIX paths relative to
+  the project, and the lookup used the raw string. False certainty, now
+  normalised; a path outside the project is refused.
+- **Bodies of only `pass` or `...`** were mutated, a guaranteed false
+  candidate. They are now refused.
+- **A body on the closing line of a multi-line signature.** Emptying it
+  broke the signature, and the resulting error read as `checked`. It is now
+  refused as a one-line function.
+- **`--base` from a folder below the repository root** returned an empty
+  report with no issue. It is now refused with the reason.
+- **A property's getter and setter** share one name, and one was dropped
+  silently. Both are now examined.
+- **A file whose lines never ran at all** (never imported, or imported from
+  an installed copy) was `not reached`. It is now `unknown`.
+- **`--base` had no tests.** It has two now.
+
+Eight minor findings are recorded in the ledger, deferred.
