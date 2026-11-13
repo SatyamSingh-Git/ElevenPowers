@@ -391,6 +391,20 @@ def test_base_selects_a_signature_or_decorator_change_and_a_deleted_line(tmp_pat
     assert [fn.name for _, fn in chosen] == ['cached', 'scaled', 'trimmed']
 
 
+def test_a_file_python_cannot_parse_is_refused_by_name(tmp_path):
+    import subprocess
+    import sys
+    from pathlib import Path
+    from core.testminer.runner import mine
+    (tmp_path / 'bad.py').write_text('def broken(:\n    return 1\n')
+    with pytest.raises(ValueError, match=r'bad\.py: Python cannot parse it'):
+        mine(tmp_path, paths=('bad.py',), command='python -m pytest')
+    cli = Path(__file__).resolve().parents[1] / 'plugin/bin/ep_testminer.py'
+    done = subprocess.run([sys.executable, str(cli), '--project', str(tmp_path), '--path', 'bad.py',
+                           '--command', 'python -m pytest'], capture_output=True, text=True)
+    assert done.returncode == 2 and 'Traceback' not in done.stderr and 'bad.py' in done.stderr
+
+
 def test_base_refuses_a_project_below_its_repository_root(tmp_path):
     import subprocess
     from core.testminer.runner import mine
