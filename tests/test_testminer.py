@@ -111,8 +111,10 @@ def test_a_pytest_executable_runs_under_the_python_beside_it(tmp_path, monkeypat
     scripts = tmp_path / 'venv' / ('Scripts' if os.name == 'nt' else 'bin')
     scripts.mkdir(parents=True)
     suffix = '.exe' if os.name == 'nt' else ''
-    (scripts / ('pytest' + suffix)).write_text('')
-    (scripts / ('python' + suffix)).write_text('')
+    for name in ('pytest', 'python'):
+        (scripts / (name + suffix)).write_text('')
+        # shutil.which on POSIX finds only executable files, as installed scripts are.
+        (scripts / (name + suffix)).chmod(0o755)
     assert wrap(f'"{scripts / "pytest"}" -q', Path('rc'))[0] == str(scripts / ('python' + suffix))
     monkeypatch.setenv('PATH', str(scripts))
     assert wrap('pytest -q', Path('rc'))[0] == str(scripts / ('python' + suffix))
