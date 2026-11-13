@@ -12,6 +12,8 @@ class Function:
     last: int
     body: int
     refused: str
+    start: int = 0
+    """The first decorator or the `def` line: where a change to the signature shows."""
 
 
 def _yields(node: ast.AST) -> bool:
@@ -50,7 +52,8 @@ def _function(node, name: str, lines: list[bytes]) -> Function:
     else:
         refused = ''
     return Function(name, statements[0].lineno, node.end_lineno,
-                    replaceable[0].lineno if replaceable else node.end_lineno, refused)
+                    replaceable[0].lineno if replaceable else node.end_lineno, refused,
+                    min([node.lineno, *(d.lineno for d in node.decorator_list)]))
 
 
 def functions(source: str) -> list[Function]:

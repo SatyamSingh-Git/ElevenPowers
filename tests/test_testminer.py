@@ -374,6 +374,23 @@ def test_base_selects_the_changed_functions_by_ref_name(tmp_path):
     assert verdicts(result) == {'log': 'reached, not checked'}
 
 
+def test_base_selects_a_signature_or_decorator_change_and_a_deleted_line(tmp_path):
+    import subprocess
+    import time
+    from core.testminer.runner import _selected
+    source = ('import functools\n\n\n@functools.cache\ndef cached(x):\n    y = x * 2\n    return y\n\n\n'
+              'def scaled(x, k=2):\n    y = x * k\n    return y\n\n\n'
+              'def trimmed(x):\n    x = x + 1\n    x = x * 2\n    return x\n\n\ndef untouched(x):\n    return x\n')
+    (tmp_path / 'm.py').write_text(source)
+    subprocess.run(['git', 'init', '-q'], cwd=tmp_path, check=True)
+    subprocess.run(['git', 'add', '-A'], cwd=tmp_path, check=True)
+    subprocess.run(['git', '-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-qm', 'base'], cwd=tmp_path, check=True)
+    (tmp_path / 'm.py').write_text(source.replace('@functools.cache', '@functools.lru_cache')
+                                   .replace('def scaled(x, k=2):', 'def scaled(x, k=3):').replace('    x = x * 2\n', ''))
+    chosen = _selected(tmp_path, 'HEAD', (), (), time.monotonic() + 30)
+    assert [fn.name for _, fn in chosen] == ['cached', 'scaled', 'trimmed']
+
+
 def test_base_refuses_a_project_below_its_repository_root(tmp_path):
     import subprocess
     from core.testminer.runner import mine

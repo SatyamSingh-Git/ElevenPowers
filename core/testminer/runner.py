@@ -63,7 +63,8 @@ def _selected(root: Path, base: str, names, paths, deadline: float) -> list[tupl
         for path in scope.paths:
             if path.endswith('.py'):
                 for fn in spans(path):
-                    if any(start <= fn.last and fn.first <= end for start, end in scope.regions.get(path, [])):
+                    if any(start <= fn.last and fn.start <= end for start, end in scope.regions.get(path, [])) \
+                            or any(fn.start <= line <= fn.last for line in scope.deletions.get(path, [])):
                         found[path, fn.first] = path, fn
     return sorted(found.values(), key=lambda item: (item[0], item[1].first))
 
