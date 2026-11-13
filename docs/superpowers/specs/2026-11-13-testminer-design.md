@@ -2,7 +2,8 @@
 
 *2026-11-13. The roadmap card `test-miner` (architecture/index.html, Planned
 tab), first slice. The user asked for it on 2026-11-13: "start the work on
-TestMiner".*
+TestMiner". A builder check was run; see "Decided after the builder check",
+which overrides the sections above where they differ.*
 
 ## Why
 
@@ -101,6 +102,54 @@ still the right probe: if nothing fails, nothing checks it.
    exhausted budget give `unknown`, never certainty.
 
 The card's third check, suggested tests, is out of this slice.
+
+## Decided after the builder check
+
+These are my calls, under the user's standing "decide things yourself".
+
+1. **Reached outside any test.** coverage.py 7.10.7 records lines run from a
+   pytest fixture, a unittest `setUp` or test-module import under the empty
+   context `""`. A function whose body ran only there is `unknown` ("reached
+   outside any test"), never `not reached`. If the baseline recorded no test
+   context at all, everything is `unknown`.
+2. **coverage.py version.** No pin. Any coverage.py 7.x importable in the
+   project's own test interpreter is used. Missing or older gives `unknown`
+   with the install line. Function spans come from TestMiner's own AST pass,
+   not the JSON `functions` section, which varies by version.
+3. **`record` moves to slice 2.** A private copy lacks `.env` and data, the
+   person's tree must not be written, and servers need a defined stop. Those
+   are design questions of their own. So slice 1 has no runtime observation,
+   and the unmatched-build `unknown` arrives with it.
+4. **What is examined.** One of `--base`, `--function path.py::Qual.name` or
+   `--path FILE` is required. Nothing is selected by default. Over the cap,
+   functions are taken in file and line order, and the rest are counted as
+   `unknown (budget)`.
+5. **Test command.** The configured `tests` command, or `--command`, runs as
+   written, options kept, wrapped as `python -m coverage run --rcfile=… -m
+   RUNNER …`. That applies only when it is a direct `pytest`,
+   `python -m pytest` or `python -m unittest` call. Anything else, and `-n` or
+   `-p xdist`, is refused with a message naming `--command`.
+6. **Editable installs.** As in test strength, the guard stops a run that
+   imports the person's own folder through an editable install. Every
+   function is then `unknown`, with that reason.
+7. **Mutant outcomes**, following PIT's convention. A failure, an error or a
+   timeout of the reaching tests means `checked`. Only all passing means
+   `reached, not checked`.
+
+From reading the code:
+
+- **Function spans:** TestMiner's own AST pass. `regions.python_targets`
+  includes nested functions, starts at decorators and returns bare names.
+- **Test selection for a mutant.** Dotted context names (`tests.test_a.T.test_m`)
+  run directly under unittest. Under pytest they are mapped to
+  `FILE::Class::name` when the module resolves to exactly one file.
+  Otherwise the mutant runs the whole command: slower, still a valid probe.
+  Node ids are passed as an argument list, not through a shell.
+- **Not reused:** `core/impact/coverage.convert`. It needs a receipt and
+  reduces everything to file edges.
+- **`--base`** is resolved to a full SHA, then given to `scope.select`.
+  Python files only.
+- **No config block.** Limits are CLI flags with the defaults above.
 
 ## Checks planned
 
