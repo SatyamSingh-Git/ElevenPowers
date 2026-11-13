@@ -426,6 +426,17 @@ def test_a_file_python_cannot_parse_is_refused_by_name(tmp_path):
     assert done.returncode == 2 and 'Traceback' not in done.stderr and 'bad.py' in done.stderr
 
 
+def test_a_deadline_while_copying_is_the_budget(tmp_path, monkeypatch):
+    from core.testminer import runner
+
+    def slow(*args, **kwargs):
+        raise TimeoutError('strength deadline reached copying inputs')
+    monkeypatch.setattr(runner, 'snapshot', slow)
+    result = runner.mine(service(tmp_path), paths=('svc.py',), command='python -m pytest')
+    assert {(f['verdict'], f['reason']) for f in result['functions']} == {('unknown', 'budget')}
+    assert result['issues'] == ['the time budget ran out; raise --seconds']
+
+
 def test_a_project_outside_git_is_refused_with_the_reason(tmp_path):
     from core.testminer.runner import mine
     (tmp_path / 'svc.py').write_text(SERVICE)

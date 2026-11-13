@@ -167,10 +167,12 @@ def mine(root: Path, *, base: str = '', names=(), paths=(), command: str = '', s
                             give(path, fn, *_verdict(execution, run, copy, deadline),
                                  tests=reach[path, fn.first])
         except (OSError, ValueError, TimeoutError) as exc:
-            result['issues'].append(str(exc))
+            # The shared copy code words its deadline for test strength; here it is this run's budget.
+            budget_out = isinstance(exc, TimeoutError)
+            result['issues'].append('the time budget ran out; raise --seconds' if budget_out else str(exc))
             for path, fn in chosen:
                 if (path, fn.first) not in verdicts:
-                    give(path, fn, 'unknown', str(exc))
+                    give(path, fn, 'unknown', 'budget' if budget_out else str(exc))
     result['functions'] = [verdicts[p, f.first] for p, f in targets]
     state = root / '.elevenpowers'
     state.mkdir(exist_ok=True)
