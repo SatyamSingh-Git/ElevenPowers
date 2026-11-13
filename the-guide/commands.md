@@ -314,6 +314,48 @@ almost every change (1 VACUOUS stage of 475), so for those users the report
 is the value. See [the comparison](../results/multistage-v3/vacuity/README.md)
 and [design](../docs/superpowers/specs/2026-11-01-reviewer-report-design.md).
 
+## ep_testminer — do the tests check this function?
+
+```sh
+python PATH_TO_ELEVENPOWERS/plugin/bin/ep_testminer.py --project . --path src/pkg/mod.py
+python PATH_TO_ELEVENPOWERS/plugin/bin/ep_testminer.py --project . --base main --json
+python PATH_TO_ELEVENPOWERS/plugin/bin/ep_testminer.py --project . --function svc.py::Box.size --command "python -m pytest -q"
+```
+
+TestMiner examines the Python functions you name: `--path` for every
+function in a file, `--function` for one, or `--base` for those changed
+since a commit. For each one, in a private copy, it runs your tests under
+coverage.py to see which tests reach the function. It then replaces the
+function's body with `return None` and runs only those tests. Each function
+gets a verdict:
+
+| verdict | meaning |
+|---|---|
+| `not reached` | no test ran its body |
+| `reached, not checked` | tests ran it (named), and none failed with its body emptied |
+| `checked` | at least one of them failed, errored or timed out |
+| `unknown` | with the reason |
+
+`unknown` reasons:
+- coverage.py is not installed in the test environment (the line to install
+  it is printed);
+- the unmodified tests are red;
+- the function is reached only from a fixture, `setUp` or import;
+- the body cannot be emptied (generator, `async`, `__init__`, one line,
+  docstring only);
+- the budget ran out.
+
+The test command must be a direct `pytest` or `python -m pytest|unittest`
+call, and not parallel (`-n`). Defaults: `--seconds 60`, `--limit 20`,
+`--test-seconds 15`. A large suite under coverage can need more, for example
+`--test-seconds 300`.
+
+`reached, not checked` is a candidate, not proof. A function whose `None` is
+as good as its real result for every test, such as cachetools'
+`__getstate__` returning `{}`, is reported even though its behaviour is
+checked. It writes only `.elevenpowers/testminer.json`, never changes a
+verdict, and tells the agent nothing. See [the rehearsal](../results/testminer/README.md).
+
 ## ep_strength — inspect changed-code test strength
 
 ```bash

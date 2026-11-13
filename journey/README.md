@@ -1,16 +1,21 @@
 # The journey
 
-Latest: [103 — the command was already written down](103-the-command-was-already-written-down.md): 6 of 12
+Latest: [104 — reached is not checked](104-reached-is-not-checked.md): TestMiner's first slice says, per
+named Python function, whether tests reach it and whether emptying it fails any of them, or why it cannot tell.
+Its rehearsal found the main parser reading pytest 9's `N passed, M subtests passed` as 0 passed, and one
+false candidate from an equivalent mutant.
+
+Previous: [103 — the command was already written down](103-the-command-was-already-written-down.md): 6 of 12
 held-out projects had no discovered test command, yet each declared one in tox, make or CI. Borrowed and reduced
 to runner and paths, 5 now get one and all 5 run green; copied verbatim, cachetools' failed. The rehearsal caught
 `pip install pytest` being read as a test run.
 
-Previous: [102 — a healthy install that read as broken](102-a-healthy-install-that-read-as-broken.md): setup
+Before that: [102 — a healthy install that read as broken](102-a-healthy-install-that-read-as-broken.md): setup
 printed 40 lines of staged health that read as failure on a healthy fresh install, and never said it had found
 no test command. It now ends with a dozen plain lines of what it found, real problems with the command that fixes
 each, and `--tests` to declare a missing test command. Discovery still does not guess.
 
-Before that: [101 — the agent waited for a report it never read](101-the-agent-waited-for-a-report-it-never-read.md): on the held-out sweep, assisted runs spent 52 of 84 seconds outside the model, and the largest Stop phase was a mutation step the agent never sees: 18.3 s at every Stop, incomplete in 110 of 119 runs. It now runs on request, or at Stop only with strength.at_stop.
+Earlier: [101 — the agent waited for a report it never read](101-the-agent-waited-for-a-report-it-never-read.md): on the held-out sweep, assisted runs spent 52 of 84 seconds outside the model, and the largest Stop phase was a mutation step the agent never sees: 18.3 s at every Stop, incomplete in 110 of 119 runs. It now runs on request, or at Stop only with strength.at_stop.
 
 Earlier: [100 — told twice, and chose the same](100-told-twice-and-chose-the-same.md): a Stop gate
 that sends the agent back once for a declared rule left behind converted 0 of 7 such runs; each

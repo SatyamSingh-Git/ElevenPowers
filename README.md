@@ -28,13 +28,14 @@
 
 1. **ImpactGraph:** maps a change's possible blast radius to affected files, dependencies and candidate tests, grounding plans and milestone recheck advice in repository evidence while showing coverage gaps.
 2. **Milestone verification:** tracks checks for previously built behavior across tasks, flags failed, stale, missing or incomplete evidence, and can advise which checks to rerun as development continues.
-3. **Test strength:** optionally makes small mutations to edited production code in isolation and checks whether passing tests detect them, exposing possible gaps in regression protection.
-4. **Project readiness and health:** discovers project verification commands and checks whether the agent integration is capturing edits, command results and completion correctly, surfacing setup and coverage problems.
-5. **Resumable verification:** runs exact declared checks with durable receipts, preserves their real outcomes through shell wrappers, and saves progress so fresh results can be reused and later edits invalidate outdated evidence.
-6. **Evidence reports:** exports Markdown or JSON showing what was checked, whether source and selected approved dependencies still qualify the results, where evidence is missing and what needs attention next.
-7. **PatchProof:** plans and runs declared checks, binds patches and command-scoped approved inputs to qualified evidence, and shares impact, compatibility and verification gaps through local bundles and GitHub summaries.
-8. **Five host integrations:** Claude Code, Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI.
-9. **Better instruction following:** shows your project's rules to the agent at the moment they apply; in tests, a rule shown this way was followed about 90% of the time, against about 30% when there was no rule. [Details](#behavior-evidence-across-development-milestones).
+3. **TestMiner (first slice):** for the Python functions you name, says whether your tests reach each one and whether emptying it fails any of them, or why it cannot tell. `ep_testminer.py --path FILE`. Report only; "reached, not checked" is a candidate to look at, not proof.
+4. **Test strength:** optionally makes small mutations to edited production code in isolation and checks whether passing tests detect them, exposing possible gaps in regression protection.
+5. **Project readiness and health:** discovers project verification commands and checks whether the agent integration is capturing edits, command results and completion correctly, surfacing setup and coverage problems.
+6. **Resumable verification:** runs exact declared checks with durable receipts, preserves their real outcomes through shell wrappers, and saves progress so fresh results can be reused and later edits invalidate outdated evidence.
+7. **Evidence reports:** exports Markdown or JSON showing what was checked, whether source and selected approved dependencies still qualify the results, where evidence is missing and what needs attention next.
+8. **PatchProof:** plans and runs declared checks, binds patches and command-scoped approved inputs to qualified evidence, and shares impact, compatibility and verification gaps through local bundles and GitHub summaries.
+9. **Five host integrations:** Claude Code, Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI.
+10. **Better instruction following:** shows your project's rules to the agent at the moment they apply; in tests, a rule shown this way was followed about 90% of the time, against about 30% when there was no rule. [Details](#behavior-evidence-across-development-milestones).
 
 ---
 

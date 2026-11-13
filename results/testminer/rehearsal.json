@@ -1,0 +1,1438 @@
+[
+ {
+  "project": "cachetools",
+  "interpreter": "own environment",
+  "issues": [
+   "coverage.py 7 is not importable in the test environment; install it there: python -m pip install coverage"
+  ],
+  "functions": [
+   {
+    "name": "_HashedTuple.__hash__",
+    "line": 17,
+    "verdict": "unknown",
+    "reason": "coverage.py 7 is not importable in the test environment; install it there: python -m pip install coverage",
+    "tests": []
+   },
+   {
+    "name": "_HashedTuple.__add__",
+    "line": 23,
+    "verdict": "unknown",
+    "reason": "coverage.py 7 is not importable in the test environment; install it there: python -m pip install coverage",
+    "tests": []
+   },
+   {
+    "name": "_HashedTuple.__radd__",
+    "line": 26,
+    "verdict": "unknown",
+    "reason": "coverage.py 7 is not importable in the test environment; install it there: python -m pip install coverage",
+    "tests": []
+   },
+   {
+    "name": "_HashedTuple.__getstate__",
+    "line": 29,
+    "verdict": "unknown",
+    "reason": "coverage.py 7 is not importable in the test environment; install it there: python -m pip install coverage",
+    "tests": []
+   },
+   {
+    "name": "hashkey",
+    "line": 38,
+    "verdict": "unknown",
+    "reason": "coverage.py 7 is not importable in the test environment; install it there: python -m pip install coverage",
+    "tests": []
+   },
+   {
+    "name": "methodkey",
+    "line": 47,
+    "verdict": "unknown",
+    "reason": "coverage.py 7 is not importable in the test environment; install it there: python -m pip install coverage",
+    "tests": []
+   },
+   {
+    "name": "typedkey",
+    "line": 52,
+    "verdict": "unknown",
+    "reason": "coverage.py 7 is not importable in the test environment; install it there: python -m pip install coverage",
+    "tests": []
+   },
+   {
+    "name": "typedmethodkey",
+    "line": 65,
+    "verdict": "unknown",
+    "reason": "coverage.py 7 is not importable in the test environment; install it there: python -m pip install coverage",
+    "tests": []
+   }
+  ]
+ },
+ {
+  "project": "cachetools",
+  "interpreter": "ElevenPowers interpreter",
+  "issues": [],
+  "functions": [
+   {
+    "name": "_HashedTuple.__hash__",
+    "line": 17,
+    "verdict": "checked",
+    "reason": "",
+    "tests": [
+     "tests.test_cached.CacheWrapperTest.test_decorator_cond_info",
+     "tests.test_cached.CacheWrapperTest.test_decorator_info",
+     "tests.test_cached.CacheWrapperTest.test_decorator_lock_cond_info",
+     "tests.test_cached.CacheWrapperTest.test_decorator_lock_info",
+     "tests.test_cached.CacheWrapperTest.test_decorator_method",
+     "tests.test_cached.CacheWrapperTest.test_stacked_decorators",
+     "tests.test_cached.CacheWrapperTest.test_zero_size_cache_decorator",
+     "tests.test_cached.CacheWrapperTest.test_zero_size_cache_decorator_cond",
+     "tests.test_cached.CacheWrapperTest.test_zero_size_cache_decorator_cond_info",
+     "tests.test_cached.CacheWrapperTest.test_zero_size_cache_decorator_info",
+     "tests.test_cached.CacheWrapperTest.test_zero_size_cache_decorator_lock",
+     "tests.test_cached.CacheWrapperTest.test_zero_size_cache_decorator_lock_info",
+     "tests.test_cached.DecoratorTestMixin.test_decorator",
+     "tests.test_cached.DecoratorTestMixin.test_decorator_clear",
+     "tests.test_cached.DecoratorTestMixin.test_decorator_clear_cond",
+     "tests.test_cached.DecoratorTestMixin.test_decorator_clear_lock",
+     "tests.test_cached.DecoratorTestMixin.test_decorator_cond",
+     "tests.test_cached.DecoratorTestMixin.test_decorator_cond_error",
+     "tests.test_cached.DecoratorTestMixin.test_decorator_lock",
+     "tests.test_cached.DecoratorTestMixin.test_decorator_lock_cond",
+     "tests.test_cached.DecoratorTestMixin.test_decorator_typed",
+     "tests.test_cached.DecoratorTestMixin.test_decorator_wrapped",
+     "tests.test_cached.DictWrapperTest.test_decorator_info",
+     "tests.test_cachedmethod.CacheMethodTest.test_cond_nospace",
+     "tests.test_cachedmethod.CacheMethodTest.test_decorated_override",
+     "tests.test_cachedmethod.CacheMethodTest.test_lock_nospace",
+     "tests.test_cachedmethod.CacheMethodTest.test_multilevel_override",
+     "tests.test_cachedmethod.CacheMethodTest.test_nospace",
+     "tests.test_cachedmethod.CacheMethodTest.test_shared_cache",
+     "tests.test_cachedmethod.CacheMethodTest.test_undecorated_override",
+     "tests.test_cachedmethod.CacheMethodTest.test_value_too_large",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_clear",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_cond",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_cond_clear",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_cond_error",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_cond_info",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_immutable_dict",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_info",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_lock",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_lock_clear",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_lock_cond_info",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_lock_info",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_same_name",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_slots",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_typed",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_unhashable",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_wrapped",
+     "tests.test_cachedmethod.UnboundMethodTest.test_base_class_call",
+     "tests.test_cachedmethod.UnboundMethodTest.test_class_call",
+     "tests.test_cachedmethod.UnboundMethodTest.test_class_call_info",
+     "tests.test_cachedmethod.WeakRefMethodTest.test_weakref",
+     "tests.test_classmethod.CachedClassMethodTest.test",
+     "tests.test_classmethod.CachedClassMethodTest.test_clear",
+     "tests.test_classmethod.CachedClassMethodTest.test_clear_condition",
+     "tests.test_classmethod.CachedClassMethodTest.test_clear_locked",
+     "tests.test_classmethod.CachedClassMethodTest.test_condition",
+     "tests.test_classmethod.CachedClassMethodTest.test_locked",
+     "tests.test_classmethod.CachedClassMethodTest.test_typed",
+     "tests.test_func.DecoratorTestMixin.test_decorator",
+     "tests.test_func.DecoratorTestMixin.test_decorator_clear",
+     "tests.test_func.DecoratorTestMixin.test_decorator_method",
+     "tests.test_func.DecoratorTestMixin.test_decorator_needs_rlock",
+     "tests.test_func.DecoratorTestMixin.test_decorator_nocache",
+     "tests.test_func.DecoratorTestMixin.test_decorator_typed",
+     "tests.test_func.DecoratorTestMixin.test_decorator_unbound",
+     "tests.test_func.DecoratorTestMixin.test_decorator_user_function",
+     "tests.test_func.DecoratorTestMixin.test_stacked_decorators",
+     "tests.test_func.FIFODecoratorTest.test_method_typed",
+     "tests.test_func.TTLDecoratorTest.test_ttl_datetime",
+     "tests.test_keys.CacheKeysTest.test_hashkey",
+     "tests.test_keys.CacheKeysTest.test_methodkey",
+     "tests.test_keys.CacheKeysTest.test_pickle",
+     "tests.test_keys.CacheKeysTest.test_typedkey",
+     "tests.test_keys.CacheKeysTest.test_typedmethodkey",
+     "tests.test_threading.ThreadingTest.test_cached_cond",
+     "tests.test_threading.ThreadingTest.test_cached_lock",
+     "tests.test_threading.ThreadingTest.test_cachedmethod_cond",
+     "tests.test_threading.ThreadingTest.test_cachedmethod_lock"
+    ]
+   },
+   {
+    "name": "_HashedTuple.__add__",
+    "line": 23,
+    "verdict": "checked",
+    "reason": "",
+    "tests": [
+     "tests.test_cached.DecoratorTestMixin.test_decorator_typed",
+     "tests.test_cachedmethod.CacheMethodTest.test_multilevel_override",
+     "tests.test_cachedmethod.CacheMethodTest.test_nospace",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_typed",
+     "tests.test_cachedmethod.WeakRefMethodTest.test_weakref",
+     "tests.test_classmethod.CachedClassMethodTest.test_typed",
+     "tests.test_func.DecoratorTestMixin.test_decorator_typed",
+     "tests.test_func.DecoratorTestMixin.test_stacked_decorators",
+     "tests.test_keys.CacheKeysTest.test_addkeys",
+     "tests.test_keys.CacheKeysTest.test_typedkey",
+     "tests.test_keys.CacheKeysTest.test_typedmethodkey"
+    ]
+   },
+   {
+    "name": "_HashedTuple.__radd__",
+    "line": 26,
+    "verdict": "checked",
+    "reason": "",
+    "tests": [
+     "tests.test_keys.CacheKeysTest.test_addkeys"
+    ]
+   },
+   {
+    "name": "_HashedTuple.__getstate__",
+    "line": 29,
+    "verdict": "reached, not checked",
+    "reason": "",
+    "tests": [
+     "tests.test_keys.CacheKeysTest.test_pickle"
+    ]
+   },
+   {
+    "name": "hashkey",
+    "line": 38,
+    "verdict": "checked",
+    "reason": "",
+    "tests": [
+     "tests.test_cached.CacheWrapperTest.test_decorator_cond_info",
+     "tests.test_cached.CacheWrapperTest.test_decorator_info",
+     "tests.test_cached.CacheWrapperTest.test_decorator_lock_cond_info",
+     "tests.test_cached.CacheWrapperTest.test_decorator_lock_info",
+     "tests.test_cached.CacheWrapperTest.test_decorator_method",
+     "tests.test_cached.CacheWrapperTest.test_stacked_decorators",
+     "tests.test_cached.CacheWrapperTest.test_zero_size_cache_decorator",
+     "tests.test_cached.CacheWrapperTest.test_zero_size_cache_decorator_cond",
+     "tests.test_cached.CacheWrapperTest.test_zero_size_cache_decorator_cond_info",
+     "tests.test_cached.CacheWrapperTest.test_zero_size_cache_decorator_info",
+     "tests.test_cached.CacheWrapperTest.test_zero_size_cache_decorator_lock",
+     "tests.test_cached.CacheWrapperTest.test_zero_size_cache_decorator_lock_info",
+     "tests.test_cached.DecoratorTestMixin.test_decorator",
+     "tests.test_cached.DecoratorTestMixin.test_decorator_clear",
+     "tests.test_cached.DecoratorTestMixin.test_decorator_clear_cond",
+     "tests.test_cached.DecoratorTestMixin.test_decorator_clear_lock",
+     "tests.test_cached.DecoratorTestMixin.test_decorator_cond",
+     "tests.test_cached.DecoratorTestMixin.test_decorator_cond_error",
+     "tests.test_cached.DecoratorTestMixin.test_decorator_lock",
+     "tests.test_cached.DecoratorTestMixin.test_decorator_lock_cond",
+     "tests.test_cached.DecoratorTestMixin.test_decorator_wrapped",
+     "tests.test_cached.DictWrapperTest.test_decorator_info",
+     "tests.test_cachedmethod.CacheMethodTest.test_cond_nospace",
+     "tests.test_cachedmethod.CacheMethodTest.test_decorated_override",
+     "tests.test_cachedmethod.CacheMethodTest.test_lock_nospace",
+     "tests.test_cachedmethod.CacheMethodTest.test_nospace",
+     "tests.test_cachedmethod.CacheMethodTest.test_shared_cache",
+     "tests.test_cachedmethod.CacheMethodTest.test_undecorated_override",
+     "tests.test_cachedmethod.CacheMethodTest.test_value_too_large",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_attributes",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_clear",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_cond",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_cond_clear",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_cond_error",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_cond_info",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_immutable_dict",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_info",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_lock",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_lock_clear",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_lock_cond_info",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_lock_info",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_same_name",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_slots",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_unhashable",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_wrapped",
+     "tests.test_cachedmethod.UnboundMethodTest.test_base_class_call",
+     "tests.test_cachedmethod.UnboundMethodTest.test_class_call",
+     "tests.test_cachedmethod.UnboundMethodTest.test_class_call_info",
+     "tests.test_cachedmethod.WeakRefMethodTest.test_weakref",
+     "tests.test_classmethod.CachedClassMethodTest.test",
+     "tests.test_classmethod.CachedClassMethodTest.test_clear",
+     "tests.test_classmethod.CachedClassMethodTest.test_clear_condition",
+     "tests.test_classmethod.CachedClassMethodTest.test_clear_locked",
+     "tests.test_classmethod.CachedClassMethodTest.test_condition",
+     "tests.test_classmethod.CachedClassMethodTest.test_locked",
+     "tests.test_func.DecoratorTestMixin.test_decorator",
+     "tests.test_func.DecoratorTestMixin.test_decorator_clear",
+     "tests.test_func.DecoratorTestMixin.test_decorator_method",
+     "tests.test_func.DecoratorTestMixin.test_decorator_needs_rlock",
+     "tests.test_func.DecoratorTestMixin.test_decorator_nocache",
+     "tests.test_func.DecoratorTestMixin.test_decorator_unbound",
+     "tests.test_func.DecoratorTestMixin.test_decorator_user_function",
+     "tests.test_func.DecoratorTestMixin.test_stacked_decorators",
+     "tests.test_func.FIFODecoratorTest.test_method_typed",
+     "tests.test_func.TTLDecoratorTest.test_ttl_datetime",
+     "tests.test_keys.CacheKeysTest.test_addkeys",
+     "tests.test_keys.CacheKeysTest.test_hashkey",
+     "tests.test_keys.CacheKeysTest.test_methodkey",
+     "tests.test_keys.CacheKeysTest.test_pickle",
+     "tests.test_threading.ThreadingTest.test_cached_cond",
+     "tests.test_threading.ThreadingTest.test_cached_lock",
+     "tests.test_threading.ThreadingTest.test_cachedmethod_cond",
+     "tests.test_threading.ThreadingTest.test_cachedmethod_lock"
+    ]
+   },
+   {
+    "name": "methodkey",
+    "line": 47,
+    "verdict": "checked",
+    "reason": "",
+    "tests": [
+     "tests.test_cached.CacheWrapperTest.test_decorator_method",
+     "tests.test_cachedmethod.CacheMethodTest.test_cond_nospace",
+     "tests.test_cachedmethod.CacheMethodTest.test_decorated_override",
+     "tests.test_cachedmethod.CacheMethodTest.test_lock_nospace",
+     "tests.test_cachedmethod.CacheMethodTest.test_nospace",
+     "tests.test_cachedmethod.CacheMethodTest.test_shared_cache",
+     "tests.test_cachedmethod.CacheMethodTest.test_undecorated_override",
+     "tests.test_cachedmethod.CacheMethodTest.test_value_too_large",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_attributes",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_clear",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_cond",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_cond_clear",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_cond_error",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_cond_info",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_immutable_dict",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_info",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_lock",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_lock_clear",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_lock_cond_info",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_lock_info",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_same_name",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_slots",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_unhashable",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_wrapped",
+     "tests.test_cachedmethod.UnboundMethodTest.test_base_class_call",
+     "tests.test_cachedmethod.UnboundMethodTest.test_class_call",
+     "tests.test_cachedmethod.UnboundMethodTest.test_class_call_info",
+     "tests.test_cachedmethod.WeakRefMethodTest.test_weakref",
+     "tests.test_classmethod.CachedClassMethodTest.test",
+     "tests.test_classmethod.CachedClassMethodTest.test_clear",
+     "tests.test_classmethod.CachedClassMethodTest.test_clear_condition",
+     "tests.test_classmethod.CachedClassMethodTest.test_clear_locked",
+     "tests.test_classmethod.CachedClassMethodTest.test_condition",
+     "tests.test_classmethod.CachedClassMethodTest.test_locked",
+     "tests.test_keys.CacheKeysTest.test_methodkey",
+     "tests.test_threading.ThreadingTest.test_cachedmethod_cond",
+     "tests.test_threading.ThreadingTest.test_cachedmethod_lock"
+    ]
+   },
+   {
+    "name": "typedkey",
+    "line": 52,
+    "verdict": "checked",
+    "reason": "",
+    "tests": [
+     "tests.test_cached.DecoratorTestMixin.test_decorator_typed",
+     "tests.test_cachedmethod.CacheMethodTest.test_multilevel_override",
+     "tests.test_cachedmethod.CacheMethodTest.test_nospace",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_typed",
+     "tests.test_cachedmethod.WeakRefMethodTest.test_weakref",
+     "tests.test_classmethod.CachedClassMethodTest.test_typed",
+     "tests.test_func.DecoratorTestMixin.test_decorator_typed",
+     "tests.test_func.DecoratorTestMixin.test_stacked_decorators",
+     "tests.test_keys.CacheKeysTest.test_typedkey",
+     "tests.test_keys.CacheKeysTest.test_typedmethodkey"
+    ]
+   },
+   {
+    "name": "typedmethodkey",
+    "line": 65,
+    "verdict": "checked",
+    "reason": "",
+    "tests": [
+     "tests.test_cachedmethod.CacheMethodTest.test_multilevel_override",
+     "tests.test_cachedmethod.CacheMethodTest.test_nospace",
+     "tests.test_cachedmethod.MethodDecoratorTestMixin.test_decorator_typed",
+     "tests.test_cachedmethod.WeakRefMethodTest.test_weakref",
+     "tests.test_classmethod.CachedClassMethodTest.test_typed",
+     "tests.test_keys.CacheKeysTest.test_typedmethodkey"
+    ]
+   }
+  ]
+ },
+ {
+  "project": "more-itertools",
+  "interpreter": "own environment",
+  "issues": [
+   "coverage.py 7 is not importable in the test environment; install it there: python -m pip install coverage"
+  ],
+  "functions": [
+   {
+    "name": "take",
+    "line": 114,
+    "verdict": "unknown",
+    "reason": "coverage.py 7 is not importable in the test environment; install it there: python -m pip install coverage",
+    "tests": []
+   },
+   {
+    "name": "tabulate",
+    "line": 130,
+    "verdict": "unknown",
+    "reason": "coverage.py 7 is not importable in the test environment; install it there: python -m pip install coverage",
+    "tests": []
+   },
+   {
+    "name": "tail",
+    "line": 148,
+    "verdict": "unknown",
+    "reason": "coverage.py 7 is not importable in the test environment; install it there: python -m pip install coverage",
+    "tests": []
+   },
+   {
+    "name": "consume",
+    "line": 164,
+    "verdict": "unknown",
+    "reason": "coverage.py 7 is not importable in the test environment; install it there: python -m pip install coverage",
+    "tests": []
+   },
+   {
+    "name": "nth",
+    "line": 204,
+    "verdict": "unknown",
+    "reason": "coverage.py 7 is not importable in the test environment; install it there: python -m pip install coverage",
+    "tests": []
+   },
+   {
+    "name": "all_equal",
+    "line": 217,
+    "verdict": "unknown",
+    "reason": "coverage.py 7 is not importable in the test environment; install it there: python -m pip install coverage",
+    "tests": []
+   },
+   {
+    "name": "quantify",
+    "line": 243,
+    "verdict": "unknown",
+    "reason": "coverage.py 7 is not importable in the test environment; install it there: python -m pip install coverage",
+    "tests": []
+   },
+   {
+    "name": "pad_none",
+    "line": 255,
+    "verdict": "unknown",
+    "reason": "coverage.py 7 is not importable in the test environment; install it there: python -m pip install coverage",
+    "tests": []
+   },
+   {
+    "name": "ncycles",
+    "line": 272,
+    "verdict": "unknown",
+    "reason": "coverage.py 7 is not importable in the test environment; install it there: python -m pip install coverage",
+    "tests": []
+   },
+   {
+    "name": "dotproduct",
+    "line": 282,
+    "verdict": "unknown",
+    "reason": "coverage.py 7 is not importable in the test environment; install it there: python -m pip install coverage",
+    "tests": []
+   },
+   {
+    "name": "flatten",
+    "line": 302,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "repeatfunc",
+    "line": 314,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "pairwise",
+    "line": 341,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "grouper",
+    "line": 351,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "roundrobin",
+    "line": 392,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "partition",
+    "line": 410,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "powerset",
+    "line": 452,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "unique_everseen",
+    "line": 473,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "unique_justseen",
+    "line": 509,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "unique",
+    "line": 524,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "iter_except",
+    "line": 544,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "first_true",
+    "line": 569,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "random_product",
+    "line": 589,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "random_permutation",
+    "line": 609,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "random_combination",
+    "line": 627,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "random_combination_with_replacement",
+    "line": 643,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "nth_combination",
+    "line": 660,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "prepend",
+    "line": 694,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "convolve",
+    "line": 709,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "before_and_after",
+    "line": 753,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "triplewise",
+    "line": 772,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "_sliding_window_islice",
+    "line": 789,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "_sliding_window_deque",
+    "line": 797,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "sliding_window",
+    "line": 805,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "subslices",
+    "line": 830,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "polynomial_from_roots",
+    "line": 844,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "iter_index",
+    "line": 866,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "sieve",
+    "line": 912,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "_batched",
+    "line": 933,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "transpose",
+    "line": 964,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "_is_scalar",
+    "line": 976,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "_flatten_tensor",
+    "line": 985,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "reshape",
+    "line": 999,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "matmul",
+    "line": 1040,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "_factor_pollard",
+    "line": 1057,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "factor",
+    "line": 1074,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "polynomial_eval",
+    "line": 1107,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "sum_of_squares",
+    "line": 1130,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "polynomial_derivative",
+    "line": 1141,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "totient",
+    "line": 1160,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "_shift_to_odd",
+    "line": 1201,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "_strong_probable_prime",
+    "line": 1209,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "is_prime",
+    "line": 1231,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "loops",
+    "line": 1279,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "multinomial",
+    "line": 1293,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "_running_median_minheap_and_maxheap",
+    "line": 1338,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "_running_median_minheap_only",
+    "line": 1354,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "_running_median_windowed",
+    "line": 1370,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "running_median",
+    "line": 1389,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "_windowed_running_mean",
+    "line": 1426,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "running_mean",
+    "line": 1437,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "_windowed_running_min",
+    "line": 1474,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "running_min",
+    "line": 1486,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "_windowed_running_max",
+    "line": 1520,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "running_max",
+    "line": 1532,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "running_statistics",
+    "line": 1572,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "random_derangement",
+    "line": 1602,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   }
+  ]
+ },
+ {
+  "project": "more-itertools",
+  "interpreter": "ElevenPowers interpreter",
+  "issues": [],
+  "functions": [
+   {
+    "name": "take",
+    "line": 114,
+    "verdict": "checked",
+    "reason": "timed out",
+    "tests": [
+     "doctest.DocTestCase.runTest",
+     "tests.test_more.BucketTests.test_validator",
+     "tests.test_more.ChunkedTests.test_even",
+     "tests.test_more.ChunkedTests.test_none",
+     "tests.test_more.ChunkedTests.test_odd",
+     "tests.test_more.ChunkedTests.test_strict_being_true",
+     "tests.test_more.ChunkedTests.test_strict_false",
+     "tests.test_more.CountCycleTests.test_basic",
+     "tests.test_more.ExtractTests.test_monotonic",
+     "tests.test_more.IntersperseTest.test_n",
+     "tests.test_more.MakeDecoratorTests.test_result_index",
+     "tests.test_more.PaddedTest.test_no_n",
+     "tests.test_more.RepeatEachTests.test_infinite_input",
+     "tests.test_more.RepeatLastTests.test_basic",
+     "tests.test_more.RepeatLastTests.test_default_value",
+     "tests.test_more.RepeatLastTests.test_empty_iterable",
+     "tests.test_more.RunLengthTest.test_encode",
+     "tests.test_more.SampleTests.test_error_cases",
+     "tests.test_more.SampleTests.test_invariance_under_permutations_weighted",
+     "tests.test_more.SampleTests.test_scale_invariance_of_weights",
+     "tests.test_more.SampleTests.test_specific_sample",
+     "tests.test_more.SampleTests.test_unit_case",
+     "tests.test_more.SeekableTest.test_elements",
+     "tests.test_more.SeekableTest.test_forward",
+     "tests.test_more.SeekableTest.test_getitem",
+     "tests.test_more.SeekableTest.test_getitem_maxlen",
+     "tests.test_more.SeekableTest.test_maxlen",
+     "tests.test_more.SeekableTest.test_partial_reset",
+     "tests.test_more.SeekableTest.test_past_end",
+     "tests.test_more.SideEffectTests.test_chunked",
+     "tests.test_more.SpyTests.test_basic",
+     "tests.test_more.SpyTests.test_immutable",
+     "tests.test_more.SpyTests.test_too_many",
+     "tests.test_more.SpyTests.test_unpacking",
+     "tests.test_more.SpyTests.test_zero",
+     "tests.test_more.UnzipTests.test_empty_iterable",
+     "tests.test_more.UnzipTests.test_improperly_zipped",
+     "tests.test_more.UnzipTests.test_increasingly_zipped",
+     "tests.test_more.UnzipTests.test_length_one_iterable",
+     "tests.test_more.UnzipTests.test_normal_case",
+     "tests.test_recipes.Convolvetests.test_infinite_signal",
+     "tests.test_recipes.TakeTests.test_negative_take",
+     "tests.test_recipes.TakeTests.test_null_take",
+     "tests.test_recipes.TakeTests.test_simple_take",
+     "tests.test_recipes.TakeTests.test_take_too_much"
+    ]
+   },
+   {
+    "name": "tabulate",
+    "line": 130,
+    "verdict": "checked",
+    "reason": "",
+    "tests": [
+     "doctest.DocTestCase.runTest",
+     "tests.test_recipes.TabulateTests.test_count",
+     "tests.test_recipes.TabulateTests.test_simple_tabulate"
+    ]
+   },
+   {
+    "name": "tail",
+    "line": 148,
+    "verdict": "checked",
+    "reason": "",
+    "tests": [
+     "doctest.DocTestCase.runTest",
+     "tests.test_recipes.TailTests.test_iterator_equal",
+     "tests.test_recipes.TailTests.test_iterator_greater",
+     "tests.test_recipes.TailTests.test_iterator_less",
+     "tests.test_recipes.TailTests.test_sized_equal",
+     "tests.test_recipes.TailTests.test_sized_greater",
+     "tests.test_recipes.TailTests.test_sized_less"
+    ]
+   },
+   {
+    "name": "consume",
+    "line": 164,
+    "verdict": "checked",
+    "reason": "",
+    "tests": [
+     "doctest.DocTestCase.runTest",
+     "tests.test_more.IchunkedTests.test_even",
+     "tests.test_more.IchunkedTests.test_laziness",
+     "tests.test_more.IchunkedTests.test_memory_in_order",
+     "tests.test_more.IchunkedTests.test_odd",
+     "tests.test_more.IchunkedTests.test_out_of_order",
+     "tests.test_more.ReplaceTests.test_basic",
+     "tests.test_more.ReplaceTests.test_count",
+     "tests.test_more.ReplaceTests.test_iterable_substitutes",
+     "tests.test_more.ReplaceTests.test_window_size",
+     "tests.test_more.ReplaceTests.test_window_size_count",
+     "tests.test_more.ReplaceTests.test_window_size_end",
+     "tests.test_more.ReplaceTests.test_window_size_large",
+     "tests.test_more.SeekableTest.test_forward",
+     "tests.test_more.SeekableTest.test_past_end",
+     "tests.test_more.SeekableTest.test_relative_seek",
+     "tests.test_more.SideEffectTests.test_before_after",
+     "tests.test_more.SideEffectTests.test_before_fails",
+     "tests.test_recipes.ConsumeTests.test_negative_consume",
+     "tests.test_recipes.ConsumeTests.test_null_consume",
+     "tests.test_recipes.ConsumeTests.test_sanity",
+     "tests.test_recipes.ConsumeTests.test_total_consume"
+    ]
+   },
+   {
+    "name": "nth",
+    "line": 204,
+    "verdict": "checked",
+    "reason": "",
+    "tests": [
+     "doctest.DocTestCase.runTest",
+     "tests.test_recipes.NthPermutationTests.test_long",
+     "tests.test_recipes.NthTests.test_basic",
+     "tests.test_recipes.NthTests.test_default",
+     "tests.test_recipes.NthTests.test_negative_item_raises",
+     "tests.test_recipes.PrimeFunctionTests.test_nth_prime_approximate",
+     "tests.test_recipes.PrimeFunctionTests.test_nth_prime_tightened_bound",
+     "tests.test_recipes.PrimeFunctionTests.test_primes"
+    ]
+   },
+   {
+    "name": "all_equal",
+    "line": 217,
+    "verdict": "checked",
+    "reason": "",
+    "tests": [
+     "doctest.DocTestCase.runTest",
+     "tests.test_more.IequalsTests.test_basic",
+     "tests.test_more.IequalsTests.test_more_than_two_iterable",
+     "tests.test_more.IequalsTests.test_none_is_not_a_sentinel",
+     "tests.test_more.IequalsTests.test_not_equal_lengths",
+     "tests.test_more.IequalsTests.test_one_iterable",
+     "tests.test_more.IequalsTests.test_order_matters",
+     "tests.test_more.LongestCommonPrefixTests.test_basic",
+     "tests.test_more.LongestCommonPrefixTests.test_contains_infinite_iterables",
+     "tests.test_more.LongestCommonPrefixTests.test_infinite_iterables",
+     "tests.test_more.LongestCommonPrefixTests.test_iterators",
+     "tests.test_more.LongestCommonPrefixTests.test_non_hashable",
+     "tests.test_more.LongestCommonPrefixTests.test_prefix_contains_elements_of_the_first_iterable",
+     "tests.test_recipes.AllEqualTests.test_empty",
+     "tests.test_recipes.AllEqualTests.test_false",
+     "tests.test_recipes.AllEqualTests.test_groupby_calls",
+     "tests.test_recipes.AllEqualTests.test_key",
+     "tests.test_recipes.AllEqualTests.test_one",
+     "tests.test_recipes.AllEqualTests.test_tricky",
+     "tests.test_recipes.AllEqualTests.test_true"
+    ]
+   },
+   {
+    "name": "quantify",
+    "line": 243,
+    "verdict": "checked",
+    "reason": "",
+    "tests": [
+     "doctest.DocTestCase.runTest",
+     "tests.test_recipes.QuantifyTests.test_custom_predicate",
+     "tests.test_recipes.QuantifyTests.test_happy_path"
+    ]
+   },
+   {
+    "name": "pad_none",
+    "line": 255,
+    "verdict": "checked",
+    "reason": "",
+    "tests": [
+     "doctest.DocTestCase.runTest",
+     "tests.test_recipes.PadnoneTests.test_basic"
+    ]
+   },
+   {
+    "name": "ncycles",
+    "line": 272,
+    "verdict": "checked",
+    "reason": "",
+    "tests": [
+     "doctest.DocTestCase.runTest",
+     "tests.test_recipes.NcyclesTests.test_happy_path",
+     "tests.test_recipes.NcyclesTests.test_null_case",
+     "tests.test_recipes.NcyclesTests.test_pathological_case"
+    ]
+   },
+   {
+    "name": "dotproduct",
+    "line": 282,
+    "verdict": "checked",
+    "reason": "",
+    "tests": [
+     "doctest.DocTestCase.runTest",
+     "tests.test_recipes.DotproductTests.test_happy_path"
+    ]
+   },
+   {
+    "name": "flatten",
+    "line": 302,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "repeatfunc",
+    "line": 314,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "pairwise",
+    "line": 341,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "grouper",
+    "line": 351,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "roundrobin",
+    "line": 392,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "partition",
+    "line": 410,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "powerset",
+    "line": 452,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "unique_everseen",
+    "line": 473,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "unique_justseen",
+    "line": 509,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "unique",
+    "line": 524,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "iter_except",
+    "line": 544,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "first_true",
+    "line": 569,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "random_product",
+    "line": 589,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "random_permutation",
+    "line": 609,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "random_combination",
+    "line": 627,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "random_combination_with_replacement",
+    "line": 643,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "nth_combination",
+    "line": 660,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "prepend",
+    "line": 694,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "convolve",
+    "line": 709,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "before_and_after",
+    "line": 753,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "triplewise",
+    "line": 772,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "_sliding_window_islice",
+    "line": 789,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "_sliding_window_deque",
+    "line": 797,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "sliding_window",
+    "line": 805,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "subslices",
+    "line": 830,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "polynomial_from_roots",
+    "line": 844,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "iter_index",
+    "line": 866,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "sieve",
+    "line": 912,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "_batched",
+    "line": 933,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "transpose",
+    "line": 964,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "_is_scalar",
+    "line": 976,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "_flatten_tensor",
+    "line": 985,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "reshape",
+    "line": 999,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "matmul",
+    "line": 1040,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "_factor_pollard",
+    "line": 1057,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "factor",
+    "line": 1074,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "polynomial_eval",
+    "line": 1107,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "sum_of_squares",
+    "line": 1130,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "polynomial_derivative",
+    "line": 1141,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "totient",
+    "line": 1160,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "_shift_to_odd",
+    "line": 1201,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "_strong_probable_prime",
+    "line": 1209,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "is_prime",
+    "line": 1231,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "loops",
+    "line": 1279,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "multinomial",
+    "line": 1293,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "_running_median_minheap_and_maxheap",
+    "line": 1338,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "_running_median_minheap_only",
+    "line": 1354,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "_running_median_windowed",
+    "line": 1370,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "running_median",
+    "line": 1389,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "_windowed_running_mean",
+    "line": 1426,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "running_mean",
+    "line": 1437,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "_windowed_running_min",
+    "line": 1474,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "running_min",
+    "line": 1486,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "_windowed_running_max",
+    "line": 1520,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "running_max",
+    "line": 1532,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "running_statistics",
+    "line": 1572,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   },
+   {
+    "name": "random_derangement",
+    "line": 1602,
+    "verdict": "unknown",
+    "reason": "budget",
+    "tests": []
+   }
+  ]
+ }
+]

@@ -1,5 +1,28 @@
 # Current delivery status
 
+**2026-11-13 — TestMiner, first slice: do the tests check this function?**
+- **What it does.** `ep_testminer.py` examines the Python functions you name.
+  For each, in a private copy, it runs the project's own pytest or unittest
+  command under coverage.py with per-test contexts, then empties the
+  function's body (extreme mutation, as Descartes does for PIT). The verdict
+  is `not reached`, `reached, not checked`, `checked`, or `unknown` with a
+  reason.
+- **Checks:**
+  - 18 tests, every mutant killed;
+  - a $0 rehearsal on cachetools and more-itertools
+    ([results](../results/testminer/README.md)).
+- **Found by the rehearsal:**
+  - ElevenPowers' main output parser read pytest 9's `N passed, M subtests
+    passed` as 0 passed, which affected every hook (fixed, 575d24e);
+  - one false candidate, an equivalent mutant (`__getstate__` returning
+    `{}`).
+- **Bounds:**
+  - detection only; no suggested tests until independent oracles exist;
+  - no runtime observation (`record`) yet;
+  - doctest contexts are not mapped to runnable tests;
+  - neither held-out environment had coverage.py installed, so out of the
+    box it says `unknown` and how to fix it.
+
 **2026-11-13 — The test command a project already declares is found.**
 - **Why.** Discovery found no test command in 6 of the 12 held-out projects.
   Each one declares its test run in `tox.ini`, a `Makefile` or a CI workflow.

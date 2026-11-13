@@ -151,6 +151,20 @@ From reading the code:
   Python files only.
 - **No config block.** Limits are CLI flags with the defaults above.
 
+## What the real runs showed (2026-11-13)
+
+See [results/testminer](../../../results/testminer/README.md). Neither
+held-out environment had coverage.py, so the out-of-the-box answer is
+`unknown` with the install line.
+
+With coverage.py available, there were three findings:
+- the main parser read pytest 9's subtests summary as 0 passed (fixed);
+- one false candidate came from an equivalent mutant (`__getstate__`);
+- doctest contexts cannot be mapped to a runnable test.
+
+The next slice should try more than one extreme value per function, and add
+`record`.
+
 ## Checks planned
 
 - **Fixture service** (the card's "first contribution"):
