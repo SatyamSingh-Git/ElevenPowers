@@ -255,6 +255,9 @@ def test_cli_prints_verdicts_and_json(tmp_path):
     text = subprocess.run([sys.executable, str(cli), '--project', str(root), '--path', 'svc.py',
                            '--command', pytest_command()], capture_output=True, text=True).stdout
     assert 'svc.py:7 log: reached, not checked (test_svc.test_log)' in text
+    capped = subprocess.run([sys.executable, str(cli), '--project', str(root), '--path', 'svc.py', '--limit', '2',
+                             '--command', pytest_command()], capture_output=True, text=True).stdout
+    assert '3 more functions not examined (budget)' in capped and 'never' not in capped
     refused = subprocess.run([sys.executable, str(cli), '--project', str(root)], capture_output=True, text=True)
     assert refused.returncode == 2 and '--base' in refused.stderr
 

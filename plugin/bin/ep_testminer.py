@@ -33,9 +33,14 @@ def main():
         return 0
     for issue in result['issues']:
         print('Issue: ' + issue)
+    skipped = [item for item in result['functions'] if item['reason'] == 'budget']
     for item in result['functions']:
+        if item['reason'] == 'budget':
+            continue
         detail = item['reason'] or (', '.join(item['tests']) if item['verdict'] == 'reached, not checked' else '')
         print(f"{item['path']}:{item['line']} {item['name']}: {item['verdict']}" + (f' ({detail})' if detail else ''))
+    if skipped:
+        print(f'{len(skipped)} more functions not examined (budget); raise --limit or --seconds, or see --json')
     return 0
 
 
