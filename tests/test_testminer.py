@@ -784,3 +784,19 @@ def test_observed_without_a_record_is_refused(tmp_path):
     root = project(tmp_path, OBSERVED_FILES)
     with pytest.raises(ValueError, match='ep_testminer.py record'):
         mine(root, observed=True, command='python -m pytest')
+
+
+# Found by the slice 2 final review, 2026-11-21.
+
+@needs_coverage
+def test_record_refuses_a_project_outside_git_and_keeps_non_ascii_files(tmp_path):
+    import sys
+    from core.testminer.observe import record
+    (tmp_path / 'plain').mkdir()
+    (tmp_path / 'plain/app.py').write_text('x = 1\n')
+    with pytest.raises(ValueError, match='not a Git repository'):
+        record(tmp_path / 'plain', [sys.executable, 'app.py'])
+    root = project(tmp_path / 'git', {'café.py': 'def brew():\n    c = 1\n    return c\n',
+                                      'app.py': 'import importlib\nimportlib.import_module("caf\\u00e9").brew()\n'})
+    _, observation = record(root, [sys.executable, 'app.py'])
+    assert 'café.py' in observation['files']

@@ -6,9 +6,11 @@ import json
 import signal
 import subprocess
 import tempfile
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 
+from ..strength.scope import git
 from .coverage_run import _beside
 from .functions import functions
 
@@ -56,8 +58,10 @@ def _target(words: list[str]) -> tuple[str, list[str], str]:
 
 
 def _tracked(root: Path) -> list[str]:
-    listed = subprocess.run(['git', 'ls-files', '-z', '--cached', '--others', '--exclude-standard'], cwd=root,
-                            capture_output=True, text=True, check=True).stdout
+    try:
+        listed = git(root, ['ls-files', '-z', '--cached', '--others', '--exclude-standard'], time.monotonic() + 60)
+    except ValueError:
+        raise ValueError('the project is not a Git repository; TestMiner lists its files with git ls-files') from None
     return [path for path in listed.split('\0') if path.endswith('.py') and (root / path).is_file()]
 
 
