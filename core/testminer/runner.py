@@ -182,17 +182,25 @@ def mine(root: Path, *, base: str = '', names=(), paths=(), command: str = '', s
                     probe = [(p, f) for p, f in chosen if (p, f.first) not in verdicts]
                     selection = _selection(argv, plain, probe, reach, pristine, settings, deadline, budget,
                                            test_seconds, root)
+                    def attempt(path, fn, value, argv):
+                        with trial(pristine, settings, deadline) as copy:
+                            _empty(copy / path, fn, value)
+                            execution = execute(argv, copy, budget, test_seconds, shell=False, original=root)
+                            return _verdict(execution, argv, copy, deadline)
+
                     for path, fn in probe:
                         run = selection(reach[path, fn.first])
                         outcomes = []
                         for value in fn.values:
                             if time.monotonic() >= deadline:
                                 break
-                            with trial(pristine, settings, deadline) as copy:
-                                _empty(copy / path, fn, value)
-                                execution = execute(run, copy, budget, test_seconds, shell=False, original=root)
-                                outcomes.append(_verdict(execution, run, copy, deadline))
-                            if outcomes[-1][0] == 'unknown':
+                            outcome = attempt(path, fn, value, run)
+                            if outcome[0] == 'reached, not checked' and run != plain:
+                                # Contexts miss a test served from a cache another test filled;
+                                # only the whole command can say that no test noticed.
+                                outcome = attempt(path, fn, value, plain)
+                            outcomes.append(outcome)
+                            if outcome[0] == 'unknown':
                                 break
                         give(path, fn, *_fold(outcomes, fn.values), tests=reach[path, fn.first],
                              values=[{'value': value, 'detected': verdict == 'checked'}

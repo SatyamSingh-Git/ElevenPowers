@@ -741,6 +741,44 @@ def test_a_deleted_recorded_file_is_one_issue(tmp_path):
     assert verdicts(result) == {'used': 'checked'}
 
 
+CACHED = '''\
+from functools import lru_cache
+
+
+def names(x) -> list:
+    out = []
+    out.append(x)
+    return out
+
+
+@lru_cache()
+def cached(x):
+    return names(x)
+'''
+CACHED_TESTS = '''\
+from svc import cached
+
+
+def test_a_fills_the_cache():
+    cached('a')
+
+
+def test_b_checks_the_value():
+    assert cached('a') == ['a']
+'''
+
+
+@needs_coverage
+def test_a_test_served_from_a_cache_still_notices(tmp_path):
+    # Found on charset_normalizer (2026-11-21): an lru_cache filled by one test hides the
+    # function from the contexts of the test that checks it.
+    from core.testminer.runner import mine
+    root = project(tmp_path, {'svc.py': CACHED, 'tests/test_svc.py': CACHED_TESTS})
+    item = mine(root, names=('svc.py::names',), command=pytest_command())['functions'][0]
+    assert item['tests'] == ['test_svc.test_a_fills_the_cache']
+    assert item['verdict'] == 'checked'
+
+
 def test_observed_without_a_record_is_refused(tmp_path):
     from core.testminer.runner import mine
     root = project(tmp_path, OBSERVED_FILES)
