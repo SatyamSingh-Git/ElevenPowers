@@ -573,3 +573,126 @@ def test_cli_names_the_values_no_test_noticed(tmp_path):
     done = subprocess.run([sys.executable, str(cli), '--project', str(root), '--function', 'svc.py::total',
                            '--command', pytest_command()], capture_output=True, text=True)
     assert 'svc.py:2 total: partly checked (returning 0 or 1 failed no test)' in done.stdout, done.stdout + done.stderr
+
+
+# Slice 2: record a real run.
+
+APP = '''\
+import other
+import ignored_lib
+
+
+def used():
+    x = 1
+    return x
+
+
+def unused():
+    x = 2
+    return x
+
+
+used()
+other.ping()
+ignored_lib.go()
+'''
+OTHER = 'def ping():\n    y = 1\n    return y\n'
+
+
+def recorded(tmp_path, app=APP):
+    root = project(tmp_path, {'app.py': app, 'other.py': OTHER, '.gitignore': '__pycache__/\nignored_lib.py\n'})
+    (root / 'ignored_lib.py').write_text('def go():\n    z = 1\n    return z\n')
+    return root
+
+
+def porcelain(root):
+    import subprocess
+    return set(subprocess.run(['git', 'status', '--porcelain'], cwd=root, capture_output=True, text=True).stdout.splitlines())
+
+
+@needs_coverage
+def test_record_keeps_lines_and_hashes_of_tracked_files_only(tmp_path):
+    import hashlib
+    import sys
+    from core.testminer.observe import OBSERVED, record
+    root = recorded(tmp_path)
+    before = porcelain(root)
+    status, observation = record(root, [sys.executable, 'app.py', '--token', 'SECRET'])
+    assert status == 0
+    assert set(observation['files']) == {'app.py', 'other.py'}
+    lines = observation['files']['app.py']['lines']
+    assert 6 in lines and 11 not in lines
+    assert observation['files']['other.py']['sha256'] == hashlib.sha256((root / 'other.py').read_bytes()).hexdigest()
+    assert (observation['command'], observation['arguments']) == ('python app.py', 2)
+    saved = (root / OBSERVED).read_text(encoding='utf-8')
+    assert 'SECRET' not in saved and sys.executable not in saved
+    assert porcelain(root) - before == {'?? .elevenpowers/'}
+
+
+@needs_coverage
+def test_record_saves_when_the_program_is_interrupted(tmp_path):
+    import sys
+    from core.testminer.observe import record
+    root = recorded(tmp_path, APP + 'raise KeyboardInterrupt\n')
+    status, observation = record(root, [sys.executable, 'app.py'])
+    assert status != 0 and 6 in observation['files']['app.py']['lines']
+
+
+@needs_coverage
+def test_record_accepts_the_module_form_and_refuses_others(tmp_path, monkeypatch):
+    import sys
+    from core.testminer import observe
+    root = project(tmp_path, {'pkg/__init__.py': '', 'pkg/__main__.py': 'def main():\n    v = 3\n    return v\n\n\nmain()\n'})
+    status, observation = observe.record(root, [sys.executable, '-m', 'pkg', 'serve'])
+    assert status == 0 and observation['command'] == 'python -m pkg' and observation['arguments'] == 1
+    assert 3 in observation['files']['pkg/__main__.py']['lines']
+    for words in (['node', 'x.js'], ['ep-no-such-tool', 'run'], [sys.executable, '-c', 'print(1)']):
+        with pytest.raises(ValueError, match=r'python SCRIPT .*python -m MODULE'):
+            observe.record(root, words)
+    monkeypatch.setattr(observe, '_runs_as_module', lambda python, name: name == 'pkg')
+    assert observe._target(['pkg', 'serve'])[1:] == (['-m', 'pkg', 'serve'], 'python -m pkg')
+
+
+def test_record_without_coverage_names_the_install(tmp_path, monkeypatch):
+    import sys
+    from core.testminer import observe
+    root = recorded(tmp_path)
+    monkeypatch.setattr(observe, '_coverage_major', lambda python: 0)
+    with pytest.raises(ValueError, match='pip install coverage'):
+        observe.record(root, [sys.executable, 'app.py'])
+    assert not (root / observe.OBSERVED).exists()
+    with pytest.raises(ValueError) as refused:
+        observe.record(root, ['node', 'x.js'])
+    assert str(refused.value).isascii()
+
+
+@needs_coverage
+def test_a_file_changed_during_the_run_has_no_hash(tmp_path):
+    import sys
+    from core.testminer.observe import record
+    root = recorded(tmp_path, APP + "open('other.py', 'a').write('# touched\\n')\n")
+    _, observation = record(root, [sys.executable, 'app.py'])
+    assert observation['files']['other.py']['sha256'] is None
+    assert observation['files']['app.py']['sha256'] is not None
+
+
+@needs_coverage
+@pytest.mark.skipif(__import__('os').name == 'nt', reason='a POSIX process-group SIGINT, as Ctrl-C sends')
+def test_ctrl_c_ends_the_program_and_the_record_is_saved(tmp_path):
+    import os
+    import signal
+    import subprocess
+    import sys
+    import time
+    from pathlib import Path
+    serve = APP + "open('ready', 'w').close()\nimport time\nfor _ in range(300):\n    time.sleep(0.1)\n"
+    root = recorded(tmp_path, serve)
+    cli = Path(__file__).resolve().parents[1] / 'plugin/bin/ep_testminer.py'
+    process = subprocess.Popen([sys.executable, str(cli), 'record', '--project', str(root), '--',
+                                sys.executable, 'app.py'], start_new_session=True)
+    deadline = time.monotonic() + 30
+    while not (root / 'ready').exists() and time.monotonic() < deadline:
+        time.sleep(0.1)
+    os.killpg(process.pid, signal.SIGINT)
+    process.wait(timeout=30)
+    assert (root / '.elevenpowers/testminer-observed.json').exists()

@@ -5,10 +5,32 @@ from pathlib import Path
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from core.testminer.observe import OBSERVED, record
 from core.testminer.runner import mine
 
 
+def record_main(argv):
+    parser = argparse.ArgumentParser(prog='ep_testminer.py record',
+                                     description='Run your program once under coverage.py and keep which lines ran.')
+    parser.add_argument('--project', type=Path, default=Path.cwd())
+    parser.add_argument('command', nargs=argparse.REMAINDER, help='-- python app.py ARGS, or -- python -m MODULE ARGS')
+    args = parser.parse_args(argv)
+    words = args.command[1:] if args.command[:1] == ['--'] else args.command
+    try:
+        status, observation = record(args.project, words)
+    except (OSError, ValueError) as exc:
+        parser.exit(2, f'TestMiner could not record: {exc}\n')
+    if observation is None:
+        print(f'No coverage data was saved (the command exited {status}); nothing recorded.')
+    else:
+        lines = sum(len(item['lines']) for item in observation['files'].values())
+        print(f"Recorded {lines} lines in {len(observation['files'])} files to {OBSERVED}")
+    return status
+
+
 def main():
+    if sys.argv[1:2] == ['record']:
+        return record_main(sys.argv[2:])
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--project', type=Path, default=Path.cwd())
     parser.add_argument('--base', default='', help='examine the functions changed since this commit')
