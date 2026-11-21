@@ -494,7 +494,7 @@ def test_base_refuses_a_project_below_its_repository_root(tmp_path):
     ('def f() -> bytes:\n    x = 1\n    return x\n', ('None', "b''", "b'A'")),
     ('def f() -> list[int]:\n    x = 1\n    return x\n', ('None', '[]', '[None]')),
     ('def f() -> typing.Dict[str, int]:\n    x = 1\n    return x\n', ('None', '{}', '{None: None}')),
-    ('def f() -> set:\n    x = 1\n    return x\n', ('None', 'set()', '{None}')),
+    ('def f() -> set:\n    x = 1\n    return x\n', ('None', '{*()}', '{None}')),
     ('def f() -> tuple:\n    x = 1\n    return x\n', ('None', '()', '(None,)')),
     ('def f() -> Optional[int]:\n    x = 1\n    return x\n', ('None', '0', '1')),
     ('def f() -> int | None:\n    x = 1\n    return x\n', ('None', '0', '1')),
@@ -882,6 +882,13 @@ def test_a_console_script_is_looked_up_from_the_project_root(tmp_path, monkeypat
     assert _target(['tooly', 'go'], root)[1:] == (['-m', 'tooly', 'go'], 'python -m tooly')
     with pytest.raises(ValueError, match='python SCRIPT'):
         _target(['other_tooly'], root)
+
+
+def test_no_extreme_value_looks_up_a_name():
+    # A module may define its own `set`; a mutant must not call it.
+    from core.testminer.functions import VALUES
+    for value in ('None', *(v for pair in VALUES.values() for v in pair)):
+        eval(value, {'__builtins__': {}})
 
 
 def json_text(root):

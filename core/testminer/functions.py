@@ -21,7 +21,7 @@ class Function:
 VALUES = {
     'bool': ('True', 'False'), 'int': ('0', '1'), 'float': ('0.0', '1.0'), 'str': ("''", "'A'"),
     'bytes': ("b''", "b'A'"), 'list': ('[]', '[None]'), 'dict': ('{}', '{None: None}'),
-    'set': ('set()', '{None}'), 'tuple': ('()', '(None,)'),
+    'set': ('{*()}', '{None}'), 'tuple': ('()', '(None,)'),
 }
 DISPLAYS = {ast.List: 'list', ast.Dict: 'dict', ast.Set: 'set', ast.Tuple: 'tuple', ast.JoinedStr: 'str',
             ast.Compare: 'bool'}
