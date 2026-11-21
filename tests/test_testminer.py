@@ -482,3 +482,33 @@ def test_base_refuses_a_project_below_its_repository_root(tmp_path):
         mine(tmp_path / 'pkg', base='HEAD', command=pytest_command())
     with pytest.raises(ValueError, match='not a commit'):
         mine(tmp_path, base='no-such-ref', command=pytest_command())
+
+
+# Slice 2: more than one extreme value.
+
+@pytest.mark.parametrize('code, values', [
+    ('def f() -> bool:\n    x = 1\n    return x\n', ('None', 'True', 'False')),
+    ('def f() -> int:\n    x = 1\n    return x\n', ('None', '0', '1')),
+    ('def f() -> float:\n    x = 1\n    return x\n', ('None', '0.0', '1.0')),
+    ('def f() -> str:\n    x = 1\n    return x\n', ('None', "''", "'A'")),
+    ('def f() -> bytes:\n    x = 1\n    return x\n', ('None', "b''", "b'A'")),
+    ('def f() -> list[int]:\n    x = 1\n    return x\n', ('None', '[]', '[None]')),
+    ('def f() -> typing.Dict[str, int]:\n    x = 1\n    return x\n', ('None', '{}', '{None: None}')),
+    ('def f() -> set:\n    x = 1\n    return x\n', ('None', 'set()', '{None}')),
+    ('def f() -> tuple:\n    x = 1\n    return x\n', ('None', '()', '(None,)')),
+    ('def f() -> Optional[int]:\n    x = 1\n    return x\n', ('None', '0', '1')),
+    ('def f() -> int | None:\n    x = 1\n    return x\n', ('None', '0', '1')),
+    ("def f() -> 'int':\n    x = 1\n    return x\n", ('None', '0', '1')),
+    ('def f() -> Thing:\n    x = 1\n    return x\n', ('None',)),
+    ('def f() -> None:\n    x = 1\n', ('None',)),
+    ('def f():\n    x = 1\n    return x > 0\n', ('None', 'True', 'False')),
+    ('def f(x):\n    if x:\n        return f"{x}"\n    return "no"\n', ('None', "''", "'A'")),
+    ('def f(x):\n    if x:\n        return 1\n    return "no"\n', ('None',)),
+    ('def f(x):\n    print(x)\n', ('None',)),
+    ('def f(x):\n    def g():\n        return 1\n    return True\n', ('None', 'True', 'False')),
+    ('def f() -> None | int:\n    x = 1\n    return x\n', ('None', '0', '1')),
+    ('def f(x):\n    return not x\n', ('None', 'True', 'False')),
+    ('def f(x):\n    if x:\n        return True\n    return\n', ('None',)),
+])
+def test_values_follow_the_return_type(code, values):
+    assert functions(code)[0].values == values

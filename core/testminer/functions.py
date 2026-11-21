@@ -14,6 +14,60 @@ class Function:
     refused: str
     start: int = 0
     """The first decorator or the `def` line: where a change to the signature shows."""
+    values: tuple[str, ...] = ('None',)
+    """The extreme return values to try, as source, `None` first."""
+
+
+VALUES = {
+    'bool': ('True', 'False'), 'int': ('0', '1'), 'float': ('0.0', '1.0'), 'str': ("''", "'A'"),
+    'bytes': ("b''", "b'A'"), 'list': ('[]', '[None]'), 'dict': ('{}', '{None: None}'),
+    'set': ('set()', '{None}'), 'tuple': ('()', '(None,)'),
+}
+DISPLAYS = {ast.List: 'list', ast.Dict: 'dict', ast.Set: 'set', ast.Tuple: 'tuple', ast.JoinedStr: 'str',
+            ast.Compare: 'bool'}
+
+
+def _annotated(node: ast.expr | None) -> str:
+    if isinstance(node, ast.Constant) and isinstance(node.value, str):
+        try:
+            node = ast.parse(node.value, mode='eval').body
+        except SyntaxError:
+            return ''
+    if isinstance(node, ast.BinOp) and isinstance(node.op, ast.BitOr):
+        sides = [side for side in (node.left, node.right) if not (isinstance(side, ast.Constant) and side.value is None)]
+        return _annotated(sides[0]) if len(sides) == 1 else ''
+    if isinstance(node, ast.Subscript):
+        if _annotated(node.value) == 'optional':
+            return _annotated(node.slice)
+        node = node.value
+    name = node.attr if isinstance(node, ast.Attribute) else node.id if isinstance(node, ast.Name) else ''
+    return name.lower()
+
+
+def _returns(node: ast.AST):
+    for child in ast.iter_child_nodes(node):
+        if isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef, ast.Lambda, ast.ClassDef)):
+            continue
+        if isinstance(child, ast.Return):
+            yield child.value
+        yield from _returns(child)
+
+
+def _kind(value: ast.expr | None) -> str:
+    if isinstance(value, ast.UnaryOp) and isinstance(value.op, ast.Not):
+        return 'bool'
+    if isinstance(value, ast.Constant):
+        return type(value.value).__name__
+    return DISPLAYS.get(type(value), '')
+
+
+def _values(node) -> tuple[str, ...]:
+    if node.returns is not None:
+        kind = _annotated(node.returns)
+    else:
+        kinds = {_kind(value) for value in _returns(node)}
+        kind = kinds.pop() if len(kinds) == 1 else ''
+    return ('None', *VALUES.get(kind, ()))
 
 
 def _yields(node: ast.AST) -> bool:
@@ -53,7 +107,7 @@ def _function(node, name: str, lines: list[bytes]) -> Function:
         refused = ''
     return Function(name, statements[0].lineno, node.end_lineno,
                     replaceable[0].lineno if replaceable else node.end_lineno, refused,
-                    min([node.lineno, *(d.lineno for d in node.decorator_list)]))
+                    min([node.lineno, *(d.lineno for d in node.decorator_list)]), _values(node))
 
 
 def functions(source: str) -> list[Function]:
