@@ -177,6 +177,22 @@ My calls, under the same standing instruction.
 8. **Any value `unknown` for a reason other than the budget makes the
    function `unknown` with that reason.**
 
+## What building and the real run showed (2026-11-21)
+
+See [results/testminer](../../../results/testminer/README.md).
+
+- **Decision 2 was wrong about `__getstate__`.** Its body is `return {}`, so
+  the type is inferred as `dict` and it is now `partly checked`. It is still
+  a false candidate (`None` and `{}` are equivalent).
+- **Decision 5 is withdrawn**: there was no attempt cap in force.
+- **The plan's `SIG_IGN` would have stopped Ctrl-C reaching the program**,
+  because an ignored signal is inherited; a no-op handler is used instead.
+- **A cache filled by one test hides a function from the test that checks
+  it.** A value surviving the selected tests is now confirmed with the whole
+  command.
+- **The `python` on PATH often lacks coverage.py**; `record` names the
+  install line instead of saving nothing.
+
 ## Non-goals
 
 - Doctest contexts (slice 1's third finding) stay unmapped.

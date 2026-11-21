@@ -1,0 +1,911 @@
+{
+ "project": "charset_normalizer",
+ "commit": "3985662",
+ "coverage.py": "7.16.2",
+ "pytest": "9.0.3",
+ "record": {
+  "status": 0,
+  "command": "python -m charset_normalizer",
+  "arguments": 3,
+  "files": 12,
+  "lines": 1308
+ },
+ "issues": [],
+ "functions": [
+  {
+   "path": "src/charset_normalizer/api.py",
+   "name": "from_bytes",
+   "line": 62,
+   "verdict": "checked",
+   "reason": "",
+   "values": [
+    {
+     "value": "None",
+     "detected": true
+    }
+   ],
+   "tests": 58
+  },
+  {
+   "path": "src/charset_normalizer/api.py",
+   "name": "from_fp",
+   "line": 822,
+   "verdict": "checked",
+   "reason": "",
+   "values": [
+    {
+     "value": "None",
+     "detected": true
+    }
+   ],
+   "tests": 17
+  },
+  {
+   "path": "src/charset_normalizer/cd.py",
+   "name": "encoding_unicode_range",
+   "line": 25,
+   "verdict": "checked",
+   "reason": "",
+   "values": [
+    {
+     "value": "None",
+     "detected": true
+    },
+    {
+     "value": "[]",
+     "detected": true
+    },
+    {
+     "value": "[None]",
+     "detected": true
+    }
+   ],
+   "tests": 6
+  },
+  {
+   "path": "src/charset_normalizer/cd.py",
+   "name": "unicode_range_languages",
+   "line": 69,
+   "verdict": "checked",
+   "reason": "",
+   "values": [
+    {
+     "value": "None",
+     "detected": true
+    },
+    {
+     "value": "[]",
+     "detected": true
+    },
+    {
+     "value": "[None]",
+     "detected": true
+    }
+   ],
+   "tests": 4
+  },
+  {
+   "path": "src/charset_normalizer/cd.py",
+   "name": "encoding_languages",
+   "line": 91,
+   "verdict": "checked",
+   "reason": "",
+   "values": [
+    {
+     "value": "None",
+     "detected": true
+    },
+    {
+     "value": "[]",
+     "detected": true
+    },
+    {
+     "value": "[None]",
+     "detected": true
+    }
+   ],
+   "tests": 6
+  },
+  {
+   "path": "src/charset_normalizer/cd.py",
+   "name": "mb_encoding_languages",
+   "line": 115,
+   "verdict": "checked",
+   "reason": "",
+   "values": [
+    {
+     "value": "None",
+     "detected": true
+    },
+    {
+     "value": "[]",
+     "detected": true
+    },
+    {
+     "value": "[None]",
+     "detected": true
+    }
+   ],
+   "tests": 8
+  },
+  {
+   "path": "src/charset_normalizer/cd.py",
+   "name": "characters_popularity_compare",
+   "line": 196,
+   "verdict": "checked",
+   "reason": "",
+   "values": [
+    {
+     "value": "None",
+     "detected": true
+    },
+    {
+     "value": "0.0",
+     "detected": true
+    },
+    {
+     "value": "1.0",
+     "detected": true
+    }
+   ],
+   "tests": 23
+  },
+  {
+   "path": "src/charset_normalizer/cd.py",
+   "name": "alpha_unicode_split",
+   "line": 283,
+   "verdict": "checked",
+   "reason": "",
+   "values": [
+    {
+     "value": "None",
+     "detected": true
+    },
+    {
+     "value": "[]",
+     "detected": true
+    },
+    {
+     "value": "[None]",
+     "detected": true
+    }
+   ],
+   "tests": 45
+  },
+  {
+   "path": "src/charset_normalizer/cd.py",
+   "name": "merge_coherence_ratios",
+   "line": 356,
+   "verdict": "checked",
+   "reason": "",
+   "values": [
+    {
+     "value": "None",
+     "detected": true
+    }
+   ],
+   "tests": 52
+  },
+  {
+   "path": "src/charset_normalizer/cd.py",
+   "name": "filter_alt_coherence_matches",
+   "line": 384,
+   "verdict": "checked",
+   "reason": "",
+   "values": [
+    {
+     "value": "None",
+     "detected": true
+    }
+   ],
+   "tests": 46
+  },
+  {
+   "path": "src/charset_normalizer/cd.py",
+   "name": "coherence_ratio",
+   "line": 405,
+   "verdict": "checked",
+   "reason": "",
+   "values": [
+    {
+     "value": "None",
+     "detected": true
+    }
+   ],
+   "tests": 45
+  },
+  {
+   "path": "src/charset_normalizer/cli/__main__.py",
+   "name": "FileType.__init__",
+   "line": 57,
+   "verdict": "unknown",
+   "reason": "__init__",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/cli/__main__.py",
+   "name": "FileType.__call__",
+   "line": 64,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/cli/__main__.py",
+   "name": "cli_detect",
+   "line": 91,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/constant.py",
+   "name": "CompatibleFamillyRange.__init__",
+   "line": 735,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/constant.py",
+   "name": "CompatibleFamillyRange.__eq__",
+   "line": 738,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/constant.py",
+   "name": "CompatibleFamillyRange.__hash__",
+   "line": 744,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/md.py",
+   "name": "CharInfo.__init__",
+   "line": 108,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/md.py",
+   "name": "_char_info",
+   "line": 250,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/md.py",
+   "name": "TooManySymbolOrPunctuationPlugin.__init__",
+   "line": 299,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/md.py",
+   "name": "TooManySymbolOrPunctuationPlugin.feed_info",
+   "line": 306,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/md.py",
+   "name": "TooManySymbolOrPunctuationPlugin.ratio",
+   "line": 324,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/md.py",
+   "name": "TooManyAccentuatedPlugin.__init__",
+   "line": 338,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/md.py",
+   "name": "TooManyAccentuatedPlugin.feed_info",
+   "line": 342,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/md.py",
+   "name": "TooManyAccentuatedPlugin.ratio",
+   "line": 354,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/md.py",
+   "name": "UnprintablePlugin.__init__",
+   "line": 365,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/md.py",
+   "name": "UnprintablePlugin.feed_info",
+   "line": 370,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/md.py",
+   "name": "UnprintablePlugin.ratio",
+   "line": 389,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/md.py",
+   "name": "SuspiciousDuplicateAccentPlugin.__init__",
+   "line": 407,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/md.py",
+   "name": "SuspiciousDuplicateAccentPlugin.feed_info",
+   "line": 414,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/md.py",
+   "name": "SuspiciousDuplicateAccentPlugin.ratio",
+   "line": 436,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/md.py",
+   "name": "SuspiciousRange.__init__",
+   "line": 451,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/md.py",
+   "name": "SuspiciousRange.feed_info",
+   "line": 457,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/md.py",
+   "name": "SuspiciousRange.ratio",
+   "line": 489,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/md.py",
+   "name": "SuperWeirdWordPlugin.__init__",
+   "line": 523,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/md.py",
+   "name": "SuperWeirdWordPlugin.feed_info",
+   "line": 547,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/md.py",
+   "name": "SuperWeirdWordPlugin.ratio",
+   "line": 669,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/md.py",
+   "name": "CjkUncommonPlugin.__init__",
+   "line": 686,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/md.py",
+   "name": "CjkUncommonPlugin.feed_info",
+   "line": 690,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/md.py",
+   "name": "CjkUncommonPlugin.ratio",
+   "line": 702,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/md.py",
+   "name": "SuspiciousKatakanaPlugin.__init__",
+   "line": 725,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/md.py",
+   "name": "SuspiciousKatakanaPlugin.feed_info",
+   "line": 731,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/md.py",
+   "name": "SuspiciousKatakanaPlugin.ratio",
+   "line": 750,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/md.py",
+   "name": "ArchaicUpperLowerPlugin.__init__",
+   "line": 773,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/md.py",
+   "name": "ArchaicUpperLowerPlugin.feed_info",
+   "line": 787,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/md.py",
+   "name": "ArchaicUpperLowerPlugin.ratio",
+   "line": 841,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/md.py",
+   "name": "ArabicIsolatedFormPlugin.__init__",
+   "line": 851,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/md.py",
+   "name": "ArabicIsolatedFormPlugin.feed_info",
+   "line": 859,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/md.py",
+   "name": "ArabicIsolatedFormPlugin.ratio",
+   "line": 867,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/md.py",
+   "name": "is_suspiciously_successive_range",
+   "line": 879,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/md.py",
+   "name": "mess_ratio",
+   "line": 914,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/models.py",
+   "name": "CharsetMatch.__init__",
+   "line": 22,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/models.py",
+   "name": "CharsetMatch.__eq__",
+   "line": 41,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/models.py",
+   "name": "CharsetMatch.__lt__",
+   "line": 52,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/models.py",
+   "name": "CharsetMatch.__str__",
+   "line": 83,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/models.py",
+   "name": "CharsetMatch.add_submatch",
+   "line": 102,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/models.py",
+   "name": "CharsetMatch.encoding",
+   "line": 114,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/models.py",
+   "name": "CharsetMatch.encoding_aliases",
+   "line": 118,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/models.py",
+   "name": "CharsetMatch.bom",
+   "line": 131,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/models.py",
+   "name": "CharsetMatch.language",
+   "line": 147,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/models.py",
+   "name": "CharsetMatch.chaos",
+   "line": 175,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/models.py",
+   "name": "CharsetMatch.coherence",
+   "line": 179,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/models.py",
+   "name": "CharsetMatch.percent_chaos",
+   "line": 185,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/models.py",
+   "name": "CharsetMatch.percent_coherence",
+   "line": 189,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/models.py",
+   "name": "CharsetMatch.raw",
+   "line": 193,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/models.py",
+   "name": "CharsetMatch.alphabets",
+   "line": 208,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/models.py",
+   "name": "CharsetMatch.could_be_from_charset",
+   "line": 218,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/models.py",
+   "name": "CharsetMatch.fingerprint",
+   "line": 255,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/models.py",
+   "name": "CharsetMatches.__init__",
+   "line": 268,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/models.py",
+   "name": "CharsetMatches._ensure_sorted",
+   "line": 272,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/models.py",
+   "name": "CharsetMatches.__len__",
+   "line": 296,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/models.py",
+   "name": "CharsetMatches.__bool__",
+   "line": 299,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/models.py",
+   "name": "CharsetMatches.append",
+   "line": 302,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/models.py",
+   "name": "CharsetMatches.best",
+   "line": 322,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/models.py",
+   "name": "CliDetectionResult.__init__",
+   "line": 356,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/models.py",
+   "name": "CliDetectionResult.__dict__",
+   "line": 370,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/utils.py",
+   "name": "_character_flags",
+   "line": 40,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/utils.py",
+   "name": "remove_accent",
+   "line": 86,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/utils.py",
+   "name": "unicode_range",
+   "line": 105,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/utils.py",
+   "name": "is_punctuation",
+   "line": 130,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/utils.py",
+   "name": "is_symbol",
+   "line": 144,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/utils.py",
+   "name": "is_emoticon",
+   "line": 158,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/utils.py",
+   "name": "is_separator",
+   "line": 167,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/utils.py",
+   "name": "is_unicode_range_secondary",
+   "line": 212,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/utils.py",
+   "name": "any_specified_encoding",
+   "line": 228,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/utils.py",
+   "name": "is_multi_byte_encoding",
+   "line": 255,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/utils.py",
+   "name": "identify_sig_or_bom",
+   "line": 279,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  },
+  {
+   "path": "src/charset_normalizer/utils.py",
+   "name": "cut_sequence_chunks",
+   "line": 371,
+   "verdict": "unknown",
+   "reason": "budget",
+   "values": [],
+   "tests": 0
+  }
+ ]
+}

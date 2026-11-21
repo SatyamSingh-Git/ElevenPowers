@@ -7542,9 +7542,9 @@ const PLANNED = [
     "title": "TestMiner",
     "area": "Evidence and verification",
     "status": "Open milestone",
-    "summary": "First slice built 2026-11-13 (ep_testminer): for named Python functions, reached by tests or not, and checked or not by emptying the body; unknown with a reason otherwise. Runtime observation and suggested tests remain.",
+    "summary": "Two slices built (ep_testminer, 2026-11-13 and 2026-11-21): for named, changed or recorded Python functions, reached by tests or not, and checked, partly checked or not by replacing the body with each extreme value its return type allows; unknown with a reason otherwise. ep_testminer record keeps a real run as line numbers and file hashes. Suggested tests remain.",
     "why": "A production or development path can exist without a useful test. Reaching a line does not establish that an assertion checks its behavior.",
-    "remaining": "Join optional sanitized runtime observations (record, slice 2) with version-matched test execution and declared behavior. Reduce equivalent-mutant false candidates (cachetools __getstate__ returning {}) with more than one extreme value, as Descartes does. Map doctest contexts. Generate a skeleton only after expected behavior is established; production behavior alone is not the oracle.",
+    "remaining": "Equivalent values still give false candidates: cachetools __getstate__ returns {}, so None and {} pass and it is partly checked. Join recordings with declared behavior. Map doctest contexts. Record subprocesses. Generate a skeleton only after expected behavior is established; production behavior alone is not the oracle.",
     "acceptance": [
       "A known uncovered behavior produces an explained candidate; an asserted covered behavior does not.",
       "Sampling, missing instrumentation, unmatched builds and partial test data remain unknown rather than missing-test certainty.",

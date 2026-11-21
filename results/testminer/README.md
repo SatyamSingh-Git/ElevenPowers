@@ -88,3 +88,61 @@ the flaky-fallback point above.
 - **`--base` had no tests.** It has two now.
 
 Eight minor findings are recorded in the ledger, deferred.
+
+## Slice 2: a recorded run and more than one value (2026-11-21)
+
+[`rehearse_slice2.py`](rehearse_slice2.py), [JSON](rehearsal_slice2.json).
+Design: [spec](../../docs/superpowers/specs/2026-11-21-testminer-slice2-design.md).
+
+charset_normalizer at 3985662, in its own prepared environment
+(coverage.py 7.16.2, pytest 9.0.3), with `PYTHONPATH=src`.
+
+- **`record`** ran its real command line,
+  `python -m charset_normalizer` on three of its sample files. It kept 1308
+  executed lines in 12 project files. The record holds
+  `python -m charset_normalizer` and "3 arguments", not the file names.
+- **`--observed`** selected 88 functions from that run. With `--limit 12`,
+  the first 12 in file order were examined; the rest are `unknown (budget)`.
+
+### First run: one false candidate, found and fixed
+
+`unicode_range_languages` (`-> list[str]`) came back **partly checked**:
+returning `[]` failed none of the four tests coverage said reach it.
+Checked by hand, that was false. `test_infer_language_from_cp` asserts the
+exact languages through `encoding_languages`, which is `@lru_cache`d. An
+earlier test fills that cache, so coverage credits the function only to the
+earlier test. Emptying the body to `return []` fails 5 cases of that test.
+
+So a value that survives the selected tests is now run once more with the
+whole command, and reported only if that also passes (d3f4f89). The same
+gap exists for any state one test leaves for another, not only caches.
+
+### Second run
+
+| function | values tried | verdict |
+|---|---|---|
+| `from_bytes`, `from_fp`, `merge_coherence_ratios`, `filter_alt_coherence_matches`, `coherence_ratio` | `None` (return types are project classes or aliases) | checked |
+| `encoding_unicode_range`, `unicode_range_languages`, `encoding_languages`, `mb_encoding_languages`, `alpha_unicode_split` | `None`, `[]`, `[None]` | checked |
+| `characters_popularity_compare` | `None`, `0.0`, `1.0` | checked |
+| `FileType.__init__` | none | unknown (`__init__`) |
+
+No candidates in those 12. That is one project and twelve functions: an
+illustration that the selection and the values work on real code, not a
+rate.
+
+### The slice 1 false candidate
+
+cachetools' `_HashedTuple.__getstate__` has no annotation, but its body is
+`return {}`, so it is inferred as `dict` (the spec expected `None` only).
+It is now **partly checked**: `{None: None}` fails `test_pickle`, while
+`None` and `{}` do not. Both of those leave no pickled state, so they are
+equivalent mutants. The candidate is still false, now named precisely:
+"returning None or {} failed no test".
+
+### Limits seen
+
+- **Equivalent values** remain the main source of false candidates.
+- **Return types that are project classes or aliases get `None` only**, as
+  five of the twelve did here.
+- **The whole-command confirmation costs a full run per surviving value.**
+  Survivors are the findings, so this is usually small.

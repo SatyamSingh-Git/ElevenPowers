@@ -1,5 +1,30 @@
 # Current delivery status
 
+**2026-11-21 — TestMiner, second slice: a recorded run, and more than one value.**
+- **What changed.**
+  - `ep_testminer.py record -- python -m app ARGS` runs your program once in
+    your folder under coverage.py. It keeps the executed lines and the sha256
+    of each project file, never the arguments. `--observed` then examines the
+    functions that run used.
+  - Each body is replaced by every extreme value its return type allows
+    (`None` first, then `0`/`1`, `''`/`'A'`, empty and one-item containers).
+    Mixed results are `partly checked`, naming the values no test noticed.
+  - A value that survives the selected tests is confirmed with the whole
+    command before it is reported.
+- **Checks:**
+  - 71 TestMiner tests, each seen failing first; every mutation-checked
+    branch killed;
+  - a $0 rehearsal on charset_normalizer ([results](../results/testminer/README.md)).
+- **Found by the rehearsal:** a cache filled by one test hid a function from
+  the test that checks it, giving a false `partly checked` (fixed, d3f4f89).
+- **Bounds:**
+  - equivalent values still give false candidates (cachetools
+    `__getstate__`: `None` and `{}` both mean no state);
+  - a return type that is a project class gets `None` only;
+  - `record` measures the main process only, and only `python SCRIPT`,
+    `python -m MODULE` or a console script with a module of the same name;
+  - one project, twelve functions: an illustration, not a rate.
+
 **2026-11-13 — TestMiner, first slice: do the tests check this function?**
 - **What it does.** `ep_testminer.py` examines the Python functions you name.
   For each, in a private copy, it runs the project's own pytest or unittest
