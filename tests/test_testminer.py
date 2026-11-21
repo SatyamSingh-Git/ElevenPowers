@@ -800,3 +800,21 @@ def test_record_refuses_a_project_outside_git_and_keeps_non_ascii_files(tmp_path
                                       'app.py': 'import importlib\nimportlib.import_module("caf\\u00e9").brew()\n'})
     _, observation = record(root, [sys.executable, 'app.py'])
     assert 'café.py' in observation['files']
+
+
+@needs_coverage
+def test_record_keeps_no_absolute_script_path(tmp_path):
+    import sys
+    from core.testminer.observe import record
+    root = recorded(tmp_path / 'proj')
+    project(root, {'scripts/run.py': 'def go():\n    r = 1\n    return r\n\n\ngo()\n'})
+    _, inside = record(root, [sys.executable, str(root / 'scripts/run.py')])
+    assert inside['command'] == 'python scripts/run.py'
+    (tmp_path / 'tools').mkdir()
+    (tmp_path / 'tools/drive.py').write_text('import sys\nsys.path.insert(0, ".")\nimport other\nother.ping()\n')
+    _, outside = record(root, [sys.executable, str(tmp_path / 'tools/drive.py')])
+    assert outside['command'] == 'python drive.py' and str(tmp_path) not in json_text(root)
+
+
+def json_text(root):
+    return (root / '.elevenpowers/testminer-observed.json').read_text(encoding='utf-8')

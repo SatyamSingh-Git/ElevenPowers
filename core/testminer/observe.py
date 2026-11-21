@@ -73,6 +73,10 @@ def record(root: Path, words: list[str]) -> tuple[int, dict | None]:
     """Run the command in the project, under coverage.py; (its exit status, the saved record or None)."""
     root = Path(root).resolve()
     python, rest, form = _target(words)
+    if rest[0] != '-m' and Path(rest[0]).is_absolute():
+        # An absolute path names the person's folders; the state file may be committed.
+        script = Path(rest[0]).resolve()
+        form = 'python ' + (script.relative_to(root).as_posix() if script.is_relative_to(root) else script.name)
     if _coverage_major(python) < 7:
         raise ValueError(INSTALL.format(python=python))
     arguments = len(rest) - (2 if rest[0] == '-m' else 1)
