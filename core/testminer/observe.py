@@ -34,9 +34,10 @@ def _coverage_major(python: str) -> int:
     return int(done.stdout.strip()) if done.returncode == 0 and done.stdout.strip().isdigit() else 0
 
 
-def _runs_as_module(python: str, name: str) -> bool:
+def _runs_as_module(python: str, name: str, root: Path | None) -> bool:
+    # From the folder the program will run in: -c and -m both put it first on sys.path.
     try:
-        return subprocess.run([python, '-c', MAIN, name], capture_output=True, timeout=30).returncode == 0
+        return subprocess.run([python, '-c', MAIN, name], cwd=root, capture_output=True, timeout=30).returncode == 0
     except (OSError, subprocess.TimeoutExpired):
         return False
 
@@ -51,7 +52,7 @@ def _launched(words: list[str]) -> str | None:
     return done.stdout.strip() if done.returncode == 0 and done.stdout.strip() else None
 
 
-def _target(words: list[str]) -> tuple[str, list[str], str]:
+def _target(words: list[str], root: Path | None = None) -> tuple[str, list[str], str]:
     """(interpreter, what follows `coverage run`, the form kept in the record without arguments)."""
     name = Path(words[0]).name.removesuffix('.exe') if words else ''
     if name == 'py':
@@ -70,7 +71,7 @@ def _target(words: list[str]) -> tuple[str, list[str], str]:
         # A console script is run as the module of the same name, when that runs.
         python = _beside(words[0])
         module = name.replace('-', '_')
-        if _runs_as_module(python, module):
+        if _runs_as_module(python, module, root):
             return python, ['-m', module, *words[1:]], f'python -m {module}'
     raise ValueError(f'{" ".join(words)!r}: {FORMS}')
 
@@ -90,7 +91,7 @@ def _hashes(root: Path, paths) -> dict[str, str]:
 def record(root: Path, words: list[str]) -> tuple[int, dict | None]:
     """Run the command in the project, under coverage.py; (its exit status, the saved record or None)."""
     root = Path(root).resolve()
-    python, rest, form = _target(words)
+    python, rest, form = _target(words, root)
     if rest[0] != '-m' and Path(rest[0]).is_absolute():
         # An absolute path names the person's folders; the state file may be committed.
         script = Path(rest[0]).resolve()

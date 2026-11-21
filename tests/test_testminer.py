@@ -649,7 +649,7 @@ def test_record_accepts_the_module_form_and_refuses_others(tmp_path, monkeypatch
     for words in (['node', 'x.js'], ['ep-no-such-tool', 'run'], [sys.executable, '-c', 'print(1)']):
         with pytest.raises(ValueError, match=r'python SCRIPT .*python -m MODULE'):
             observe.record(root, words)
-    monkeypatch.setattr(observe, '_runs_as_module', lambda python, name: name == 'pkg')
+    monkeypatch.setattr(observe, '_runs_as_module', lambda python, name, root: name == "pkg")
     assert observe._target(['pkg', 'serve'])[1:] == (['-m', 'pkg', 'serve'], 'python -m pkg')
 
 
@@ -837,7 +837,7 @@ def test_a_run_that_measured_no_project_file_keeps_the_previous_record(tmp_path)
 def test_the_py_launcher_is_resolved_never_run_as_a_module(monkeypatch):
     import sys
     from core.testminer import observe
-    monkeypatch.setattr(observe, '_runs_as_module', lambda python, name: True)
+    monkeypatch.setattr(observe, '_runs_as_module', lambda python, name, root: True)
     asked = []
     monkeypatch.setattr(observe, '_launched', lambda words: asked.append(words) or sys.executable)
     assert observe._target(['py', 'app.py', '--x']) == (sys.executable, ['app.py', '--x'], 'python app.py')
@@ -871,6 +871,17 @@ def test_a_file_with_a_byte_order_mark_is_read(tmp_path):
     current, stale, issues = observed(root)
     assert ([fn.name for _, fn in current], issues) == (['brew'], [])
     assert [fn.name for _, fn in _selected(root, '', (), ('bom.py',), time.monotonic() + 30)] == ['brew']
+
+
+def test_a_console_script_is_looked_up_from_the_project_root(tmp_path, monkeypatch):
+    from core.testminer.observe import _target
+    root = project(tmp_path / 'proj', {'tooly.py': 'print(1)\n'})
+    (tmp_path / 'caller').mkdir()
+    (tmp_path / 'caller/other_tooly.py').write_text('print(2)\n')
+    monkeypatch.chdir(tmp_path / 'caller')
+    assert _target(['tooly', 'go'], root)[1:] == (['-m', 'tooly', 'go'], 'python -m tooly')
+    with pytest.raises(ValueError, match='python SCRIPT'):
+        _target(['other_tooly'], root)
 
 
 def json_text(root):
