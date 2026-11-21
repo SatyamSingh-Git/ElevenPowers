@@ -834,5 +834,27 @@ def test_a_run_that_measured_no_project_file_keeps_the_previous_record(tmp_path)
     assert 'nothing recorded' in done.stdout and 'previous record' in done.stdout
 
 
+def test_the_py_launcher_is_resolved_never_run_as_a_module(monkeypatch):
+    import sys
+    from core.testminer import observe
+    monkeypatch.setattr(observe, '_runs_as_module', lambda python, name: True)
+    asked = []
+    monkeypatch.setattr(observe, '_launched', lambda words: asked.append(words) or sys.executable)
+    assert observe._target(['py', 'app.py', '--x']) == (sys.executable, ['app.py', '--x'], 'python app.py')
+    assert observe._target(['py.exe', '-3.11', '-m', 'pkg']) == (sys.executable, ['-m', 'pkg'], 'python -m pkg')
+    assert asked == [['py'], ['py.exe', '-3.11']]
+    monkeypatch.setattr(observe, '_launched', lambda words: None)
+    with pytest.raises(ValueError, match='python SCRIPT'):
+        observe._target(['py', 'app.py'])
+
+
+@needs_coverage
+@pytest.mark.skipif(__import__('shutil').which('py') is None, reason='the Windows py launcher is not installed')
+def test_the_real_py_launcher_names_an_interpreter():
+    from pathlib import Path
+    from core.testminer.observe import _launched
+    assert Path(_launched(['py'])).is_file()
+
+
 def json_text(root):
     return (root / '.elevenpowers/testminer-observed.json').read_text(encoding='utf-8')

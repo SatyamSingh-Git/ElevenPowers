@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import signal
 import subprocess
 import tempfile
@@ -40,9 +41,26 @@ def _runs_as_module(python: str, name: str) -> bool:
         return False
 
 
+def _launched(words: list[str]) -> str | None:
+    """The interpreter the Windows `py` launcher would run for these words (`py`, or `py -3.11`)."""
+    try:
+        done = subprocess.run([*words, '-c', 'import sys; print(sys.executable)'], capture_output=True, text=True,
+                              timeout=30)
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    return done.stdout.strip() if done.returncode == 0 and done.stdout.strip() else None
+
+
 def _target(words: list[str]) -> tuple[str, list[str], str]:
     """(interpreter, what follows `coverage run`, the form kept in the record without arguments)."""
     name = Path(words[0]).name.removesuffix('.exe') if words else ''
+    if name == 'py':
+        # Never a console script: pytest installs a top-level py.py, and `-m py` would run it.
+        version = words[1:2] if words[1:2] and re.fullmatch(r'-[23](\.\d+)?(-32|-64)?', words[1]) else []
+        python = _launched(words[:1] + version)
+        if python is None:
+            raise ValueError(f'{" ".join(words)!r}: the py launcher found no interpreter; {FORMS}')
+        words, name = [python, *words[1 + len(version):]], 'python'
     if name.startswith('python'):
         if words[1:2] == ['-m'] and len(words) > 2:
             return words[0], words[1:], f'python -m {words[2]}'
