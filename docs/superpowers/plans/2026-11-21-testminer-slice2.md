@@ -17,7 +17,7 @@
 - `None` is always the first value tried.
 - Outcomes follow slice 1: failure, error or timeout = detected; all passing = not detected.
 - A partial set of values (budget) gives `unknown (budget)`, never a verdict.
-- Defaults stay 60 s, 20 functions, 15 s per command; `Budget(deadline, limit * 9 + 3)`.
+- Defaults stay 60 s, 20 functions, 15 s per command; the deadline is the only bound (`execute` never counts attempts).
 - Never run the full suite locally; targeted tests, `py -3.11` for changed tests, hosted CI after push.
 - A new module goes on the architecture map in the same commit (`python architecture/check.py --render`).
 - Every test is seen failing first; every new check is mutation-checked.

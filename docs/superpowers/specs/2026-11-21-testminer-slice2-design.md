@@ -162,9 +162,11 @@ My calls, under the same standing instruction.
 4. **Hashes are taken before and after the run.** A file that changed
    during it (a reloader, a generated module) is stored with no hash, so it
    is treated as changed.
-5. **The attempt cap scales with the values:** `Budget(deadline, limit * 9 + 3)`
-   (at most eight values plus the selection check), so running out of
-   attempts is never mistaken for the time budget.
+5. **No attempt cap to scale.** The builder check proposed scaling
+   `Budget(deadline, limit + 3)`. A mutation check showed the change made no
+   difference: `execute` never calls `Budget.attempt()`, only test
+   strength's mutation loop does, so TestMiner is bounded by its deadline
+   alone. The line is unchanged.
 6. **The parent ignores SIGINT while the command runs**, restored after.
    Otherwise Ctrl-C ends TestMiner first and its wait kills the child
    before coverage.py has saved.

@@ -85,11 +85,26 @@ def node(root: Path, files: list[str], context: str) -> str | None:
     return None
 
 
-def _empty(path: Path, fn) -> None:
+def _empty(path: Path, fn, value: str = 'None') -> None:
     lines = path.read_text(encoding='utf-8').splitlines(keepends=True)
     indent = lines[fn.body - 1][:len(lines[fn.body - 1]) - len(lines[fn.body - 1].lstrip())]
-    lines[fn.body - 1:fn.last] = [indent + 'return None\n']
+    lines[fn.body - 1:fn.last] = [indent + f'return {value}\n']
     path.write_text(''.join(lines), encoding='utf-8')
+
+
+def _fold(outcomes: list[tuple[str, str]], values) -> tuple[str, str]:
+    """One verdict from each value's: Descartes' pseudo-, partially- and fully tested."""
+    for verdict, reason in outcomes:
+        if verdict == 'unknown' and reason != 'budget':
+            return verdict, reason
+    # A partial set cannot tell partly checked from either neighbour.
+    if len(outcomes) < len(values) or ('unknown', 'budget') in outcomes:
+        return 'unknown', 'budget'
+    detected = [verdict == 'checked' for verdict, _ in outcomes]
+    if all(detected):
+        reasons = {reason for _, reason in outcomes if reason}
+        return 'checked', ', '.join(sorted(reasons))
+    return ('partly checked' if any(detected) else 'reached, not checked'), ''
 
 
 def _verdict(execution, argv, copy, deadline: float) -> tuple[str, str]:
@@ -126,9 +141,9 @@ def mine(root: Path, *, base: str = '', names=(), paths=(), command: str = '', s
         result = {'schema': 1, 'command': command, 'issues': [], 'functions': []}
         verdicts = {}
 
-        def give(path, fn, verdict, reason='', tests=()):
+        def give(path, fn, verdict, reason='', tests=(), values=()):
             verdicts[path, fn.first] = {'path': path, 'name': fn.name, 'line': fn.first, 'verdict': verdict,
-                                       'reason': reason, 'tests': sorted(tests)}
+                                       'reason': reason, 'tests': sorted(tests), 'values': list(values)}
 
         for path, fn in targets[limit:]:
             give(path, fn, 'unknown', 'budget')
@@ -157,15 +172,20 @@ def mine(root: Path, *, base: str = '', names=(), paths=(), command: str = '', s
                     selection = _selection(argv, plain, probe, reach, pristine, settings, deadline, budget,
                                            test_seconds, root)
                     for path, fn in probe:
-                        if time.monotonic() >= deadline:
-                            give(path, fn, 'unknown', 'budget')
-                            continue
                         run = selection(reach[path, fn.first])
-                        with trial(pristine, settings, deadline) as copy:
-                            _empty(copy / path, fn)
-                            execution = execute(run, copy, budget, test_seconds, shell=False, original=root)
-                            give(path, fn, *_verdict(execution, run, copy, deadline),
-                                 tests=reach[path, fn.first])
+                        outcomes = []
+                        for value in fn.values:
+                            if time.monotonic() >= deadline:
+                                break
+                            with trial(pristine, settings, deadline) as copy:
+                                _empty(copy / path, fn, value)
+                                execution = execute(run, copy, budget, test_seconds, shell=False, original=root)
+                                outcomes.append(_verdict(execution, run, copy, deadline))
+                            if outcomes[-1][0] == 'unknown':
+                                break
+                        give(path, fn, *_fold(outcomes, fn.values), tests=reach[path, fn.first],
+                             values=[{'value': value, 'detected': verdict == 'checked'}
+                                     for value, (verdict, _) in zip(fn.values, outcomes)])
         except (OSError, ValueError, TimeoutError) as exc:
             # The shared copy code words its deadline for test strength; here it is this run's budget.
             budget_out = isinstance(exc, TimeoutError)

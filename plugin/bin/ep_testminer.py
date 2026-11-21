@@ -40,6 +40,9 @@ def main():
         if item['reason'] == 'budget' or (item['verdict'] == 'checked' and not args.all):
             continue
         detail = item['reason'] or (', '.join(item['tests']) if item['verdict'] == 'reached, not checked' else '')
+        if item['verdict'] == 'partly checked':
+            passed = [v['value'] for v in item['values'] if not v['detected']]
+            detail = f"returning {' or '.join(passed)} failed no test"
         print(f"{item['path']}:{item['line']} {item['name']}: {item['verdict']}" + (f' ({detail})' if detail else ''))
     if checked and not args.all:
         print(f"{len(checked)} function{'s' if len(checked) > 1 else ''} checked by "

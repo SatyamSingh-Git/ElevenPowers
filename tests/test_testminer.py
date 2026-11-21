@@ -512,3 +512,64 @@ def test_base_refuses_a_project_below_its_repository_root(tmp_path):
 ])
 def test_values_follow_the_return_type(code, values):
     assert functions(code)[0].values == values
+
+
+TYPED = 'def total(xs) -> int:\n    s = sum(xs)\n    return s + 5\n'
+TYPED_TESTS = 'from svc import total\n\n\ndef test_total():\n    assert total([1]) is not None\n'
+
+
+def project(root, files):
+    import subprocess
+    root.mkdir(parents=True, exist_ok=True)
+    (root / 'pytest.ini').write_text('[pytest]\npythonpath = .\n')
+    for name, text in files.items():
+        (root / name).parent.mkdir(parents=True, exist_ok=True)
+        (root / name).write_text(text)
+    if not (root / '.git').exists():
+        subprocess.run(['git', 'init', '-q'], cwd=root, check=True)
+    subprocess.run(['git', 'add', '-A'], cwd=root, check=True)
+    subprocess.run(['git', '-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-qm', 'files'], cwd=root, check=True)
+    return root
+
+
+@needs_coverage
+def test_a_value_only_checked_against_none_is_partly_checked(tmp_path):
+    from core.testminer.runner import mine
+    root = project(tmp_path, {'svc.py': TYPED, 'tests/test_svc.py': TYPED_TESTS})
+    item = mine(root, names=('svc.py::total',), command=pytest_command())['functions'][0]
+    assert item['verdict'] == 'partly checked'
+    assert item['values'] == [{'value': 'None', 'detected': True}, {'value': '0', 'detected': False},
+                              {'value': '1', 'detected': False}]
+    project(root, {'tests/test_svc.py': TYPED_TESTS.replace('is not None', '== 6')})
+    exact = mine(root, names=('svc.py::total',), command=pytest_command())['functions'][0]
+    assert exact['verdict'] == 'checked' and all(v['detected'] for v in exact['values'])
+    project(root, {'tests/test_svc.py': TYPED_TESTS.replace('assert total([1]) is not None', 'total([1])')})
+    assert mine(root, names=('svc.py::total',), command=pytest_command())['functions'][0]['verdict'] == \
+        'reached, not checked'
+
+
+@needs_coverage
+def test_a_budget_between_two_values_gives_no_verdict(tmp_path, monkeypatch):
+    from core.testminer import runner
+    root = project(tmp_path, {'svc.py': TYPED, 'tests/test_svc.py': TYPED_TESTS})
+    empty = runner._empty
+
+    def late(path, fn, value='None'):
+        if value != 'None':
+            monkeypatch.setattr(runner.time, 'monotonic', lambda: float('inf'))
+        empty(path, fn, value)
+    monkeypatch.setattr(runner, '_empty', late)
+    item = runner.mine(root, names=('svc.py::total',), command=pytest_command())['functions'][0]
+    assert (item['verdict'], item['reason']) == ('unknown', 'budget')
+
+
+@needs_coverage
+def test_cli_names_the_values_no_test_noticed(tmp_path):
+    import subprocess
+    import sys
+    from pathlib import Path
+    root = project(tmp_path, {'svc.py': TYPED, 'tests/test_svc.py': TYPED_TESTS})
+    cli = Path(__file__).resolve().parents[1] / 'plugin/bin/ep_testminer.py'
+    done = subprocess.run([sys.executable, str(cli), '--project', str(root), '--function', 'svc.py::total',
+                           '--command', pytest_command()], capture_output=True, text=True)
+    assert 'svc.py:2 total: partly checked (returning 0 or 1 failed no test)' in done.stdout, done.stdout + done.stderr
