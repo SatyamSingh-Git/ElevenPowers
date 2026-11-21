@@ -19,6 +19,7 @@ from ..strength.scope import select
 from ..strength.settings import Settings
 from .coverage_run import RCFILE, reached, wrap
 from .functions import functions
+from .observe import STALE, observed as run_observed
 
 INSTALL = 'coverage.py 7 is not importable in the test environment; install it there: python -m pip install coverage'
 NOT_RUN = 'the selected tests did not run'
@@ -121,10 +122,10 @@ def _verdict(execution, argv, copy, deadline: float) -> tuple[str, str]:
 
 
 def mine(root: Path, *, base: str = '', names=(), paths=(), command: str = '', seconds: float = 60,
-         limit: int = 20, test_seconds: float = 15) -> dict:
+         limit: int = 20, test_seconds: float = 15, observed: bool = False) -> dict:
     root = Path(root).resolve()
-    if not (base or names or paths):
-        raise ValueError('name what to examine: --base COMMIT, --function FILE::NAME or --path FILE')
+    if not (base or names or paths or observed):
+        raise ValueError('name what to examine: --base COMMIT, --function FILE::NAME, --path FILE or --observed')
     if subprocess.run(['git', 'rev-parse', '--git-dir'], cwd=root, capture_output=True).returncode:
         raise ValueError('the project is not a Git repository; TestMiner copies it with git ls-files')
     command = command or load(root).command_for('tests')
@@ -140,6 +141,14 @@ def mine(root: Path, *, base: str = '', names=(), paths=(), command: str = '', s
         targets = _selected(root, base, names, paths, deadline)
         result = {'schema': 1, 'command': command, 'issues': [], 'functions': []}
         verdicts = {}
+        stale = []
+        if observed:
+            ran, changed, issues = run_observed(root)
+            result['issues'] += issues
+            chosen_keys = {(p, f.first) for p, f in targets}
+            targets = sorted({(p, f.first): (p, f) for p, f in targets + ran}.values(),
+                             key=lambda item: (item[0], item[1].first))
+            stale = [(p, f) for p, f in changed if (p, f.first) not in chosen_keys]
 
         def give(path, fn, verdict, reason='', tests=(), values=()):
             verdicts[path, fn.first] = {'path': path, 'name': fn.name, 'line': fn.first, 'verdict': verdict,
@@ -147,6 +156,8 @@ def mine(root: Path, *, base: str = '', names=(), paths=(), command: str = '', s
 
         for path, fn in targets[limit:]:
             give(path, fn, 'unknown', 'budget')
+        for path, fn in stale:
+            give(path, fn, 'unknown', STALE)
         chosen = targets[:limit]
         try:
             with snapshot(root, settings, deadline) as pristine:
@@ -193,7 +204,7 @@ def mine(root: Path, *, base: str = '', names=(), paths=(), command: str = '', s
             for path, fn in chosen:
                 if (path, fn.first) not in verdicts:
                     give(path, fn, 'unknown', 'budget' if budget_out else str(exc))
-    result['functions'] = [verdicts[p, f.first] for p, f in targets]
+    result['functions'] = [verdicts[p, f.first] for p, f in sorted(targets + stale, key=lambda t: (t[0], t[1].first))]
     state = root / '.elevenpowers'
     state.mkdir(exist_ok=True)
     (state / 'testminer.json').write_text(json.dumps(result, indent=2), encoding='utf-8')

@@ -38,6 +38,8 @@ def main():
                         help='examine one function, e.g. svc.py::Box.size (repeatable)')
     parser.add_argument('--path', action='append', default=[], metavar='FILE',
                         help='examine every function in a file (repeatable)')
+    parser.add_argument('--observed', action='store_true',
+                        help='examine the functions a run saved by "ep_testminer.py record" executed')
     parser.add_argument('--command', default='', help="the test command (default: the project's tests command)")
     parser.add_argument('--seconds', type=float, default=60)
     parser.add_argument('--limit', type=int, default=20)
@@ -48,7 +50,7 @@ def main():
     try:
         result = mine(args.project, base=args.base, names=tuple(args.function), paths=tuple(args.path),
                       command=args.command, seconds=args.seconds, limit=args.limit,
-                      test_seconds=args.test_seconds)
+                      test_seconds=args.test_seconds, observed=args.observed)
     except (OSError, ValueError) as exc:
         parser.exit(2, f'TestMiner could not run: {exc}\n')
     if args.json:

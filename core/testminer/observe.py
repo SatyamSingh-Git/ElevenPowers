@@ -10,10 +10,12 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from .coverage_run import _beside
+from .functions import functions
 
 OBSERVED = '.elevenpowers/testminer-observed.json'
 FORMS = 'pass the program as python SCRIPT ARGS... or python -m MODULE ARGS...'
 INSTALL = 'coverage.py 7 is not importable by {python}; install it there: {python} -m pip install coverage'
+STALE = 'changed since it was recorded; record again'
 MAIN = ('import importlib.util, sys\n'
         'spec = importlib.util.find_spec(sys.argv[1])\n'
         'package = spec is not None and spec.submodule_search_locations is not None\n'
@@ -103,3 +105,29 @@ def record(root: Path, words: list[str]) -> tuple[int, dict | None]:
     (root / '.elevenpowers').mkdir(exist_ok=True)
     (root / OBSERVED).write_text(json.dumps(observation, indent=2), encoding='utf-8')
     return status, observation
+
+
+def observed(root: Path):
+    """(functions a recorded run executed, those in files changed since, issues)."""
+    try:
+        observation = json.loads((root / OBSERVED).read_text(encoding='utf-8'))
+    except FileNotFoundError:
+        raise ValueError('no recorded run; run: ep_testminer.py record -- COMMAND') from None
+    current, stale, issues = [], [], []
+    for path, item in sorted(observation['files'].items()):
+        if not (root / path).is_file():
+            issues.append(f'{path}: recorded, but no longer in the project')
+            continue
+        data = (root / path).read_bytes()
+        lines = set(item['lines'])
+        try:
+            spans = functions(data.decode('utf-8'))
+        except (SyntaxError, UnicodeDecodeError):
+            issues.append(f'{path}: recorded, but Python cannot parse it now')
+            continue
+        # A changed file's lines may have moved: those functions are named, never judged.
+        same = item['sha256'] == hashlib.sha256(data).hexdigest()
+        for fn in spans:
+            if lines & set(range(fn.first, fn.last + 1)):
+                (current if same else stale).append((path, fn))
+    return current, stale, issues

@@ -696,3 +696,53 @@ def test_ctrl_c_ends_the_program_and_the_record_is_saved(tmp_path):
     os.killpg(process.pid, signal.SIGINT)
     process.wait(timeout=30)
     assert (root / '.elevenpowers/testminer-observed.json').exists()
+
+
+OBSERVED_SVC = 'def used(x):\n    y = x + 1\n    return y\n\n\ndef unused(x):\n    y = x - 1\n    return y\n'
+OBSERVED_FILES = {'svc.py': OBSERVED_SVC, 'app.py': 'from svc import used\n\nused(1)\n',
+                  'tests/test_svc.py': 'from svc import used\n\n\ndef test_used():\n    assert used(1) == 2\n'}
+
+
+def observed_project(tmp_path):
+    import sys
+    from core.testminer.observe import record
+    root = project(tmp_path, OBSERVED_FILES)
+    record(root, [sys.executable, 'app.py'])
+    return root
+
+
+@needs_coverage
+def test_observed_selects_what_ran_and_never_what_did_not(tmp_path):
+    from core.testminer.runner import mine
+    root = observed_project(tmp_path)
+    assert verdicts(mine(root, observed=True, command=pytest_command())) == {'used': 'checked'}
+
+
+@needs_coverage
+def test_an_edited_recorded_file_is_unknown_never_a_verdict(tmp_path):
+    from core.testminer.observe import STALE
+    from core.testminer.runner import mine
+    root = observed_project(tmp_path)
+    project(root, {'svc.py': OBSERVED_SVC + '# edited\n'})
+    item = mine(root, observed=True, command=pytest_command())['functions']
+    assert [(f['name'], f['verdict'], f['reason']) for f in item] == [('used', 'unknown', STALE)]
+    named = mine(root, observed=True, names=('svc.py::used',), command=pytest_command())
+    assert verdicts(named) == {'used': 'checked'}
+
+
+@needs_coverage
+def test_a_deleted_recorded_file_is_one_issue(tmp_path):
+    from core.testminer.runner import mine
+    root = observed_project(tmp_path)
+    (root / 'app.py').unlink()
+    project(root, {})
+    result = mine(root, observed=True, command=pytest_command())
+    assert any('app.py' in issue for issue in result['issues'])
+    assert verdicts(result) == {'used': 'checked'}
+
+
+def test_observed_without_a_record_is_refused(tmp_path):
+    from core.testminer.runner import mine
+    root = project(tmp_path, OBSERVED_FILES)
+    with pytest.raises(ValueError, match='ep_testminer.py record'):
+        mine(root, observed=True, command='python -m pytest')
