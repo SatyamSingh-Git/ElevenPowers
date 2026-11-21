@@ -891,5 +891,19 @@ def test_no_extreme_value_looks_up_a_name():
         eval(value, {'__builtins__': {}})
 
 
+def test_record_exits_as_a_shell_would_after_a_signal():
+    from core.testminer.observe import _exit_status
+    assert [_exit_status(code) for code in (0, 3, -2, -15)] == [0, 3, 130, 143]
+
+
+@needs_coverage
+@pytest.mark.skipif(__import__('os').name == 'nt', reason='POSIX signals give negative return codes')
+def test_a_program_killed_by_a_signal_records_its_shell_status(tmp_path):
+    import sys
+    from core.testminer.observe import record
+    root = recorded(tmp_path, 'import os, signal\nos.kill(os.getpid(), signal.SIGKILL)\n')
+    assert record(root, [sys.executable, 'app.py'])[0] == 137
+
+
 def json_text(root):
     return (root / '.elevenpowers/testminer-observed.json').read_text(encoding='utf-8')

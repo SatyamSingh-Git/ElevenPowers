@@ -42,6 +42,11 @@ def _runs_as_module(python: str, name: str, root: Path | None) -> bool:
         return False
 
 
+def _exit_status(code: int) -> int:
+    """A POSIX death by signal N comes back as -N; a shell reports it as 128 + N, and sys.exit(-2) would be 254."""
+    return 128 - code if code < 0 else code
+
+
 def _launched(words: list[str]) -> str | None:
     """The interpreter the Windows `py` launcher would run for these words (`py`, or `py -3.11`)."""
     try:
@@ -109,7 +114,8 @@ def record(root: Path, words: list[str]) -> tuple[int, dict | None]:
         # Ctrl-C reaches the program; TestMiner waits for coverage.py to save.
         previous = signal.signal(signal.SIGINT, lambda *_: None)
         try:
-            status = subprocess.run([python, '-m', 'coverage', 'run', '--rcfile', str(rc), *rest], cwd=root).returncode
+            status = _exit_status(subprocess.run([python, '-m', 'coverage', 'run', '--rcfile', str(rc), *rest],
+                                                 cwd=root).returncode)
         finally:
             signal.signal(signal.SIGINT, previous)
         if not (Path(folder) / 'data').exists():
