@@ -149,7 +149,7 @@ def observed(root: Path):
         data = (root / path).read_bytes()
         lines = set(item['lines'])
         try:
-            spans = functions(data.decode('utf-8'))
+            spans = functions(data.decode('utf-8-sig'))
         except (SyntaxError, UnicodeDecodeError):
             issues.append(f'{path}: recorded, but Python cannot parse it now')
             continue

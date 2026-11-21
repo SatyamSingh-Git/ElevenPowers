@@ -41,7 +41,7 @@ def _selected(root: Path, base: str, names, paths, deadline: float) -> list[tupl
 
     def spans(path):
         try:
-            return functions((root / path).read_text(encoding='utf-8'))
+            return functions((root / path).read_text(encoding='utf-8-sig'))
         except SyntaxError as exc:
             raise ValueError(f'{path}: Python cannot parse it ({exc.msg}, line {exc.lineno})') from None
 

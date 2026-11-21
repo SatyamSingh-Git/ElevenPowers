@@ -856,5 +856,22 @@ def test_the_real_py_launcher_names_an_interpreter():
     assert Path(_launched(['py'])).is_file()
 
 
+def test_a_file_with_a_byte_order_mark_is_read(tmp_path):
+    import hashlib
+    import json
+    import time
+    from core.testminer.observe import OBSERVED, observed
+    from core.testminer.runner import _selected
+    root = project(tmp_path, {})
+    data = b'\xef\xbb\xbfdef brew():\n    c = 1\n    return c\n'
+    (root / 'bom.py').write_bytes(data)
+    (root / '.elevenpowers').mkdir()
+    (root / OBSERVED).write_text(json.dumps({'files': {'bom.py': {'sha256': hashlib.sha256(data).hexdigest(),
+                                                                 'lines': [2, 3]}}}), encoding='utf-8')
+    current, stale, issues = observed(root)
+    assert ([fn.name for _, fn in current], issues) == (['brew'], [])
+    assert [fn.name for _, fn in _selected(root, '', (), ('bom.py',), time.monotonic() + 30)] == ['brew']
+
+
 def json_text(root):
     return (root / '.elevenpowers/testminer-observed.json').read_text(encoding='utf-8')
