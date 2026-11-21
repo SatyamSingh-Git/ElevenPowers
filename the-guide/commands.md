@@ -320,21 +320,53 @@ and [design](../docs/superpowers/specs/2026-11-01-reviewer-report-design.md).
 python PATH_TO_ELEVENPOWERS/plugin/bin/ep_testminer.py --project . --path src/pkg/mod.py
 python PATH_TO_ELEVENPOWERS/plugin/bin/ep_testminer.py --project . --base main --json
 python PATH_TO_ELEVENPOWERS/plugin/bin/ep_testminer.py --project . --function svc.py::Box.size --command "python -m pytest -q"
+python PATH_TO_ELEVENPOWERS/plugin/bin/ep_testminer.py record -- python -m myapp serve
+python PATH_TO_ELEVENPOWERS/plugin/bin/ep_testminer.py --project . --observed
 ```
 
 TestMiner examines the Python functions you name: `--path` for every
-function in a file, `--function` for one, or `--base` for those changed
-since a commit. For each one, in a private copy, it runs your tests under
+function in a file, `--function` for one, `--base` for those changed since
+a commit, or `--observed` for those a recorded run of your program
+executed. For each one, in a private copy, it runs your tests under
 coverage.py to see which tests reach the function. It then replaces the
-function's body with `return None` and runs only those tests. Each function
-gets a verdict:
+function's body with each extreme value its return type allows, and runs
+only those tests for each:
+
+| the function returns | values tried |
+|---|---|
+| nothing evident (no annotation, mixed or unknown kinds) | `None` |
+| `bool` | `None`, `True`, `False` |
+| `int`, `float` | `None`, `0`, `1` (`0.0`, `1.0`) |
+| `str`, `bytes` | `None`, `''`, `'A'` (`b''`, `b'A'`) |
+| `list`, `dict`, `set`, `tuple` | `None`, the empty one, a one-item one |
+
+The type comes from the return annotation (`Optional[X]` and `X | None`
+count as `X`), or, without one, from the function's own `return`
+expressions when all are of one kind. Each function gets a verdict:
 
 | verdict | meaning |
 |---|---|
 | `not reached` | no test ran its body |
-| `reached, not checked` | tests ran it (named), and none failed with its body emptied |
-| `checked` | at least one of them failed, errored or timed out |
+| `reached, not checked` | tests ran it (named), and no value made any of them fail |
+| `partly checked` | some values made them fail, others did not; the text names the ones no test noticed |
+| `checked` | every value made at least one of them fail, error or time out |
 | `unknown` | with the reason |
+
+A test that only crashes on `None` makes a function `partly checked`, not
+`checked`: no test looked at its value.
+
+### Recording a real run
+
+`record` runs your program once, in your project folder, under coverage.py.
+Use it the way you normally do; Ctrl-C ends it and the run is still saved.
+It accepts `python SCRIPT ARGS…`, `python -m MODULE ARGS…`, or a console
+script whose module of the same name runs under `-m`. It writes
+`.elevenpowers/testminer-observed.json`: for each project file that ran,
+the line numbers executed and the file's sha256. Arguments are counted, not
+stored, so a token on the command line never reaches the file.
+`--observed` then examines those functions. A function in a file changed
+since the recording is `unknown` ("changed since it was recorded; record
+again"), unless you also name it.
 
 `unknown` reasons:
 - coverage.py is not installed in the test environment (the line to install
@@ -343,7 +375,8 @@ gets a verdict:
 - the function is reached only from a fixture, `setUp` or import;
 - the body cannot be emptied (generator, `async`, `__init__`, one line,
   docstring only);
-- the budget ran out.
+- the budget ran out, including before every value of a function had run;
+- for `--observed`, the file changed since it was recorded.
 
 The text report lists what needs a look. `checked` functions are counted on
 one line; `--all` lists them too, and `--json` always has everything.

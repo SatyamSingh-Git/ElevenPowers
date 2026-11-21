@@ -28,7 +28,7 @@
 
 1. **ImpactGraph:** maps a change's possible blast radius to affected files, dependencies and candidate tests, grounding plans and milestone recheck advice in repository evidence while showing coverage gaps.
 2. **Milestone verification:** tracks checks for previously built behavior across tasks, flags failed, stale, missing or incomplete evidence, and can advise which checks to rerun as development continues.
-3. **TestMiner (first slice):** for the Python functions you name, says whether your tests reach each one and whether emptying it fails any of them, or why it cannot tell. `ep_testminer.py --path FILE`. Report only; "reached, not checked" is a candidate to look at, not proof.
+3. **TestMiner:** for the Python functions you name, or the ones a recorded run of your program used, says whether your tests reach each one and whether replacing its body with extreme values (`None`, `0`, `''`…) fails any of them, or why it cannot tell. `ep_testminer.py --path FILE`, or `record -- python -m app` then `--observed`. Report only; "reached, not checked" is a candidate to look at, not proof.
 4. **Test strength:** optionally makes small mutations to edited production code in isolation and checks whether passing tests detect them, exposing possible gaps in regression protection.
 5. **Project readiness and health:** discovers project verification commands and checks whether the agent integration is capturing edits, command results and completion correctly, surfacing setup and coverage problems.
 6. **Resumable verification:** runs exact declared checks with durable receipts, preserves their real outcomes through shell wrappers, and saves progress so fresh results can be reused and later edits invalidate outdated evidence.
