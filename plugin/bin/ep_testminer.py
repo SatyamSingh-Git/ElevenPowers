@@ -21,7 +21,9 @@ def record_main(argv):
     except (OSError, ValueError) as exc:
         parser.exit(2, f'TestMiner could not record: {exc}\n')
     if observation is None:
-        print(f'No coverage data was saved (the command exited {status}); nothing recorded.')
+        print(f'No file of this project ran under coverage.py (the command exited {status}); nothing recorded, '
+              'and the previous record, if any, is kept. A package imported from an installed copy is measured '
+              'there, not here.')
     else:
         lines = sum(len(item['lines']) for item in observation['files'].values())
         print(f"Recorded {lines} lines in {len(observation['files'])} files to {OBSERVED}")

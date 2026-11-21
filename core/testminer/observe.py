@@ -108,6 +108,8 @@ def record(root: Path, words: list[str]) -> tuple[int, dict | None]:
         if path in before and item.get('executed_lines'):
             files[path] = {'sha256': before[path] if after.get(path) == before[path] else None,
                            'lines': sorted(item['executed_lines'])}
+    if not files:
+        return status, None
     observation = {'schema': 1, 'command': form, 'arguments': arguments,
                    'recorded': datetime.now(timezone.utc).isoformat(timespec='seconds'), 'files': files}
     (root / '.elevenpowers').mkdir(exist_ok=True)

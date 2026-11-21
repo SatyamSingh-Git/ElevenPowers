@@ -816,5 +816,23 @@ def test_record_keeps_no_absolute_script_path(tmp_path):
     assert outside['command'] == 'python drive.py' and str(tmp_path) not in json_text(root)
 
 
+@needs_coverage
+def test_a_run_that_measured_no_project_file_keeps_the_previous_record(tmp_path):
+    import subprocess
+    import sys
+    from pathlib import Path
+    from core.testminer.observe import record
+    root = recorded(tmp_path / 'proj')
+    record(root, [sys.executable, 'app.py'])
+    before = json_text(root)
+    (tmp_path / 'elsewhere.py').write_text('x = 1\n')
+    status, observation = record(root, [sys.executable, str(tmp_path / 'elsewhere.py')])
+    assert (status, observation) == (0, None) and json_text(root) == before
+    cli = Path(__file__).resolve().parents[1] / 'plugin/bin/ep_testminer.py'
+    done = subprocess.run([sys.executable, str(cli), 'record', '--project', str(root), '--', sys.executable,
+                           str(tmp_path / 'elsewhere.py')], capture_output=True, text=True)
+    assert 'nothing recorded' in done.stdout and 'previous record' in done.stdout
+
+
 def json_text(root):
     return (root / '.elevenpowers/testminer-observed.json').read_text(encoding='utf-8')
