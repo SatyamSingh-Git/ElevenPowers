@@ -1,16 +1,21 @@
 # The journey
 
-Latest: [105 — the test that was served from a cache](105-the-test-that-was-served-from-a-cache.md): TestMiner's
+Latest: [106 — the signature that never runs](106-the-signature-that-never-runs.md): the reviewer's report
+gained TestMiner's function verdicts and was run on real changes. Function-level verdicts cannot see an
+unpinned edit inside an already-tested function; and `--strength` had been reporting mutated type annotations,
+which never run, as lines no test noticed. Fixed.
+
+Previous: [105 — the test that was served from a cache](105-the-test-that-was-served-from-a-cache.md): TestMiner's
 second slice records a real run as line numbers and hashes and tries every extreme value a return type allows.
 Its rehearsal's one finding was false: an `lru_cache` filled by one test hid a function from the test that
 checks it, so a surviving value is now confirmed with the whole command.
 
-Previous: [104 — reached is not checked](104-reached-is-not-checked.md): TestMiner's first slice says, per
+Before that: [104 — reached is not checked](104-reached-is-not-checked.md): TestMiner's first slice says, per
 named Python function, whether tests reach it and whether emptying it fails any of them, or why it cannot tell.
 Its rehearsal found the main parser reading pytest 9's `N passed, M subtests passed` as 0 passed, and one
 false candidate from an equivalent mutant.
 
-Before that: [103 — the command was already written down](103-the-command-was-already-written-down.md): 6 of 12
+Earlier: [103 — the command was already written down](103-the-command-was-already-written-down.md): 6 of 12
 held-out projects had no discovered test command, yet each declared one in tox, make or CI. Borrowed and reduced
 to runner and paths, 5 now get one and all 5 run green; copied verbatim, cachetools' failed. The rehearsal caught
 `pip install pytest` being read as a test run.

@@ -1,5 +1,19 @@
 # Current delivery status
 
+**2026-11-22 — `--strength` no longer reports type annotations as unpinned lines.**
+- **Found** by running `ep_review --strength` on nine agent changes from
+  the held-out sweep. Cosmic Ray mutated signatures (`key: str | bytes` to
+  `str + bytes`). Under `from __future__ import annotations` those never
+  run, so they survived: 11 of 11 survivors on one change, 6 of 8 on
+  another.
+- **Fixed** (434f47f): positions inside argument and return annotations
+  are skipped. Those two changes now leave 1 and 2 survivors, both in real
+  code. Four mutants killed by the new test, which runs the real producer.
+- **Also measured** ([results](../results/review-functions/README.md)): on
+  eight NOT PINNED agent changes, line mutation named unpinned lines in
+  the agent's own edit on 2, the functions section on 1; the review's
+  verdict flagged all eight.
+
 **2026-11-22 — The reviewer's report names the functions no test checks.**
 - **What changed.** `ep_review --functions` runs TestMiner on the review's
   own head worktree for the Python functions the change touched. A new
