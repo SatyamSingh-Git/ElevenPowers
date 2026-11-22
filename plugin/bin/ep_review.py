@@ -23,6 +23,10 @@ def main():
                         help="also mutate the changed lines, under the project's strength settings")
     parser.add_argument('--max-mutants', type=int, help='with --strength: mutations to try (default 8)')
     parser.add_argument('--mutation-seconds', type=float, help='with --strength: time for them (default 60)')
+    parser.add_argument('--functions', action='store_true',
+                        help='also ask TestMiner which Python functions the change touched no test checks')
+    parser.add_argument('--function-seconds', type=float, default=120, help='with --functions: time for them')
+    parser.add_argument('--function-limit', type=int, default=20, help='with --functions: functions to examine')
     parser.add_argument('--format', choices=('markdown', 'json'), default='markdown')
     parser.add_argument('--output', type=Path)
     parser.add_argument('--force', action='store_true')
@@ -32,7 +36,8 @@ def main():
         limits = {key: value for key, value in (('max_mutants', args.max_mutants),
                                                  ('seconds', args.mutation_seconds)) if value is not None}
         value = _portable(review(root, args.base, args.head, command=args.command, timeout=args.timeout,
-                                 strength=args.strength, limits=limits), root)
+                                 strength=args.strength, limits=limits, functions=args.functions,
+                                 function_seconds=args.function_seconds, function_limit=args.function_limit), root)
         text = json.dumps(value, indent=2, ensure_ascii=False) + '\n' if args.format == 'json' else markdown(value)
         if args.output:
             write(args.output, text, force=args.force)

@@ -182,6 +182,10 @@ def _limits(report):
         limits += [f'Mutation analysis: {issue}' for issue in report['strength']['issues']]
         limits.append('A change to a line that no test noticed can behave the same as the original (an equivalent '
                       'mutant), so each unpinned line is a question to look at, not a proven gap.')
+    if report.get('functions') and 'state' not in report['functions']:
+        limits += [f'TestMiner: {issue}' for issue in report['functions']['issues']]
+        limits.append('A value no test noticed can mean the same as what the function returns anyway, so a '
+                      'function listed as not or partly checked is a question to look at, not a proven gap.')
     return limits
 
 
@@ -207,13 +211,23 @@ def _strength(tree, root, base, command, limits):
                          for (path, line, end, context), operators in sorted(lines.items())]}
 
 
-def review(root, base, head='HEAD', *, command=None, timeout=TIMEOUT, strength=False, limits=None):
+def _functions(project, base, command, seconds, limit):
+    """TestMiner on the head worktree: a verdict per function the change touched."""
+    from .testminer.runner import mine
+    try:
+        return mine(project, base=base, command=command, seconds=seconds, limit=limit)
+    except (ValueError, OSError) as exc:
+        return {'state': f'not measured: {exc}'}
+
+
+def review(root, base, head='HEAD', *, command=None, timeout=TIMEOUT, strength=False, limits=None,
+           functions=False, function_seconds=120, function_limit=20):
     root = Path(root).resolve(strict=True)
     command = command if command is not None else load(root).command_for('tests')
     head = _identity(root, head)
     report = {'schema': 1, 'base': _base(root, _identity(root, base), head), 'head': head, 'command': command,
               'verdict': UNKNOWN, 'reason': '', 'pinning': [], 'broken': [], 'named': False, 'runs': [],
-              'strength': None}
+              'strength': None, 'functions': None}
     changed = _changed(root, report['base']['commit'], report['head']['commit'])
     report['tests'] = sorted(path for _, path in changed if _is_test(path))
     report['undone'] = sorted(path for status, path in changed if status != 'A' and not _is_test(path))
@@ -230,7 +244,7 @@ def review(root, base, head='HEAD', *, command=None, timeout=TIMEOUT, strength=F
         report['reason'] = ('the change only added files, which are kept when it is undone' if report['kept']
                             else 'the change touched only tests' if report['tests'] else 'nothing changed')
     # Mutation still measures the lines of a change that only added files.
-    if command and (report['undone'] or (strength and report['kept'])):
+    if command and (report['undone'] or ((strength or functions) and report['kept'])):
         with _worktree(root, report['head']['commit']) as (tree, project, hold):
             runs = report['runs']
             if report['undone']:
@@ -247,6 +261,9 @@ def review(root, base, head='HEAD', *, command=None, timeout=TIMEOUT, strength=F
                 runs.append(_run('head again', command, project, timeout, root))
             if strength:
                 report['strength'] = _strength(project, root, report['base']['commit'], command, limits or {})
+            if functions:
+                report['functions'] = _functions(project, report['base']['commit'], command, function_seconds,
+                                                 function_limit)
         if runs:
             verdict, reason, pinning = (_verdict(*runs) if len(runs) == 3
                                         else (UNKNOWN, f"the head run {runs[0]['problem']}", []))
@@ -285,6 +302,32 @@ def _unpinned(strength, verdict):
     return lines
 
 
+def _unchecked(functions):
+    from .export import _text
+    from .testminer.runner import describe
+    if functions is None:
+        return ['Not measured. Run again with --functions to ask TestMiner which Python functions the change '
+                'touched no test checks.']
+    if 'state' in functions:
+        return [f"Not measured: {_text(functions['state'].removeprefix('not measured: '))}."]
+    items = functions['functions']
+    if not items:
+        return ['The change touched no Python function.']
+    listed = [item for item in items if item['verdict'] in ('partly checked', 'reached, not checked', 'not reached')]
+    lines = [f'- {_text(describe(item))}' for item in listed[:SHOWN]]
+    if len(listed) > SHOWN:
+        lines.append(f'- and {len(listed) - SHOWN} more; the JSON report lists them all')
+    checked = sum(item['verdict'] == 'checked' for item in items)
+    if checked:
+        lines.append(f"{checked} function{'s' if checked > 1 else ''} the change touched "
+                     f"{'are' if checked > 1 else 'is'} checked by {'their' if checked > 1 else 'its'} tests.")
+    unknown = [item for item in items if item['verdict'] == 'unknown']
+    if unknown:
+        reasons = sorted({item['reason'] for item in unknown}, key=len)
+        lines.append(f'{len(unknown)} could not be judged: ' + _text('; '.join(reasons)) + '.')
+    return lines
+
+
 def _listed(names):
     from .export import _text
     lines = [f'- {_text(name)}' for name in names[:SHOWN]]
@@ -316,7 +359,9 @@ def markdown(report):
               + (f" {_text(report['base']['ref'])} has moved on to {report['base']['moved'][:12]} since this "
                  f"change branched, so it is compared from where it branched."
                  if report['base'].get('moved') else ''),
-              '', '## Lines no test noticed', '', *_unpinned(report['strength'], report['verdict']), '', '## What was run', '']
+              '', '## Lines no test noticed', '', *_unpinned(report['strength'], report['verdict']),
+              # .get: a report saved before 2026-11-22 has no functions entry.
+              '', '## Functions no test checks', '', *_unchecked(report.get('functions')), '', '## What was run', '']
     trees = {'head': head, 'undone': f"{head} with {len(report['undone'])} file(s) put back to {base}",
              'head again': head}
     if report['runs']:

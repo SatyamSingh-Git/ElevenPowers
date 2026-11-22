@@ -121,6 +121,15 @@ def _verdict(execution, argv, copy, deadline: float) -> tuple[str, str]:
     return 'unknown', NOT_RUN
 
 
+def describe(item: dict) -> str:
+    """One function's verdict as a line: `svc.py:12 total: partly checked (returning 0 failed no test)`."""
+    detail = item['reason'] or (', '.join(item['tests']) if item['verdict'] == 'reached, not checked' else '')
+    if item['verdict'] == 'partly checked':
+        passed = [v['value'] for v in item['values'] if not v['detected']]
+        detail = f"returning {' or '.join(passed)} failed no test"
+    return f"{item['path']}:{item['line']} {item['name']}: {item['verdict']}" + (f' ({detail})' if detail else '')
+
+
 def mine(root: Path, *, base: str = '', names=(), paths=(), command: str = '', seconds: float = 60,
          limit: int = 20, test_seconds: float = 15, observed: bool = False) -> dict:
     root = Path(root).resolve()

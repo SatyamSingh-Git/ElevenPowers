@@ -6,7 +6,7 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from core.testminer.observe import OBSERVED, record
-from core.testminer.runner import mine
+from core.testminer.runner import describe, mine
 
 
 def record_main(argv):
@@ -65,11 +65,7 @@ def main():
     for item in result['functions']:
         if item['reason'] == 'budget' or (item['verdict'] == 'checked' and not args.all):
             continue
-        detail = item['reason'] or (', '.join(item['tests']) if item['verdict'] == 'reached, not checked' else '')
-        if item['verdict'] == 'partly checked':
-            passed = [v['value'] for v in item['values'] if not v['detected']]
-            detail = f"returning {' or '.join(passed)} failed no test"
-        print(f"{item['path']}:{item['line']} {item['name']}: {item['verdict']}" + (f' ({detail})' if detail else ''))
+        print(describe(item))
     if checked and not args.all:
         print(f"{len(checked)} function{'s' if len(checked) > 1 else ''} checked by "
               f"{'their' if len(checked) > 1 else 'its'} tests (--all lists them)")

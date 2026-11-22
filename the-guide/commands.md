@@ -246,6 +246,7 @@ anyone else.
 ```bash
 python PATH_TO_ELEVENPOWERS/plugin/bin/ep_review.py --project . --base main
 python PATH_TO_ELEVENPOWERS/plugin/bin/ep_review.py --project . --base BASE --head HEAD --strength
+python PATH_TO_ELEVENPOWERS/plugin/bin/ep_review.py --project . --base main --functions
 python PATH_TO_ELEVENPOWERS/plugin/bin/ep_review.py --project . --base BASE --format json --output review.json
 ```
 
@@ -290,6 +291,16 @@ the change breaks them.
 under the project's strength settings (60 seconds and 8 mutants by default).
 It lists each line that could be altered while every test still passes. A
 change that only adds files gets this too.
+
+**Functions no test checks.** `--functions` also runs
+[TestMiner](#ep_testminer--do-the-tests-check-this-function) on the same
+worktree, for the Python functions the change touched. It lists each one
+that is `partly checked` (naming the values no test noticed),
+`reached, not checked` or `not reached`, counts the checked ones, and says
+why any could not be judged. It needs a direct pytest or unittest command
+and coverage.py; otherwise the section says "Not measured" and why, and the
+rest of the review stands. `--function-seconds` (default 120) and
+`--function-limit` (default 20) bound it.
 
 **Its limits.** These are always listed under *Unknown*:
 - Only the one command is judged.

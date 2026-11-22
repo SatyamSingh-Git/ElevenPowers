@@ -728,3 +728,47 @@ def test_the_command_exits_two_when_no_report_can_be_made(tmp_path):
                           capture_output=True, text=True)
     assert done.returncode == 2
     assert 'no-such-ref' in done.stderr
+
+
+# The functions the change touched, through TestMiner (2026-11-22).
+
+coverage = pytest.mark.skipif(__import__('importlib').util.find_spec('coverage') is None,
+                              reason='coverage.py is not installed for this interpreter')
+
+
+@coverage
+def test_functions_the_change_touched_get_testminer_verdicts_both_ways(tmp_path):
+    from core.export import _text
+    from core.review import markdown
+    root, base = _project(tmp_path)
+    _commit(root, {'pkg/mod.py': CHANGED})
+    loose = review(root, base, command=PYTEST, functions=True)
+    assert [(f['name'], f['verdict']) for f in loose['functions']['functions']] == [('value', 'partly checked')]
+    assert _text('pkg/mod.py:2 value: partly checked (returning 0 or 1 failed no test)') in markdown(loose)
+    _commit(root, {'tests/test_two.py': PINNING})
+    pinned = review(root, base, command=PYTEST, functions=True)
+    assert [f['verdict'] for f in pinned['functions']['functions']] == ['checked']
+    assert '1 function the change touched is checked by its tests.' in markdown(pinned)
+    assert 'value: ' not in markdown(pinned)
+
+
+@coverage
+def test_a_command_testminer_cannot_wrap_is_not_measured_and_the_review_still_stands(tmp_path):
+    from core.review import markdown
+    root, base = _project(tmp_path)
+    runner = 'import sys\nimport pytest\nsys.exit(pytest.main(["tests", "-q", "-p", "no:cacheprovider"]))\n'
+    _commit(root, {'pkg/mod.py': CHANGED, 'run.py': runner})
+    report = review(root, base, command=f'"{sys.executable}" run.py', functions=True)
+    assert report['verdict'] == NOT_PINNED
+    assert report['functions']['state'].startswith('not measured:')
+    section = markdown(report).split('## Functions no test checks')[1].split('##')[0]
+    assert 'Not measured: ' in section and 'not a direct pytest or unittest call' in section
+
+
+def test_without_functions_the_report_says_how_to_ask(tmp_path):
+    from core.review import markdown
+    root, base = _project(tmp_path)
+    _commit(root, {'pkg/mod.py': CHANGED})
+    report = review(root, base, command=PYTEST)
+    assert report['functions'] is None
+    assert 'Run again with --functions' in markdown(report)
