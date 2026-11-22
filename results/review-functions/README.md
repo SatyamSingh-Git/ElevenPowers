@@ -45,20 +45,20 @@ worktree).
 
 [`agents.py`](agents.py), [JSON](rehearsal_agents.json). The first
 ordinary-arm run of every held-out task whose environment has coverage.py
-and which the sweep graded resolved: 14 runs on charset_normalizer,
+and which the sweep graded resolved: 13 runs on charset_normalizer,
 oauthlib, pyjwt and uvicorn. The agent's work is committed on top of the
 seed in a copy and reviewed against the seed.
 
 | | runs |
 |---|---|
-| review verdict NOT PINNED | 12 |
+| review verdict NOT PINNED | 11 |
 | PINNED | 1 |
 | UNKNOWN (uvicorn's suite disagreed with itself) | 1 |
 | functions section not measured (uvicorn's pytest addopts run parallel workers; the message says to pass `-n 0`) | 4 |
-| functions section measured | 10 |
+| functions section measured | 9 |
 | a function listed (`partly checked`) | 1 |
 | the agent changed only functions that are `checked` | 6 |
-| the agent changed no function | 3 |
+| the agent changed no function | 2 |
 
 The one listed function was checked by hand. charset_normalizer-017c75c2
 added an empty-payload guard to `CharsetMatch.multi_byte_usage`
@@ -69,12 +69,16 @@ added an empty-payload guard to `CharsetMatch.multi_byte_usage`
 
 ### What this shows about the instrument
 
-Nine of the ten measured changes were NOT PINNED, yet the functions
+Eight of the nine measured changes were NOT PINNED, yet the functions
 section listed one. That is not a contradiction: those functions were
 already tested as a whole before the agent touched them, so emptying them
 fails tests, while the agent's edit inside them is what nothing pins.
 Function-level extreme mutation finds untested *functions*; it does not
 find an untested *edit* inside a tested one. For that, the review's
 verdict (whole change undone) and `--strength` (line mutations) are the
-instruments. Ten agent changes on three projects: an illustration, not a
-rate.
+instruments. Nine measured agent changes on three projects: an
+illustration, not a rate.
+
+*Corrected 2026-11-22: the first version of this section (585d955) counted
+14 runs, 10 measured, 12 NOT PINNED and 3 changing no function; a recount
+from the JSON gives 13, 9, 11 and 2.*
