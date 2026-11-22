@@ -36,3 +36,33 @@ def test_changed_comment_does_not_fall_back_to_unrelated_whole_file_mutation(tmp
     (tmp_path/'a.py').write_text('# changed comment\n\ndef untouched(x):\n    return x > 1\n')
     items,_ = cosmic(tmp_path,['a.py'],sys.executable,Budget(time.monotonic()+30,4),{'a.py':[[1,1]]})
     assert not items and not items.more
+
+
+def test_type_annotations_are_never_mutated_and_code_beside_them_still_is(tmp_path):
+    # Found on held-out agent changes (2026-11-22): `key: str | bytes` became `str + bytes`.
+    # Under `from __future__ import annotations` that line never runs, so every such mutant
+    # survived and the review listed the signature as a line no test noticed.
+    import importlib.util
+    from core.strength.engines import cosmic
+    from core.strength.execution import Budget
+    if importlib.util.find_spec('cosmic_ray') is None:
+        pytest.skip('optional cosmic-ray not installed')
+    source = ('from __future__ import annotations\n\n\n'
+              'def merge(key: str | bytes, flags: int | None = None) -> bytes | None:\n'
+              '    limit: int | None = 3\n'
+              '    return key if flags | 1 else limit\n\n\n'
+              'def café(naïve: int | None) -> int:\n'
+              '    return naïve | 2\n\n\n'
+              # Columns are characters for Cosmic Ray, bytes for ast: six accented letters before
+              # `int` would stretch a byte-counted span over the default `4 | 1`.
+              'def über(ééééé: int = 4 | 1) -> int:\n'
+              '    return ééééé\n')
+    (tmp_path / 'a.py').write_text(source, encoding='utf-8')
+    kept = ('key: str | bytes', 'flags: int | None', '-> bytes | None', 'limit: int | None', 'naïve: int | None')
+    for regions in ({'a.py': [[4, 14]]}, None):
+        items, _ = cosmic(tmp_path, ['a.py'], sys.executable, Budget(time.monotonic() + 60, 400), regions)
+        assert not items.more, 'the sample must reach every line'
+        for text in kept:
+            assert all(text in c.content for c in items), (text, regions)
+        for mutated in ('flags + 1', 'naïve + 2', '= 4 + 1)'):
+            assert any(mutated in c.content for c in items), (mutated, regions)

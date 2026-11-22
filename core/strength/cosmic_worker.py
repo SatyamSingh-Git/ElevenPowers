@@ -11,6 +11,38 @@ from pathlib import Path
 import sys
 
 
+def _annotations(source):
+    """(start, end) of every type annotation, as Cosmic Ray's (line, character column) positions.
+
+    An annotation tests typing, not behaviour; under `from __future__ import annotations` it never
+    runs at all, so a mutant there survives whatever the tests do.
+    """
+    import ast
+    lines = source.splitlines()
+
+    def column(line, offset):
+        return len(lines[line - 1].encode('utf-8')[:offset].decode('utf-8', errors='replace'))
+
+    spans = []
+    # Signatures only: Cosmic Ray 8.7.0 makes no operator mutant inside a variable's annotation
+    # (`limit: int | None = 3`, checked 2026-11-22).
+    for node in ast.walk(ast.parse(source)):
+        if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            continue
+        arguments = node.args
+        found = [a.annotation for a in (*arguments.posonlyargs, *arguments.args, *arguments.kwonlyargs,
+                                        arguments.vararg, arguments.kwarg) if a is not None] + [node.returns]
+        for annotation in found:
+            if annotation is not None:
+                spans.append(((annotation.lineno, column(annotation.lineno, annotation.col_offset)),
+                              (annotation.end_lineno, column(annotation.end_lineno, annotation.end_col_offset))))
+    return spans
+
+
+def _annotated(start, end, spans):
+    return any(first <= tuple(start) and tuple(end) <= last for first, last in spans)
+
+
 def main():
     from cosmic_ray.ast import ast_nodes, get_ast
     from cosmic_ray.plugins import get_operator, operator_names
@@ -29,6 +61,7 @@ def main():
         if Path(path).stat().st_size > 1024 * 1024:
             raise ValueError('mutation source exceeds producer size limit')
         source = read_python_source(Path(path))
+        annotations = _annotations(source)
         for name in sorted(operator_names()):
             cls = get_operator(name)
             if cls.arguments():
@@ -37,6 +70,8 @@ def main():
             positions = (pos for node in ast_nodes(get_ast(source))
                          for pos in operator.mutation_positions(node))
             for occurrence, (start, end) in enumerate(positions):
+                if _annotated(start, end, annotations):
+                    continue
                 if len(items) >= request['maximum']:
                     more = True
                     break
@@ -74,6 +109,7 @@ def targeted(request, engine_version):
         sources[path] = source
         targets = python_targets(source, changed)
         nodes = tuple(ast_nodes(get_ast(source)))
+        annotations = _annotations(source)
         for name in sorted(operator_names()):
             cls = get_operator(name)
             if cls.arguments():
@@ -81,6 +117,8 @@ def targeted(request, engine_version):
             operator = cls()
             positions = (pos for node in nodes for pos in operator.mutation_positions(node))
             for occurrence, (start, end) in enumerate(positions):
+                if _annotated(start, end, annotations):
+                    continue
                 last = max(start[0], end[0] - (end[1] == 0))
                 match = location(start[0], last, changed, targets)
                 if match is None:
