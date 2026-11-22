@@ -1,0 +1,171 @@
+[
+ {
+  "commit": "3985662",
+  "verdict": "pinned",
+  "reason": "2 tests fail with the change undone and pass with it",
+  "pinning": 2,
+  "undone": [
+   "src/charset_normalizer/models.py"
+  ],
+  "state": null,
+  "issues": [],
+  "functions": [
+   {
+    "path": "src/charset_normalizer/models.py",
+    "name": "CharsetMatch.output",
+    "line": 226,
+    "verdict": "checked",
+    "reason": "",
+    "values": [
+     {
+      "value": "None",
+      "detected": true
+     },
+     {
+      "value": "b''",
+      "detected": true
+     },
+     {
+      "value": "b'A'",
+      "detected": true
+     }
+    ],
+    "tests": 9
+   }
+  ]
+ },
+ {
+  "commit": "45dc0e3",
+  "verdict": "pinned",
+  "reason": "10 tests fail with the change undone and pass with it",
+  "pinning": 10,
+  "undone": [
+   "src/charset_normalizer/models.py"
+  ],
+  "state": null,
+  "issues": [],
+  "functions": [
+   {
+    "path": "src/charset_normalizer/models.py",
+    "name": "CharsetMatch.output",
+    "line": 226,
+    "verdict": "checked",
+    "reason": "",
+    "values": [
+     {
+      "value": "None",
+      "detected": true
+     },
+     {
+      "value": "b''",
+      "detected": true
+     },
+     {
+      "value": "b'A'",
+      "detected": true
+     }
+    ],
+    "tests": 8
+   }
+  ]
+ },
+ {
+  "commit": "8e8f8c7",
+  "verdict": "pinned",
+  "reason": "4 tests fail with the change undone and pass with it",
+  "pinning": 4,
+  "undone": [
+   "src/charset_normalizer/models.py"
+  ],
+  "state": null,
+  "issues": [],
+  "functions": [
+   {
+    "path": "src/charset_normalizer/models.py",
+    "name": "CharsetMatch.__str__",
+    "line": 83,
+    "verdict": "checked",
+    "reason": "",
+    "values": [
+     {
+      "value": "None",
+      "detected": true
+     },
+     {
+      "value": "''",
+      "detected": true
+     },
+     {
+      "value": "'A'",
+      "detected": true
+     }
+    ],
+    "tests": 36
+   }
+  ]
+ },
+ {
+  "commit": "f9f92be",
+  "verdict": "pinned",
+  "reason": "19 tests fail with the change undone and pass with it",
+  "pinning": 19,
+  "undone": [
+   "src/charset_normalizer/md.py",
+   "src/charset_normalizer/md.pyx"
+  ],
+  "state": null,
+  "issues": [],
+  "functions": [
+   {
+    "path": "src/charset_normalizer/md.py",
+    "name": "CharInfo.__init__",
+    "line": 108,
+    "verdict": "unknown",
+    "reason": "__init__",
+    "values": [],
+    "tests": 0
+   }
+  ]
+ },
+ {
+  "commit": "3c560f1",
+  "verdict": "pinned",
+  "reason": "4 tests fail with the change undone and pass with it",
+  "pinning": 4,
+  "undone": [
+   "src/charset_normalizer/cd.py",
+   "src/charset_normalizer/cd.pyx"
+  ],
+  "state": null,
+  "issues": [],
+  "functions": [
+   {
+    "path": "src/charset_normalizer/cd.py",
+    "name": "filter_alt_coherence_matches",
+    "line": 384,
+    "verdict": "checked",
+    "reason": "",
+    "values": [
+     {
+      "value": "None",
+      "detected": true
+     }
+    ],
+    "tests": 38
+   }
+  ]
+ },
+ {
+  "commit": "e52699e",
+  "verdict": "pinned",
+  "reason": "8 tests fail with the change undone and pass with it",
+  "pinning": 8,
+  "undone": [
+   "src/charset_normalizer/__main__.py",
+   "src/charset_normalizer/cli/__main__.py"
+  ],
+  "state": null,
+  "issues": [],
+  "functions": []
+ }
+]
