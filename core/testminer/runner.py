@@ -235,8 +235,9 @@ def _baseline(argv, rc, folder, pristine, settings, deadline, budget, seconds, r
                       encoding='utf-8')
         version = execute([argv[0], '-c', 'import coverage; print(coverage.version_info[0])'], copy, budget,
                           seconds, shell=False, original=root)
-        if version.status != 'complete' or version.returncode or not version.stdout.strip().isdigit() \
-                or int(version.stdout.strip()) < 7:
+        if version.status != 'complete':
+            return f'the test interpreter {argv[0]} could not be run: {version.reason or version.status}', {}
+        if version.returncode or not version.stdout.strip().isdigit() or int(version.stdout.strip()) < 7:
             return INSTALL, {}
         execution = execute(argv, copy, budget, seconds, shell=False, original=root)
         if execution.status != 'complete':

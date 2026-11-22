@@ -905,5 +905,15 @@ def test_a_program_killed_by_a_signal_records_its_shell_status(tmp_path):
     assert record(root, [sys.executable, 'app.py'])[0] == 137
 
 
+def test_an_interpreter_that_cannot_start_is_named_not_sent_to_pip(tmp_path):
+    # Found 2026-11-22: a Git Bash path (/e/...) inside --command cannot start on Windows,
+    # and the report said to install coverage.py.
+    from core.testminer.runner import mine
+    missing = tmp_path / 'nowhere' / 'python.exe'
+    result = mine(service(tmp_path / 'proj'), paths=('svc.py',), command=f'"{missing}" -m pytest -q')
+    assert len(result['issues']) == 1
+    assert 'pip install' not in result['issues'][0] and str(missing) in result['issues'][0]
+
+
 def json_text(root):
     return (root / '.elevenpowers/testminer-observed.json').read_text(encoding='utf-8')
