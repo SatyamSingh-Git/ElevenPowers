@@ -82,3 +82,37 @@ illustration, not a rate.
 *Corrected 2026-11-22: the first version of this section (585d955) counted
 14 runs, 10 measured, 12 NOT PINNED and 3 changing no function; a recount
 from the JSON gives 13, 9, 11 and 2.*
+
+## The same agent changes under `--strength`
+
+`agents.py --strength`, [JSON](rehearsal_agents_strength.json): the nine
+measured changes, line mutation (Cosmic Ray) instead of functions, up to
+20 mutants and 480 s each.
+
+**The first run found a defect in `--strength` itself.** On two pyjwt
+changes every survivor but two was a mutated type annotation:
+`key: str | bytes` became `str + bytes`. Both files start with
+`from __future__ import annotations`, so annotations never run and such a
+mutant survives whatever the tests do. The review listed those signatures
+as lines no test noticed. Positions inside argument and return
+annotations are now skipped (434f47f).
+
+| change | survivors before the fix | after | what remains |
+|---|---|---|---|
+| pyjwt-f91ed44d | 8 of 20 | 2 of 20 | `stacklevel=4` in a `warnings.warn` call |
+| pyjwt-717668ad | 11 of 20 | 1 of 14 | `len(key_bytes) == 0` with a comparison replaced; `<= 0` would behave the same, so likely equivalent, and outside the agent's hunk |
+| charset_normalizer-017c75c2 | 18 of 20 | 18 of 20 | the agent's empty-payload guard and the division in `multi_byte_usage` (the function TestMiner called partly checked) |
+| charset_normalizer-667b93c9 | 10 of 20 | 10 of 20 | the agent's comparisons in `__eq__` |
+| pyjwt-5fde08a6, pyjwt-793a3027 | 0 | 0 | every mutant detected, though undoing the whole change is noticed by nothing |
+| charset_normalizer-f6afd31c | 11 invalid | 11 invalid | none ran |
+| oauthlib-50783cff, charset_normalizer-4b335594 | no applicable mutation | | |
+
+### The two instruments side by side
+
+On these eight NOT PINNED changes, line mutation named unpinned lines in
+the agent's work on 2 (charset_normalizer-017c75c2, -667b93c9); TestMiner's
+functions section named 1 (-017c75c2, the same function). On two more,
+every line mutant was noticed although undoing the whole change was not:
+the change's effect is in what it adds together, not in any one line.
+The review's own verdict, the coarsest of the three, is the only one that
+flagged all eight.

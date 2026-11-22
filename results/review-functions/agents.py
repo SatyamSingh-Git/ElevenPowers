@@ -3,7 +3,10 @@
 For each held-out task whose prepared environment has coverage.py, the
 first ordinary-arm run's work folder is copied, the agent's uncommitted
 work is committed on top of the seed, and the change is reviewed against
-the seed with --functions. Usage: agents.py. Writes rehearsal_agents.json.
+the seed with --functions. Usage: agents.py [--strength]. Writes
+rehearsal_agents.json; with --strength, line mutation instead of functions
+(skipping projects whose addopts run parallel workers), written to
+rehearsal_agents_strength.json.
 """
 import json
 import os
@@ -25,9 +28,12 @@ def has_coverage(python):
     return subprocess.run([python, '-c', 'import coverage'], capture_output=True).returncode == 0
 
 
+STRENGTH = '--strength' in sys.argv
 rows = []
 tasks = CORPUS['tasks'] if isinstance(CORPUS, dict) else CORPUS
 for task in tasks:
+    if STRENGTH and task['name'].startswith('uvicorn'):
+        continue
     slot = SWEEP / f"{task['name']}--ordinary--0"
     result = json.loads((slot / 'result.json').read_text(encoding='utf-8')) if (slot / 'result.json').exists() else {}
     if not result.get('resolved') or not has_coverage(task['python']):
@@ -41,10 +47,19 @@ for task in tasks:
         os.environ.update(task.get('env', {}))
         try:
             report = review(work, 'HEAD~1', 'HEAD', command=f'"{task["python"]}" -m pytest -q -p no:cacheprovider',
-                            timeout=600, functions=True, function_seconds=900, function_limit=10)
+                            timeout=600, functions=not STRENGTH, function_seconds=900, function_limit=10,
+                            strength=STRENGTH, limits={'max_mutants': 20, 'seconds': 480})
         finally:
             os.environ.clear()
             os.environ.update(saved)
+    if STRENGTH:
+        strength = report['strength'] or {}
+        row = {'task': task['name'], 'verdict': report['verdict'], 'state': strength.get('state'),
+               'summary': strength.get('summary'), 'issues': strength.get('issues'),
+               'unpinned': strength.get('unpinned')}
+        rows.append(row)
+        print(json.dumps(row), flush=True)
+        continue
     functions = report['functions'] or {}
     row = {'task': task['name'], 'vacuous_in_sweep': result.get('vacuous'), 'verdict': report['verdict'],
            'reason': report['reason'], 'undone': report['undone'], 'tests_changed': report['tests'],
@@ -53,4 +68,5 @@ for task in tasks:
                          | {'tests': len(f['tests'])} for f in functions.get('functions', [])]}
     rows.append(row)
     print(json.dumps(row), flush=True)
-Path(__file__).with_name('rehearsal_agents.json').write_text(json.dumps(rows, indent=1), encoding='utf-8')
+name = 'rehearsal_agents_strength.json' if STRENGTH else 'rehearsal_agents.json'
+Path(__file__).with_name(name).write_text(json.dumps(rows, indent=1), encoding='utf-8')

@@ -1,0 +1,249 @@
+[
+ {
+  "task": "charset_normalizer-017c75c2",
+  "verdict": "not pinned",
+  "state": "incomplete",
+  "summary": {
+   "detected": 2,
+   "undetected": 18,
+   "invalid": 0,
+   "timed_out": 0,
+   "error": 0,
+   "not_run": 0,
+   "incomplete": 0
+  },
+  "issues": [
+   "mutation attempt limit: additional candidates were not examined"
+  ],
+  "unpinned": [
+   {
+    "path": "src/charset_normalizer/models.py",
+    "line": 75,
+    "end_line": 75,
+    "context": "multi_byte_usage",
+    "operators": [
+     "AddNot",
+     "NumberReplacer",
+     "NumberReplacer",
+     "ReplaceComparisonOperator_Eq_Gt",
+     "ReplaceComparisonOperator_Eq_GtE",
+     "ReplaceComparisonOperator_Eq_Lt",
+     "ReplaceComparisonOperator_Eq_LtE",
+     "ReplaceComparisonOperator_Eq_NotEq"
+    ]
+   },
+   {
+    "path": "src/charset_normalizer/models.py",
+    "line": 76,
+    "end_line": 76,
+    "context": "multi_byte_usage",
+    "operators": [
+     "NumberReplacer",
+     "NumberReplacer"
+    ]
+   },
+   {
+    "path": "src/charset_normalizer/models.py",
+    "line": 77,
+    "end_line": 77,
+    "context": "multi_byte_usage",
+    "operators": [
+     "NumberReplacer",
+     "NumberReplacer",
+     "ReplaceBinaryOperator_Div_Add",
+     "ReplaceBinaryOperator_Div_BitAnd",
+     "ReplaceBinaryOperator_Div_BitOr",
+     "ReplaceBinaryOperator_Div_BitXor",
+     "ReplaceBinaryOperator_Div_FloorDiv",
+     "ReplaceBinaryOperator_Div_Mod"
+    ]
+   }
+  ]
+ },
+ {
+  "task": "charset_normalizer-4b335594",
+  "verdict": "pinned",
+  "state": "incomplete",
+  "summary": {
+   "detected": 0,
+   "undetected": 0,
+   "invalid": 0,
+   "timed_out": 0,
+   "error": 0,
+   "not_run": 0,
+   "incomplete": 0
+  },
+  "issues": [
+   "no applicable mutations were produced for the selected source"
+  ],
+  "unpinned": []
+ },
+ {
+  "task": "charset_normalizer-667b93c9",
+  "verdict": "not pinned",
+  "state": "incomplete",
+  "summary": {
+   "detected": 10,
+   "undetected": 10,
+   "invalid": 0,
+   "timed_out": 0,
+   "error": 0,
+   "not_run": 0,
+   "incomplete": 0
+  },
+  "issues": [
+   "mutation attempt limit: additional candidates were not examined"
+  ],
+  "unpinned": [
+   {
+    "path": "src/charset_normalizer/models.py",
+    "line": 43,
+    "end_line": 43,
+    "context": "__eq__",
+    "operators": [
+     "ReplaceComparisonOperator_Eq_GtE",
+     "ReplaceComparisonOperator_Eq_Is",
+     "ReplaceComparisonOperator_Eq_LtE",
+     "ReplaceFalseWithTrue"
+    ]
+   },
+   {
+    "path": "src/charset_normalizer/models.py",
+    "line": 45,
+    "end_line": 45,
+    "context": "__eq__",
+    "operators": [
+     "ReplaceComparisonOperator_Eq_Gt",
+     "ReplaceComparisonOperator_Eq_GtE",
+     "ReplaceComparisonOperator_Eq_Is",
+     "ReplaceComparisonOperator_Eq_Is",
+     "ReplaceComparisonOperator_Eq_IsNot",
+     "ReplaceComparisonOperator_Eq_Lt"
+    ]
+   }
+  ]
+ },
+ {
+  "task": "charset_normalizer-f6afd31c",
+  "verdict": "not pinned",
+  "state": "complete",
+  "summary": {
+   "detected": 0,
+   "undetected": 0,
+   "invalid": 11,
+   "timed_out": 0,
+   "error": 0,
+   "not_run": 0,
+   "incomplete": 0
+  },
+  "issues": [],
+  "unpinned": []
+ },
+ {
+  "task": "pyjwt-5fde08a6",
+  "verdict": "not pinned",
+  "state": "complete",
+  "summary": {
+   "detected": 4,
+   "undetected": 0,
+   "invalid": 0,
+   "timed_out": 0,
+   "error": 0,
+   "not_run": 0,
+   "incomplete": 0
+  },
+  "issues": [],
+  "unpinned": []
+ },
+ {
+  "task": "pyjwt-f91ed44d",
+  "verdict": "not pinned",
+  "state": "incomplete",
+  "summary": {
+   "detected": 18,
+   "undetected": 2,
+   "invalid": 0,
+   "timed_out": 0,
+   "error": 0,
+   "not_run": 0,
+   "incomplete": 0
+  },
+  "issues": [
+   "mutation attempt limit: additional candidates were not examined"
+  ],
+  "unpinned": [
+   {
+    "path": "jwt/api_jws.py",
+    "line": 431,
+    "end_line": 431,
+    "context": "_verify_signature",
+    "operators": [
+     "NumberReplacer",
+     "NumberReplacer"
+    ]
+   }
+  ]
+ },
+ {
+  "task": "pyjwt-793a3027",
+  "verdict": "not pinned",
+  "state": "incomplete",
+  "summary": {
+   "detected": 20,
+   "undetected": 0,
+   "invalid": 0,
+   "timed_out": 0,
+   "error": 0,
+   "not_run": 0,
+   "incomplete": 0
+  },
+  "issues": [
+   "mutation attempt limit: additional candidates were not examined"
+  ],
+  "unpinned": []
+ },
+ {
+  "task": "pyjwt-717668ad",
+  "verdict": "not pinned",
+  "state": "complete",
+  "summary": {
+   "detected": 13,
+   "undetected": 1,
+   "invalid": 0,
+   "timed_out": 0,
+   "error": 0,
+   "not_run": 0,
+   "incomplete": 0
+  },
+  "issues": [],
+  "unpinned": [
+   {
+    "path": "jwt/algorithms.py",
+    "line": 328,
+    "end_line": 328,
+    "context": "prepare_key",
+    "operators": [
+     "ReplaceComparisonOperator_Eq_LtE"
+    ]
+   }
+  ]
+ },
+ {
+  "task": "oauthlib-50783cff",
+  "verdict": "not pinned",
+  "state": "incomplete",
+  "summary": {
+   "detected": 0,
+   "undetected": 0,
+   "invalid": 0,
+   "timed_out": 0,
+   "error": 0,
+   "not_run": 0,
+   "incomplete": 0
+  },
+  "issues": [
+   "no applicable mutations were produced for the selected source"
+  ],
+  "unpinned": []
+ }
+]
