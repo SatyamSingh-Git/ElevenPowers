@@ -211,11 +211,11 @@ def _strength(tree, root, base, command, limits):
                          for (path, line, end, context), operators in sorted(lines.items())]}
 
 
-def _functions(project, base, command, seconds, limit):
+def _functions(project, base, command, seconds, limit, timeout):
     """TestMiner on the head worktree: a verdict per function the change touched."""
-    from .testminer.runner import mine
+    from .testminer import runner
     try:
-        return mine(project, base=base, command=command, seconds=seconds, limit=limit)
+        return runner.mine(project, base=base, command=command, seconds=seconds, limit=limit, test_seconds=timeout)
     except (ValueError, OSError) as exc:
         return {'state': f'not measured: {exc}'}
 
@@ -263,7 +263,7 @@ def review(root, base, head='HEAD', *, command=None, timeout=TIMEOUT, strength=F
                 report['strength'] = _strength(project, root, report['base']['commit'], command, limits or {})
             if functions:
                 report['functions'] = _functions(project, report['base']['commit'], command, function_seconds,
-                                                 function_limit)
+                                                 function_limit, timeout)
         if runs:
             verdict, reason, pinning = (_verdict(*runs) if len(runs) == 3
                                         else (UNKNOWN, f"the head run {runs[0]['problem']}", []))

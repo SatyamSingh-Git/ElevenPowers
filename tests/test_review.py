@@ -765,6 +765,18 @@ def test_a_command_testminer_cannot_wrap_is_not_measured_and_the_review_still_st
     assert 'Not measured: ' in section and 'not a direct pytest or unittest call' in section
 
 
+def test_testminer_gets_the_reviews_time_per_run(tmp_path, monkeypatch):
+    # Found on charset_normalizer (2026-11-22): its suite under coverage outlasts TestMiner's own
+    # 15 s default, so 2 of 6 real reviews said "baseline timed_out".
+    from core.testminer import runner
+    asked = {}
+    monkeypatch.setattr(runner, 'mine', lambda root, **options: asked.update(options) or {'state': 'stub'})
+    root, base = _project(tmp_path)
+    _commit(root, {'pkg/mod.py': CHANGED})
+    review(root, base, command=PYTEST, functions=True, timeout=77)
+    assert asked['test_seconds'] == 77
+
+
 def test_without_functions_the_report_says_how_to_ask(tmp_path):
     from core.review import markdown
     root, base = _project(tmp_path)
