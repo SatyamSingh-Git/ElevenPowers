@@ -1,0 +1,357 @@
+[
+ {
+  "task": "charset_normalizer-017c75c2",
+  "vacuous_in_sweep": true,
+  "verdict": "not pinned",
+  "reason": "no test fails with the change undone that did not already fail with it",
+  "undone": [
+   "src/charset_normalizer/models.py"
+  ],
+  "tests_changed": [],
+  "state": null,
+  "issues": [],
+  "functions": [
+   {
+    "path": "src/charset_normalizer/models.py",
+    "name": "CharsetMatch.multi_byte_usage",
+    "line": 75,
+    "verdict": "partly checked",
+    "reason": "",
+    "values": [
+     {
+      "value": "None",
+      "detected": true
+     },
+     {
+      "value": "0.0",
+      "detected": false
+     },
+     {
+      "value": "1.0",
+      "detected": false
+     }
+    ],
+    "tests": 9
+   }
+  ]
+ },
+ {
+  "task": "charset_normalizer-4b335594",
+  "vacuous_in_sweep": false,
+  "verdict": "pinned",
+  "reason": "1 test fails with the change undone and passes with it",
+  "undone": [
+   "src/charset_normalizer/constant.py"
+  ],
+  "tests_changed": [
+   "tests/test_detect_legacy.py"
+  ],
+  "state": null,
+  "issues": [],
+  "functions": []
+ },
+ {
+  "task": "charset_normalizer-667b93c9",
+  "vacuous_in_sweep": true,
+  "verdict": "not pinned",
+  "reason": "no test fails with the change undone that did not already fail with it",
+  "undone": [
+   "src/charset_normalizer/models.py"
+  ],
+  "tests_changed": [],
+  "state": null,
+  "issues": [],
+  "functions": [
+   {
+    "path": "src/charset_normalizer/models.py",
+    "name": "CharsetMatch.__eq__",
+    "line": 41,
+    "verdict": "checked",
+    "reason": "",
+    "values": [
+     {
+      "value": "None",
+      "detected": true
+     },
+     {
+      "value": "True",
+      "detected": true
+     },
+     {
+      "value": "False",
+      "detected": true
+     }
+    ],
+    "tests": 14
+   }
+  ]
+ },
+ {
+  "task": "charset_normalizer-f6afd31c",
+  "vacuous_in_sweep": true,
+  "verdict": "not pinned",
+  "reason": "no test fails with the change undone that did not already fail with it",
+  "undone": [
+   "src/charset_normalizer/constant.py"
+  ],
+  "tests_changed": [],
+  "state": null,
+  "issues": [],
+  "functions": []
+ },
+ {
+  "task": "pyjwt-5fde08a6",
+  "vacuous_in_sweep": true,
+  "verdict": "not pinned",
+  "reason": "no test fails with the change undone that did not already fail with it",
+  "undone": [
+   "jwt/api_jwt.py"
+  ],
+  "tests_changed": [],
+  "state": null,
+  "issues": [],
+  "functions": [
+   {
+    "path": "jwt/api_jwt.py",
+    "name": "PyJWT._decode_payload",
+    "line": 290,
+    "verdict": "checked",
+    "reason": "",
+    "values": [
+     {
+      "value": "None",
+      "detected": true
+     },
+     {
+      "value": "{}",
+      "detected": true
+     },
+     {
+      "value": "{None: None}",
+      "detected": true
+     }
+    ],
+    "tests": 76
+   }
+  ]
+ },
+ {
+  "task": "pyjwt-f91ed44d",
+  "vacuous_in_sweep": true,
+  "verdict": "not pinned",
+  "reason": "no test fails with the change undone that did not already fail with it",
+  "undone": [
+   "jwt/api_jws.py"
+  ],
+  "tests_changed": [],
+  "state": null,
+  "issues": [],
+  "functions": [
+   {
+    "path": "jwt/api_jws.py",
+    "name": "PyJWS._verify_signature",
+    "line": 393,
+    "verdict": "checked",
+    "reason": "",
+    "values": [
+     {
+      "value": "None",
+      "detected": true
+     }
+    ],
+    "tests": 99
+   }
+  ]
+ },
+ {
+  "task": "pyjwt-793a3027",
+  "vacuous_in_sweep": true,
+  "verdict": "not pinned",
+  "reason": "no test fails with the change undone that did not already fail with it",
+  "undone": [
+   "jwt/api_jwt.py"
+  ],
+  "tests_changed": [],
+  "state": null,
+  "issues": [],
+  "functions": [
+   {
+    "path": "jwt/api_jwt.py",
+    "name": "PyJWT._validate_iat",
+    "line": 476,
+    "verdict": "checked",
+    "reason": "",
+    "values": [
+     {
+      "value": "None",
+      "detected": true
+     }
+    ],
+    "tests": 4
+   },
+   {
+    "path": "jwt/api_jwt.py",
+    "name": "PyJWT._validate_nbf",
+    "line": 491,
+    "verdict": "checked",
+    "reason": "",
+    "values": [
+     {
+      "value": "None",
+      "detected": true
+     }
+    ],
+    "tests": 4
+   },
+   {
+    "path": "jwt/api_jwt.py",
+    "name": "PyJWT._validate_exp",
+    "line": 505,
+    "verdict": "checked",
+    "reason": "",
+    "values": [
+     {
+      "value": "None",
+      "detected": true
+     }
+    ],
+    "tests": 19
+   }
+  ]
+ },
+ {
+  "task": "pyjwt-717668ad",
+  "vacuous_in_sweep": true,
+  "verdict": "not pinned",
+  "reason": "no test fails with the change undone that did not already fail with it",
+  "undone": [
+   "jwt/algorithms.py"
+  ],
+  "tests_changed": [],
+  "state": null,
+  "issues": [],
+  "functions": [
+   {
+    "path": "jwt/algorithms.py",
+    "name": "HMACAlgorithm.prepare_key",
+    "line": 326,
+    "verdict": "checked",
+    "reason": "",
+    "values": [
+     {
+      "value": "None",
+      "detected": true
+     },
+     {
+      "value": "b''",
+      "detected": true
+     },
+     {
+      "value": "b'A'",
+      "detected": true
+     }
+    ],
+    "tests": 145
+   }
+  ]
+ },
+ {
+  "task": "uvicorn-31e3e00f",
+  "vacuous_in_sweep": true,
+  "verdict": "not pinned",
+  "reason": "no test fails with the change undone that did not already fail with it",
+  "undone": [
+   "uvicorn/protocols/http/h11_impl.py",
+   "uvicorn/protocols/http/httptools_impl.py",
+   "uvicorn/protocols/http/zttp_impl.py"
+  ],
+  "tests_changed": [],
+  "state": "not measured: the project's pytest addopts run tests in parallel workers; pass --command with -n 0, for example --command \"python -m pytest -n 0\"",
+  "issues": null,
+  "functions": []
+ },
+ {
+  "task": "uvicorn-5ac6265a",
+  "vacuous_in_sweep": true,
+  "verdict": "not pinned",
+  "reason": "no test fails with the change undone that did not already fail with it",
+  "undone": [
+   "docs/settings.md",
+   "uvicorn/config.py",
+   "uvicorn/main.py"
+  ],
+  "tests_changed": [],
+  "state": "not measured: the project's pytest addopts run tests in parallel workers; pass --command with -n 0, for example --command \"python -m pytest -n 0\"",
+  "issues": null,
+  "functions": []
+ },
+ {
+  "task": "uvicorn-cc6fea5b",
+  "vacuous_in_sweep": true,
+  "verdict": "not pinned",
+  "reason": "no test fails with the change undone that did not already fail with it",
+  "undone": [
+   "uvicorn/protocols/http/httptools_impl.py"
+  ],
+  "tests_changed": [],
+  "state": "not measured: the project's pytest addopts run tests in parallel workers; pass --command with -n 0, for example --command \"python -m pytest -n 0\"",
+  "issues": null,
+  "functions": []
+ },
+ {
+  "task": "uvicorn-4a959207",
+  "vacuous_in_sweep": true,
+  "verdict": "unknown",
+  "reason": "the suite gave different results on the same tree, so a difference cannot be trusted",
+  "undone": [
+   "uvicorn/main.py"
+  ],
+  "tests_changed": [],
+  "state": "not measured: the project's pytest addopts run tests in parallel workers; pass --command with -n 0, for example --command \"python -m pytest -n 0\"",
+  "issues": null,
+  "functions": []
+ },
+ {
+  "task": "oauthlib-50783cff",
+  "vacuous_in_sweep": true,
+  "verdict": "not pinned",
+  "reason": "no test fails with the change undone that did not already fail with it",
+  "undone": [
+   "oauthlib/oauth2/rfc6749/endpoints/introspect.py",
+   "oauthlib/oauth2/rfc6749/endpoints/revocation.py"
+  ],
+  "tests_changed": [],
+  "state": null,
+  "issues": [],
+  "functions": [
+   {
+    "path": "oauthlib/oauth2/rfc6749/endpoints/introspect.py",
+    "name": "IntrospectEndpoint.validate_introspect_request",
+    "line": 83,
+    "verdict": "checked",
+    "reason": "",
+    "values": [
+     {
+      "value": "None",
+      "detected": true
+     }
+    ],
+    "tests": 12
+   },
+   {
+    "path": "oauthlib/oauth2/rfc6749/endpoints/revocation.py",
+    "name": "RevocationEndpoint.validate_revocation_request",
+    "line": 79,
+    "verdict": "checked",
+    "reason": "",
+    "values": [
+     {
+      "value": "None",
+      "detected": true
+     }
+    ],
+    "tests": 8
+   }
+  ]
+ }
+]
