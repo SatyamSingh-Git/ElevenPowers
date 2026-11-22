@@ -915,5 +915,18 @@ def test_an_interpreter_that_cannot_start_is_named_not_sent_to_pip(tmp_path):
     assert 'pip install' not in result['issues'][0] and str(missing) in result['issues'][0]
 
 
+@needs_coverage
+def test_a_slow_baseline_says_how_long_it_waited(tmp_path):
+    from core.testminer.runner import mine
+    slow = SERVICE_TESTS + '\n\ndef test_slow():\n    import time\n    time.sleep(4)\n'
+    result = mine(service(tmp_path, slow), paths=('svc.py',), command=pytest_command(), test_seconds=2)
+    assert result['issues'] == ['baseline: the unmodified tests took longer than 2 s per run; allow more time '
+                                '(ep_testminer --test-seconds, ep_review --timeout)']
+    overall = mine(service(tmp_path / 'b', slow), paths=('svc.py',), command=pytest_command(), seconds=3,
+                   test_seconds=60)
+    assert overall['issues'] == ['the time budget ran out during the baseline; raise ep_testminer --seconds '
+                                 '(ep_review --function-seconds)']
+
+
 def json_text(root):
     return (root / '.elevenpowers/testminer-observed.json').read_text(encoding='utf-8')

@@ -240,6 +240,12 @@ def _baseline(argv, rc, folder, pristine, settings, deadline, budget, seconds, r
         if version.returncode or not version.stdout.strip().isdigit() or int(version.stdout.strip()) < 7:
             return INSTALL, {}
         execution = execute(argv, copy, budget, seconds, shell=False, original=root)
+        if execution.status == 'timed_out' and time.monotonic() < deadline:
+            return (f'baseline: the unmodified tests took longer than {seconds:g} s per run; allow more time '
+                    '(ep_testminer --test-seconds, ep_review --timeout)'), {}
+        if execution.status == 'timed_out':
+            return ('the time budget ran out during the baseline; raise ep_testminer --seconds '
+                    '(ep_review --function-seconds)'), {}
         if execution.status != 'complete':
             return 'baseline ' + (execution.reason or execution.status), {}
         passed, failed, errors = outcomes(' '.join(argv), execution, copy)
