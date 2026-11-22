@@ -1,5 +1,20 @@
 # Current delivery status
 
+**2026-11-22 — The reviewer's report names the functions no test checks.**
+- **What changed.** `ep_review --functions` runs TestMiner on the review's
+  own head worktree for the Python functions the change touched. A new
+  section lists the `partly checked`, `reached, not checked` and
+  `not reached` ones, and counts the checked ones. When TestMiner cannot
+  run, it says why, and the rest of the review stands.
+- **Checks:**
+  - three new review tests, both directions, five mutants killed;
+  - an end-to-end run read by hand.
+- **Found on the way:** an interpreter that could not start (a Git Bash
+  `/e/...` path inside `--command`) was reported as "coverage.py not
+  importable, install it". It is now named (a54fbb0).
+- **Bounds:** Python only; opt-in, because it adds one more coverage run
+  and a few runs per function.
+
 **2026-11-21 — TestMiner, second slice: a recorded run, and more than one value.**
 - **What changed.**
   - `ep_testminer.py record -- python -m app ARGS` runs your program once in
