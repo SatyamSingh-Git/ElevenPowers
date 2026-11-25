@@ -280,7 +280,9 @@ UNKNOWN is given when:
   editable install, or `PYTHONPATH` pointing into it);
 - a red head named no tests;
 - a run stopped before every test ran (`-x`, `--maxfail`, a collection
-  error);
+  error, or a Maven module listed `SKIPPED` after an earlier one failed;
+  `mvn -q` prints no such list, so a quiet Maven run that stopped is not
+  seen);
 - the suite disagreed with itself on the same tree.
 
 Tests that fail with the change and pass without it are listed separately:

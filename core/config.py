@@ -153,6 +153,10 @@ def discover_commands(root: Path, origins: dict | None = None) -> dict[str, str]
         candidates.append({"tests": "cargo test", "typecheck": "cargo check", "build": "cargo build"})
     if (root / "go.mod").is_file():
         candidates.append({"tests": "go test ./...", "build": "go build ./..."})
+    if (root / "pom.xml").is_file():
+        # The project's own wrapper pins its Maven version; it is used only where it can run.
+        wrapper = "mvnw.cmd" if os.name == "nt" else "./mvnw"
+        candidates.append({"tests": f"{wrapper if (root / wrapper).is_file() else 'mvn'} test"})
     pytest_configured = (root / "pytest.ini").is_file()
     try:
         data = tomllib.loads((root / "pyproject.toml").read_text(encoding="utf-8"))

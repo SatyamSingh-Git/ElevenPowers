@@ -61,6 +61,22 @@ def test_a_build_that_skipped_a_module_stopped_before_every_test_ran():
         assert not STOPPED.search(read(complete)), complete
 
 
+def test_a_pom_is_discovered_as_the_test_command_and_its_wrapper_preferred(tmp_path, monkeypatch):
+    from core import config
+    (tmp_path / 'pom.xml').write_text('<project/>')
+    assert config.discover_commands(tmp_path)['tests'] == 'mvn test'
+    (tmp_path / 'mvnw').write_text('')
+    (tmp_path / 'mvnw.cmd').write_text('')
+    monkeypatch.setattr(config.os, 'name', 'nt')
+    assert config.discover_commands(tmp_path)['tests'] == 'mvnw.cmd test'
+    monkeypatch.setattr(config.os, 'name', 'posix')
+    assert config.discover_commands(tmp_path)['tests'] == './mvnw test'
+    # A wrapper for one platform only is used where it runs, and nowhere else.
+    (tmp_path / 'mvnw.cmd').unlink()
+    monkeypatch.setattr(config.os, 'name', 'nt')
+    assert config.discover_commands(tmp_path)['tests'] == 'mvn test'
+
+
 def test_a_compile_is_a_build_not_a_test_run(tmp_path):
     found = parsers.parse('mvn -q compile', '', 0, tmp_path)
     assert not any(r.kind in (Kind.SUITE, Kind.TEST) for r in found)

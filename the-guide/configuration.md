@@ -380,6 +380,7 @@ Command discovery reads only the selected project root:
 | `pytest.ini` or `[tool.pytest.ini_options]` | `python -m pytest` |
 | `Cargo.toml` | `cargo test`, `cargo check`, `cargo build` |
 | `go.mod` | `go test ./...`, `go build ./...` |
+| `pom.xml` | `mvn test`, or the project's own wrapper when it has one for this platform (`mvnw.cmd test` on Windows, `./mvnw test` elsewhere) |
 | None of the above names a test command, but `tox.ini` `[testenv] commands`, a `Makefile` `test:` target or a `.github/workflows` `run:` step does | `python -m pytest PATHS` or `python -m unittest [discover]` |
 
 The last row borrows the test command the project already declares, in that
