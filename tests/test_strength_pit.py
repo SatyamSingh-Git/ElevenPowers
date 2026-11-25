@@ -241,3 +241,21 @@ def test_pit_that_did_not_complete_leaves_the_record_incomplete(tmp_path, monkey
     monkeypatch.setattr(pit, 'run', lambda *args: ([], ['PIT did not complete (exit 1: [ERROR] x)'], False))
     value = analyze(java_ledger(tmp_path, './gradlew test', monkeypatch))
     assert value['state'] == 'incomplete' and 'PIT did not complete (exit 1: [ERROR] x)' in value['issues']
+
+
+def test_an_unchanged_java_change_reuses_its_pit_record(tmp_path, monkeypatch):
+    from core.strength.model import Observation
+    from core.strength.runner import analyze
+    runs = []
+
+    def run(*args):
+        runs.append(args)
+        return [Observation('pit:0', SHAPES, 5, 'negated conditional', 'detected', relevance='changed_lines',
+                            context='Shapes.big')], [], False
+    monkeypatch.setattr(pit, 'run', run)
+    ledger = java_ledger(tmp_path, 'mvn test', monkeypatch)
+    first = analyze(ledger)
+    assert analyze(ledger)['observations'] == first['observations'] and len(runs) == 1
+    monkeypatch.setattr(pit, 'PIT', '1.30.3')
+    analyze(ledger)
+    assert len(runs) == 2
