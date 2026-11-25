@@ -1522,6 +1522,10 @@ OK (skipped=1)
             "src/a.ts(3,10): error TS2345: no.\nFound 2 errors.\n", "\n"),
     "go": ("go test ./... 2>&1 | tail -20",
            "ok  \texample/a\t0.01s\nFAIL\texample/b\t0.02s\n", "ok  \texample/a\t0.01s\n"),
+    # Maven 3.9.9 / Surefire 3.5.2 module totals, captured 2026-11-25 (tests/fixtures/maven).
+    "maven": ("mvn test 2>&1 | tail -20",
+              "[ERROR] Tests run: 20, Failures: 1, Errors: 1, Skipped: 0\n",
+              "[INFO] Tests run: 20, Failures: 0, Errors: 0, Skipped: 0\n"),
     "cargo": ("cargo test 2>&1 | tail -20",
               "test result: FAILED. 18 passed; 2 failed; 0 ignored\n",
               "test result: ok. 20 passed; 0 failed; 0 ignored\n"),

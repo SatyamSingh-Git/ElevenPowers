@@ -67,6 +67,13 @@ CARGO_RESULT = re.compile(
     r"test result:\s+(?P<status>ok|FAILED)\.\s+(?P<passed>\d+) passed;\s+(?P<failed>\d+) failed",
     re.MULTILINE,
 )
+# Maven Surefire/Failsafe, 2.x and 3.x alike. Each module's total has no `Time elapsed`;
+# the per-class lines do, so totals are the lines that end at `Skipped: N`.
+MAVEN_TOTAL = re.compile(r"^\[(?:INFO|WARNING|ERROR)\] Tests run: (?P<total>\d+), Failures: (?P<failures>\d+), "
+                         r"Errors: (?P<errors>\d+), Skipped: (?P<skipped>\d+)\s*$", re.MULTILINE)
+MAVEN_BLOCK = re.compile(r"^\[ERROR\] (?:Failures|Errors):\s*$")
+MAVEN_NAME = re.compile(r"^\[ERROR\]   (?P<name>[\w$.]+)")
+MAVEN = re.compile(r"(?<![\w-])(?:\./)?mvnw?(?:\.cmd)?(?![\w-])")
 RSPEC = re.compile(r"(?P<total>\d+) examples?, (?P<failed>\d+) failures?")
 MIX = re.compile(r"(?P<total>\d+) tests?, (?P<failed>\d+) failures?")
 PHPUNIT = re.compile(r"Tests: (?P<total>\d+), Assertions: \d+(?:, Failures: (?P<failed>\d+))?")
@@ -528,6 +535,8 @@ def _parse_known(command: str, output: str, exit_code: int, root: Path) -> list[
         return [_counted(Kind.SUITE, cmd, output, exit_code, root, PHPUNIT)]
     if re.search(r"\bdotnet test\b", low):
         return [_counted(Kind.SUITE, cmd, output, exit_code, root, DOTNET)]
+    if MAVEN.search(low) and re.search(r"\b(?:test|verify|install|package)\b", low):
+        return _maven(cmd, output, exit_code, root)
     # Before the wrapper fallback, and deliberately: a command name is not a
     # runner. `npm test`, `yarn test` and `turbo test` all emit the TAP below
     # while naming nothing, and `_wrapped` would only trust their exit code.
@@ -804,6 +813,38 @@ def _cargo(command: str, output: str, exit_code: int, root: Path) -> Evidence:
         record.passed += int(passed)
         record.failed += int(failed)
     return _counts_decide(record)
+
+
+def _maven(command: str, output: str, exit_code: int, root: Path) -> list[Evidence]:
+    """Counts from each module's Surefire total; names from its Failures/Errors block.
+
+    The per-test failure line differs between Surefire 2.x and 3.x; the block does not.
+    `[INFO]   from pom.xml` has the same indent as a name, so only lines inside a block count.
+    """
+    suite = _record(Kind.SUITE, _scope(command), exit_code, command, root, output)
+    names, inside = [], False
+    for line in output.splitlines():
+        if MAVEN_BLOCK.match(line):
+            inside = True
+            continue
+        name = MAVEN_NAME.match(line) if inside else None
+        if name:
+            names.append(name.group("name"))
+        else:
+            inside = False
+    totals = MAVEN_TOTAL.findall(output)
+    if totals:
+        for total, failures, errors, skipped in totals:
+            bad = int(failures) + int(errors)
+            suite.failed += bad
+            suite.passed += max(int(total) - bad - int(skipped), 0)
+        suite.counted = True
+        _counts_decide(suite)
+    tests = [Evidence(kind=Kind.TEST, identity=name, result=Result.FAIL, observed=suite.observed, tree=suite.tree,
+                      scope="source", command=command, at=suite.at, vcs=suite.vcs,
+                      coverage_issues=suite.coverage_issues)
+             for name in names]
+    return [*tests, suite]
 
 
 def _stability(match: re.Match, command: str, root: Path) -> Evidence:
