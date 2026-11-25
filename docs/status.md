@@ -1,5 +1,20 @@
 # Current delivery status
 
+**2026-11-25 — Maven test runs are counted and named.**
+- **Before:** a Maven build was judged by its exit code alone, no test
+  command came from `pom.xml`, and `ep_review` could say a change was
+  pinned but not by which test.
+- **Now:** each module's Surefire total is summed and each failing test
+  named, on Surefire 2.x and 3.x; a module Maven skipped after an earlier
+  failure makes the review a stopped run; `pom.xml` gives `mvn test`, or the
+  project's own wrapper.
+- **Checks:** fixtures are real Maven 3.9.9 output (six runs: two Surefire
+  versions, quiet, two modules, stopped); every new branch mutation-checked;
+  a real `ep_review` of a Maven fix names `CalcTest.adds`, where the code
+  before said "named no test".
+- **Bounds:** a quiet (`-q`) build that stopped is not seen; Gradle, Java
+  mutation (PIT) and per-test coverage are not built.
+
 **2026-11-22 — `--strength` no longer reports type annotations as unpinned lines.**
 - **Found** by running `ep_review --strength` on nine agent changes from
   the held-out sweep. Cosmic Ray mutated signatures (`key: str | bytes` to
