@@ -282,9 +282,15 @@ UNKNOWN is given when:
 - a run stopped before every test ran (`-x`, `--maxfail`, a collection
   error, or a Maven module listed `SKIPPED` after an earlier one failed;
   `mvn -q` prints no such list, so a quiet Maven run that stopped is not
-  seen; or a failed Gradle build of several subprojects without
-  `--continue`, which never says which test tasks it did not run);
+  seen; or a failed Gradle build of several subprojects run with
+  `--no-continue`, which never says which test tasks it did not run);
 - the suite disagreed with itself on the same tree.
+
+So that one failing module does not hide the rest, the review runs a Gradle
+build with `--continue` and a Maven build with `-fae`, unless the command
+already chooses (`--no-continue`, `-ff`, `-fn` and the like). The report shows
+each command as it was run. A module that depends on a failed one is still not
+built; Maven lists it `SKIPPED`, which counts as stopped.
 
 Tests that fail with the change and pass without it are listed separately:
 the change breaks them.

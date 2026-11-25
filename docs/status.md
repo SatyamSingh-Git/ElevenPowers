@@ -1,5 +1,19 @@
 # Current delivery status
 
+**2026-11-25 — `ep_review` builds past a failing module.**
+- **Before:** a Gradle or Maven project with one module that already fails
+  stopped there on every tree, so the review answered UNKNOWN for a change a
+  later module's test pins.
+- **Now:** the review (and the old-tree check) runs Gradle with
+  `--continue` and Maven with `-fae`, unless the command already chooses.
+- **Checks:** two real multi-module builds (alpha fails on purpose, beta's
+  test pins the change) went from UNKNOWN to PINNED naming
+  `BetaTwiceTest.doubles`; real `-fae` output still lists a dependent module
+  `SKIPPED`, which the stop rule reads; twelve mutants killed.
+- **Bounds:** Gradle's `--continue` skips tasks that depend on a failed one
+  without saying so; JUnit XML reports were considered and set aside
+  (Gradle names a parameterised case without its method, so names collide).
+
 **2026-11-25 — Gradle test runs are counted and named.**
 - **Now:** a failing Gradle run is counted from its `N tests completed, M
   failed` lines and each failing test named (nested and parameterised
