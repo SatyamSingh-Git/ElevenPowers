@@ -282,7 +282,8 @@ UNKNOWN is given when:
 - a run stopped before every test ran (`-x`, `--maxfail`, a collection
   error, or a Maven module listed `SKIPPED` after an earlier one failed;
   `mvn -q` prints no such list, so a quiet Maven run that stopped is not
-  seen);
+  seen; or a failed Gradle build of several subprojects without
+  `--continue`, which never says which test tasks it did not run);
 - the suite disagreed with itself on the same tree.
 
 Tests that fail with the change and pass without it are listed separately:

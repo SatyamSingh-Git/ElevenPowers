@@ -1,5 +1,21 @@
 # Current delivery status
 
+**2026-11-25 — Gradle test runs are counted and named.**
+- **Now:** a failing Gradle run is counted from its `N tests completed, M
+  failed` lines and each failing test named (nested and parameterised
+  included); `ep_review` treats a failed multi-project build without
+  `--continue` as one that may not have reached every test task; a Gradle
+  build file gives `gradle test`, or the wrapper.
+- **Found by running it:** a passing Gradle run prints no count at all, and
+  a re-run with unchanged inputs runs nothing (`UP-TO-DATE`). The runner
+  table's both-ways guard had required a green run to be counted; for
+  Gradle it now says so instead of accepting an invented count.
+- **Checks:** seven real Gradle 8.10.2 outputs as fixtures; ten mutants
+  killed; a real `ep_review` of a Gradle fix names `CalcTest.adds`, where
+  the code before said "named no test".
+- **Bounds:** passing runs uncounted; `-q` names nothing; no Java mutation
+  or per-test coverage.
+
 **2026-11-25 — Maven test runs are counted and named.**
 - **Before:** a Maven build was judged by its exit code alone, no test
   command came from `pom.xml`, and `ep_review` could say a change was
