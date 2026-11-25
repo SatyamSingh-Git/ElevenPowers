@@ -68,6 +68,10 @@ CLEANUP_TIMEOUT = 10
 # tree. Kept alongside node ids in the same set because it is the same fact,
 # and matched by prefix because it carries no node.
 COLLECT_ERROR = re.compile(r"^ERROR\s+(\S+\.py)\b", re.MULTILINE)
+# The build tool where a shell command starts, not a directory or argument of the same name.
+BUILD_TOOL = re.compile(r"(?:^|[;&|(])\s*(?:\S*[/\\])?(?P<tool>gradlew?|mvnw?)(?:\.bat|\.cmd)?(?=\s|$)")
+GRADLE_CHOSEN = {"--continue", "--no-continue"}
+MAVEN_CHOSEN = {"-fae", "--fail-at-end", "-ff", "--fail-fast", "-fn", "--fail-never"}
 
 # What the check concluded, stored on the evidence record. Absent means nobody
 # asked — which is the honest default and distinct from "asked, and it could
@@ -309,16 +313,26 @@ def _inputs_stamp(root: Path, base: str, command: str, carried: tuple[str, ...])
 
 
 def _with_outcomes(command: str) -> str:
-    """Ask pytest to name every outcome, when the declared command is pytest.
+    """Ask pytest to name every outcome, and a Gradle or Maven build to reach every test.
 
-    Left exactly as declared for anything else. The base-tree run is where
-    `passed_before` comes from, and a pass pytest never printed is a pass
-    nobody can claim.
+    Left as declared otherwise. The base-tree run is where `passed_before`
+    comes from, and a pass pytest never printed is a pass nobody can claim.
+    A multi-module build stops at its first failing module, so one module
+    that already fails would hide every later one's tests on both trees.
+    A command that already chose how to stop keeps its choice.
     """
     tokens = command.split()
-    if not any(t.endswith("pytest") for t in tokens) or "-rA" in tokens:
-        return command
-    return command + " -rA"
+    if any(t.endswith("pytest") for t in tokens) and "-rA" not in tokens:
+        command += " -rA"
+
+    def keep_going(match):
+        gradle = match["tool"].startswith("gradle")
+        chosen = GRADLE_CHOSEN if gradle else MAVEN_CHOSEN
+        if chosen & set(tokens):
+            return match[0]
+        return match[0] + (" --continue" if gradle else " -fae")
+
+    return BUILD_TOOL.sub(keep_going, command)
 
 
 def _tests_the_task_touched(ledger) -> tuple[str, ...]:

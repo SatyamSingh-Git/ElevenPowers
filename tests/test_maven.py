@@ -57,6 +57,8 @@ def test_an_indented_info_line_is_never_a_test(tmp_path):
 def test_a_build_that_skipped_a_module_stopped_before_every_test_ran():
     from core.review import STOPPED
     assert STOPPED.search(read('two-modules-stopped.txt'))
+    # -fae still never builds a module that depends on a failed one.
+    assert STOPPED.search(read('fail-at-end-dependent-skipped.txt'))
     for complete in ('two-modules-fail-at-end.txt', 'surefire3-fail.txt', 'surefire3-pass.txt'):
         assert not STOPPED.search(read(complete)), complete
 
@@ -75,6 +77,16 @@ def test_a_pom_is_discovered_as_the_test_command_and_its_wrapper_preferred(tmp_p
     (tmp_path / 'mvnw.cmd').unlink()
     monkeypatch.setattr(config.os, 'name', 'nt')
     assert config.discover_commands(tmp_path)['tests'] == 'mvn test'
+
+
+def test_the_review_asks_maven_to_build_every_module_it_can():
+    from core.stress import _with_outcomes
+    assert _with_outcomes('mvn test') == 'mvn -fae test'
+    assert _with_outcomes('./mvnw -q verify 2>&1 | tail -20') == './mvnw -fae -q verify 2>&1 | tail -20'
+    assert _with_outcomes('mvnw.cmd test') == 'mvnw.cmd -fae test'
+    for chosen in ('mvn -fae test', 'mvn test --fail-at-end', 'mvn -ff test', 'mvn --fail-fast test',
+                   'mvn -fn test', 'mvn --fail-never test'):
+        assert _with_outcomes(chosen) == chosen
 
 
 def test_a_compile_is_a_build_not_a_test_run(tmp_path):

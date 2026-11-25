@@ -67,10 +67,20 @@ def test_a_multi_project_build_that_failed_without_continue_may_have_stopped(tmp
     assert 'FAILURE: Build failed' in one
     assert not _stopped('gradle test --continue', one, tmp_path)
     assert not _stopped('gradle test', read('pass.txt'), tmp_path)
+    assert _stopped('gradle --no-continue test', stopped, tmp_path)
     single = tmp_path / 'single'
     single.mkdir()
     (single / 'settings.gradle').write_text("rootProject.name = 'demo'\n")
     assert not _stopped('gradle test', read('fail.txt'), single)
+
+
+def test_the_review_asks_gradle_to_run_every_test_task():
+    from core.stress import _with_outcomes
+    assert _with_outcomes('gradle test') == 'gradle --continue test'
+    assert _with_outcomes('./gradlew test | tail -30') == './gradlew --continue test | tail -30'
+    assert _with_outcomes('cd svc && gradlew.bat check') == 'cd svc && gradlew.bat --continue check'
+    for chosen in ('gradle test --continue', 'gradle --no-continue test', 'cd gradle && npm test'):
+        assert _with_outcomes(chosen) == chosen
 
 
 def test_a_gradle_build_is_discovered_and_its_wrapper_preferred(tmp_path, monkeypatch):
