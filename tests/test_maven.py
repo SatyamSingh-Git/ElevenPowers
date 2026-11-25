@@ -54,6 +54,13 @@ def test_an_indented_info_line_is_never_a_test(tmp_path):
     assert records(output, 0, tmp_path)[0] == []
 
 
+def test_a_build_that_skipped_a_module_stopped_before_every_test_ran():
+    from core.review import STOPPED
+    assert STOPPED.search(read('two-modules-stopped.txt'))
+    for complete in ('two-modules-fail-at-end.txt', 'surefire3-fail.txt', 'surefire3-pass.txt'):
+        assert not STOPPED.search(read(complete)), complete
+
+
 def test_a_compile_is_a_build_not_a_test_run(tmp_path):
     found = parsers.parse('mvn -q compile', '', 0, tmp_path)
     assert not any(r.kind in (Kind.SUITE, Kind.TEST) for r in found)

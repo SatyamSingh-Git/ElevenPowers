@@ -33,8 +33,11 @@ TIMEOUT = 300
 SHOWN = 10  # Pinning tests listed by name; read in a minute, not scrolled.
 # Expected outputs and fixtures beside the tests are test material: undoing the code keeps them.
 TEST_MATERIAL = re.compile(r'(^|/)(testdata|test_data|fixtures|__fixtures__|__snapshots__|golden)(/|$)')
-# pytest's own words for a run that did not reach every test (-x, --maxfail, a collection error).
-STOPPED = re.compile(r'^!+ (?:stopping after \d+ failures?|Interrupted: .*?) !+\s*$', re.MULTILINE)
+# pytest's own words for a run that did not reach every test (-x, --maxfail, a collection error),
+# and Maven's reactor summary for a module it never built after an earlier one failed. Maven -q
+# prints no summary, so a stopped quiet build is not seen.
+STOPPED = re.compile(r'^!+ (?:stopping after \d+ failures?|Interrupted: .*?) !+\s*$'
+                     r'|^\[INFO\] \S.*? \.+ SKIPPED\s*$', re.MULTILINE)
 # No hook runs in the private worktree: nothing undeclared is run.
 GIT = ['git', '--literal-pathspecs', '-c', f'core.hooksPath={os.devnull}']
 
