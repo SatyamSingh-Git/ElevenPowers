@@ -1,12 +1,12 @@
 """Generalized report-only orchestration shared by all host adapters."""
-from dataclasses import asdict
+from dataclasses import asdict, replace
 import hashlib
 import importlib.util
 from pathlib import Path
 import sys
 import time
 from .. import jobs
-from . import engines, store
+from . import engines, pit, store
 from .baseline import baseline
 from .execution import Budget
 from .isolation import snapshot, trial, copy_plan, fingerprint
@@ -62,7 +62,8 @@ def analyze(ledger, *, base=None, command=None):
             value['state'] = 'incomplete' if value['issues'] else 'not_applicable'
             return value
         py = [p for p in scope.paths if Path(p).suffix == '.py']
-        js = [p for p in scope.paths if Path(p).suffix != '.py']
+        java = [p for p in scope.paths if Path(p).suffix == '.java']
+        js = [p for p in scope.paths if Path(p).suffix not in ('.py', '.java')]
         adapters = []
         if py:
             if options.python or importlib.util.find_spec('cosmic_ray'):
@@ -75,6 +76,13 @@ def analyze(ledger, *, base=None, command=None):
                 adapters.append(('stryker', js, engines.stryker, engine))
             else:
                 value['issues'].append('optional Stryker instrumenter 9.5.1 is not installed')
+        if java:
+            if pit.tool(value['command']):
+                adapters.append(('pit', java, None, value['command']))
+                value['limitations'].append(pit.LIMITATION)
+            else:
+                value['issues'].append(f'Java mutation needs a Maven or Gradle test command; '
+                                       f'"{value["command"]}" is neither')
         if not adapters:
             value['state'] = 'unavailable'
             return value
@@ -93,6 +101,8 @@ def analyze(ledger, *, base=None, command=None):
                     probe = execute([executable, '-c', 'import importlib.metadata; print(importlib.metadata.version("cosmic-ray"))'],
                                     copied.root, budget, 5, shell=False)
                     versions[name] = probe.stdout.strip() if probe.status == 'complete' and not probe.returncode else ''
+                elif name == 'pit':
+                    versions[name] = pit.PIT
                 else:
                     import json
                     try:
@@ -123,6 +133,25 @@ def analyze(ledger, *, base=None, command=None):
                     later_files = sum(len(a[1]) for a in adapters[index:])
                     share = max(1, remaining * len(paths) // later_files)
                     producer_budget = Budget(budget.deadline, share)
+                    if name == 'pit':
+                        # PIT runs its own tests, so it yields observations, not source to run.
+                        with trial(copied, options, deadline) as test_root:
+                            found, issues, more = pit.run(test_root, paths, {p: scope.regions[p] for p in paths},
+                                                          executable, budget, share)
+                        value['engine_versions'][name] = pit.PIT
+                        value['issues'].extend(issues)
+                        for observed in found:
+                            try:
+                                budget.attempt()
+                            except TimeoutError:
+                                observed = replace(observed, status='not_run')
+                            value['observations'].append(observed.json())
+                        value['attempts'] = budget.attempts
+                        value['summary'] = summary_from(value)
+                        store.save(ledger.root, value)
+                        if more:
+                            value['issues'].append('mutation attempt limit: additional candidates were not examined')
+                        continue
                     candidates, version = generate(copied.root, paths, executable, producer_budget,
                                                    {p:scope.regions[p] for p in paths})
                     value['engine_versions'][name] = version

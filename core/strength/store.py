@@ -57,7 +57,7 @@ def validate(value):
             raise ValueError('invalid command coverage qualification')
     settings(value['settings'])
     if not isinstance(value['engine_versions'], dict) or any(
-        key not in ('cosmic-ray', 'stryker') or not isinstance(version, str) or len(version) > 32
+        key not in ('cosmic-ray', 'stryker', 'pit') or not isinstance(version, str) or len(version) > 32
         for key, version in value['engine_versions'].items()):
         raise ValueError('invalid engine version metadata')
     if value['state'] == 'complete' and (value['baseline'] != 'passed' or value['issues'] or summary(items)['incomplete']):

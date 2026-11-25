@@ -183,3 +183,61 @@ def test_a_run_that_failed_or_ran_out_of_time_is_an_issue(tmp_path, monkeypatch)
     monkeypatch.setattr(pit.shutil, 'which', lambda name: None)
     assert pit.run(tmp_path, [SHAPES], {SHAPES: [[5, 5]]}, 'mvn test', budget(), 8)[1] == [
         'PIT needs mvn, which was not found']
+
+
+def java_repository(root):
+    from tests.test_strength import repository
+    base = repository(root)
+    project(root)
+    (root / 'src/test/java/demo').mkdir(parents=True)
+    (root / 'src/test/java/demo/ShapesTest.java').write_text('package demo;\n')
+    return base
+
+
+def java_ledger(root, command, monkeypatch):
+    from core.config import Config
+    from core.ledger import Ledger
+    from core.strength import runner
+    from core.strength.baseline import Baseline
+    monkeypatch.setattr(runner, 'baseline', lambda *args: Baseline('passed', passed=1))
+    ledger = Ledger(root=root, task='t', base=java_repository(root))
+    ledger._config = Config(commands={'tests': command}, strength={'max_mutants': 4})
+    return ledger
+
+
+def test_a_changed_java_file_is_selected_and_its_test_is_not(tmp_path):
+    from core.strength.scope import select
+    base = java_repository(tmp_path)
+    assert select(tmp_path, base, time.monotonic() + 10).paths == [A_UTIL, B_UTIL, SHAPES]
+
+
+def test_java_needs_a_maven_or_gradle_command(tmp_path, monkeypatch):
+    from core.strength.runner import analyze
+    value = analyze(java_ledger(tmp_path, 'make test', monkeypatch))
+    assert value['state'] == 'unavailable'
+    assert 'Java mutation needs a Maven or Gradle test command; "make test" is neither' in value['issues']
+
+
+def test_pit_observations_enter_the_record(tmp_path, monkeypatch):
+    from core.strength.model import Observation
+    from core.strength.runner import analyze
+    asked = []
+
+    def run(root, paths, regions, command, budget, maximum):
+        asked.append((root != tmp_path, paths, regions, command, maximum))
+        return [Observation(f'pit:{n}', SHAPES, 5, 'negated conditional', status, relevance='changed_lines',
+                            context='Shapes.big') for n, status in enumerate(('detected', 'undetected'))], [], False
+    monkeypatch.setattr(pit, 'run', run)
+    value = analyze(java_ledger(tmp_path, 'mvn test', monkeypatch))
+    assert asked == [(True, [A_UTIL, B_UTIL, SHAPES], {A_UTIL: [[1, 7]], B_UTIL: [[1, 7]], SHAPES: [[1, 17]]},
+                      'mvn test', 4)]
+    assert value['engine_versions'] == {'pit': '1.30.2'} and value['attempts'] == 2
+    assert [o['status'] for o in value['observations']] == ['detected', 'undetected']
+    assert pit.LIMITATION in value['limitations'] and value['state'] == 'complete', value['issues']
+
+
+def test_pit_that_did_not_complete_leaves_the_record_incomplete(tmp_path, monkeypatch):
+    from core.strength.runner import analyze
+    monkeypatch.setattr(pit, 'run', lambda *args: ([], ['PIT did not complete (exit 1: [ERROR] x)'], False))
+    value = analyze(java_ledger(tmp_path, './gradlew test', monkeypatch))
+    assert value['state'] == 'incomplete' and 'PIT did not complete (exit 1: [ERROR] x)' in value['issues']

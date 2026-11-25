@@ -10,7 +10,7 @@ from ..evidence import source_snapshot
 from ..surface import TEST_NAME
 from .model import relative
 
-SUFFIXES = {'.py', '.js', '.jsx', '.ts', '.tsx', '.mjs', '.cjs', '.mts', '.cts'}
+SUFFIXES = {'.py', '.java', '.js', '.jsx', '.ts', '.tsx', '.mjs', '.cjs', '.mts', '.cts'}
 
 
 @dataclass
