@@ -1526,6 +1526,11 @@ OK (skipped=1)
     "maven": ("mvn test 2>&1 | tail -20",
               "[ERROR] Tests run: 20, Failures: 1, Errors: 1, Skipped: 0\n",
               "[INFO] Tests run: 20, Failures: 0, Errors: 0, Skipped: 0\n"),
+    # Gradle 8.10.2, captured 2026-11-25 (tests/fixtures/gradle): a count only when a test task
+    # fails. Its real green run says no more than this, so it is judged by the exit code alone.
+    "gradle": ("./gradlew test 2>&1 | tail -20",
+               "\n20 tests completed, 2 failed\n\nFAILURE: Build failed with an exception.\n",
+               "> Task :test\n\nBUILD SUCCESSFUL in 2s\n3 actionable tasks: 3 executed\n"),
     "cargo": ("cargo test 2>&1 | tail -20",
               "test result: FAILED. 18 passed; 2 failed; 0 ignored\n",
               "test result: ok. 20 passed; 0 failed; 0 ignored\n"),
@@ -1546,6 +1551,11 @@ OK (skipped=1)
     "output-sniffed": ("python run_tests.py 2>&1 | tail -20",
                        "2 failed, 18 passed in 1.0s\n", "20 passed in 1.0s\n"),
 }
+
+
+# Runners whose real passing output carries no count. Inventing one to satisfy the check
+# above would test a format the runner never prints.
+COUNTED_ONLY_WHEN_FAILING = {"gradle"}
 
 
 @pytest.mark.parametrize("runner", sorted(BOTH_WAYS))
@@ -1572,7 +1582,8 @@ def test_every_runner_is_read_both_ways(project, runner, declared):
     good = parsers.parse(command, green, 0, project)
     assert good, f"{runner}: green output produced no evidence"
     assert good[-1].result is Result.PASS, f"{runner}: a green run was recorded as failing"
-    assert good[-1].ran_tests, f"{runner}: declared recognition lost the passing count"
+    if runner not in COUNTED_ONLY_WHEN_FAILING:
+        assert good[-1].ran_tests, f"{runner}: declared recognition lost the passing count"
 
 
 def test_the_both_ways_table_covers_every_runner_parse_dispatches_to():

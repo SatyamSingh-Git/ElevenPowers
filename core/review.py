@@ -23,7 +23,7 @@ import time
 from . import process
 from .config import load
 from .evidence import Kind, Result
-from .parsers import parse
+from .parsers import GRADLE, parse
 from .strength.execution import Budget, execute
 from .stress import COLLECT_ERROR, _with_outcomes
 from .surface import TEST_NAME
@@ -108,6 +108,21 @@ def _worktree(root, commit):
         shutil.rmtree(hold, ignore_errors=True)
 
 
+def _stopped(command, output, cwd):
+    """Whether a run may not have reached every test.
+
+    Gradle says nothing about the test tasks it never ran: without --continue, a failure in
+    one subproject's tests ends the build before the next one's.
+    """
+    if STOPPED.search(output):
+        return True
+    if not GRADLE.search(command.lower()) or '--continue' in command or 'FAILURE: Build failed' not in output:
+        return False
+    settings = [Path(cwd) / name for name in ('settings.gradle', 'settings.gradle.kts')]
+    return any(path.is_file() and re.search(r'^\s*include\b', path.read_text(encoding='utf-8', errors='replace'),
+                                            re.MULTILINE) for path in settings)
+
+
 def _run(name, command, cwd, timeout, original):
     # pytest names its passes too, so a run can be told apart from one that stopped early.
     command = _with_outcomes(command)
@@ -132,7 +147,7 @@ def _run(name, command, cwd, timeout, original):
         # The pattern also matches a setup error's `ERROR file.py::test`; keep only files no test names.
         collect = {path for path in COLLECT_ERROR.findall(output)
                    if not any(name.startswith(path + '::') for name in failing)}
-        run.update(exit=done.returncode, named=bool(collect) or bool(tests), stopped=bool(STOPPED.search(output)),
+        run.update(exit=done.returncode, named=bool(collect) or bool(tests), stopped=_stopped(command, output, cwd),
                    failing=sorted(failing | collect),
                    passed=sorted(r.identity for r in tests if r.result is Result.PASS))
     run['seconds'] = round(time.monotonic() - started, 2)

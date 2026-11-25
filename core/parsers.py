@@ -74,6 +74,12 @@ MAVEN_TOTAL = re.compile(r"^\[(?:INFO|WARNING|ERROR)\] Tests run: (?P<total>\d+)
 MAVEN_BLOCK = re.compile(r"^\[ERROR\] (?:Failures|Errors):\s*$")
 MAVEN_NAME = re.compile(r"^\[ERROR\]   (?P<name>[\w$.]+)")
 MAVEN = re.compile(r"(?<![\w-])(?:\./)?mvnw?(?:\.cmd)?(?![\w-])")
+# Gradle prints a count only when a test task fails, one line per failing task; a passing run
+# prints none. Each failing test is `Class > [Nested >] method(args) [> [n] value] FAILED`.
+GRADLE_COUNT = re.compile(r"^(?P<total>\d+) tests? completed, (?P<failed>\d+) failed(?:, (?P<skipped>\d+) skipped)?\s*$",
+                          re.MULTILINE)
+GRADLE_NAME = re.compile(r"^(?P<name>\S.*? > .*?) FAILED\s*$", re.MULTILINE)
+GRADLE = re.compile(r"(?<![\w-])(?:\./)?gradlew?(?:\.bat)?(?![\w-])")
 RSPEC = re.compile(r"(?P<total>\d+) examples?, (?P<failed>\d+) failures?")
 MIX = re.compile(r"(?P<total>\d+) tests?, (?P<failed>\d+) failures?")
 PHPUNIT = re.compile(r"Tests: (?P<total>\d+), Assertions: \d+(?:, Failures: (?P<failed>\d+))?")
@@ -537,6 +543,8 @@ def _parse_known(command: str, output: str, exit_code: int, root: Path) -> list[
         return [_counted(Kind.SUITE, cmd, output, exit_code, root, DOTNET)]
     if MAVEN.search(low) and re.search(r"\b(?:test|verify|install|package)\b", low):
         return _maven(cmd, output, exit_code, root)
+    if GRADLE.search(low) and re.search(r"(?:^|[\s:])(?:test|check|build)\b", low):
+        return _gradle(cmd, output, exit_code, root)
     # Before the wrapper fallback, and deliberately: a command name is not a
     # runner. `npm test`, `yarn test` and `turbo test` all emit the TAP below
     # while naming nothing, and `_wrapped` would only trust their exit code.
@@ -840,6 +848,28 @@ def _maven(command: str, output: str, exit_code: int, root: Path) -> list[Eviden
             suite.passed += max(int(total) - bad - int(skipped), 0)
         suite.counted = True
         _counts_decide(suite)
+    tests = [Evidence(kind=Kind.TEST, identity=name, result=Result.FAIL, observed=suite.observed, tree=suite.tree,
+                      scope="source", command=command, at=suite.at, vcs=suite.vcs,
+                      coverage_issues=suite.coverage_issues)
+             for name in names]
+    return [*tests, suite]
+
+
+def _gradle(command: str, output: str, exit_code: int, root: Path) -> list[Evidence]:
+    """Counts from each failing test task's line; names from its `A > B FAILED` lines.
+
+    A passing run prints no count, so it stays uncounted: the exit code is the evidence.
+    """
+    suite = _record(Kind.SUITE, _scope(command), exit_code, command, root, output)
+    counts = GRADLE_COUNT.findall(output)
+    if counts:
+        for total, failed, skipped in counts:
+            suite.failed += int(failed)
+            suite.passed += max(int(total) - int(failed) - int(skipped or 0), 0)
+        suite.counted = True
+        _counts_decide(suite)
+    names = ['.'.join(part.removesuffix('()') for part in match.group('name').split(' > '))
+             for match in GRADLE_NAME.finditer(output)]
     tests = [Evidence(kind=Kind.TEST, identity=name, result=Result.FAIL, observed=suite.observed, tree=suite.tree,
                       scope="source", command=command, at=suite.at, vcs=suite.vcs,
                       coverage_issues=suite.coverage_issues)

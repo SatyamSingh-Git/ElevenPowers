@@ -1,0 +1,34 @@
+> Task :compileJava UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :compileTestJava
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+
+> Task :test FAILED
+
+CalcTest > wrongOnPurpose() FAILED
+    org.opentest4j.AssertionFailedError at CalcTest.java:16
+
+CalcTest > throwsOnPurpose() FAILED
+    java.lang.IllegalStateException at CalcTest.java:21
+
+ShapesTest > positive(int) > [2] 2 FAILED
+    org.opentest4j.AssertionFailedError at ShapesTest.java:14
+
+ShapesTest > Inner > deep() FAILED
+    org.opentest4j.AssertionFailedError at ShapesTest.java:21
+
+7 tests completed, 4 failed, 1 skipped
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///C:/project
+
+* Try:
+> Run with --scan to get full insights.
+
+BUILD FAILED in 2s
+3 actionable tasks: 2 executed, 1 up-to-date

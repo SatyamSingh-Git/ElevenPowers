@@ -1,0 +1,13 @@
+
+7 tests completed, 4 failed, 1 skipped
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///C:/project
+
+* Try:
+> Run with --scan to get full insights.
+
+BUILD FAILED in 1s

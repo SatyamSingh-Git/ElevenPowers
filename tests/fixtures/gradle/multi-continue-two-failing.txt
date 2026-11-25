@@ -1,0 +1,58 @@
+> Task :alpha:compileJava UP-TO-DATE
+> Task :alpha:processResources NO-SOURCE
+> Task :alpha:classes UP-TO-DATE
+> Task :alpha:compileTestJava UP-TO-DATE
+> Task :alpha:processTestResources NO-SOURCE
+> Task :alpha:testClasses UP-TO-DATE
+
+> Task :alpha:test FAILED
+
+CalcTest > wrongOnPurpose() FAILED
+    org.opentest4j.AssertionFailedError at CalcTest.java:16
+
+CalcTest > throwsOnPurpose() FAILED
+    java.lang.IllegalStateException at CalcTest.java:21
+
+4 tests completed, 2 failed, 1 skipped
+
+> Task :beta:compileJava
+> Task :beta:processResources NO-SOURCE
+> Task :beta:classes
+> Task :beta:compileTestJava
+> Task :beta:processTestResources NO-SOURCE
+> Task :beta:testClasses
+
+> Task :beta:test FAILED
+
+BetaCalcTest > wrongOnPurpose() FAILED
+    org.opentest4j.AssertionFailedError at BetaCalcTest.java:16
+
+BetaCalcTest > throwsOnPurpose() FAILED
+    java.lang.IllegalStateException at BetaCalcTest.java:21
+
+6 tests completed, 2 failed, 1 skipped
+
+FAILURE: Build completed with 2 failures.
+
+1: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':alpha:test'.
+> There were failing tests. See the report at: file:///C:/project
+
+* Try:
+> Run with --scan to get full insights.
+==============================================================================
+
+2: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':beta:test'.
+> There were failing tests. See the report at: file:///C:/project
+
+* Try:
+> Run with --scan to get full insights.
+==============================================================================
+
+BUILD FAILED in 2s
+6 actionable tasks: 4 executed, 2 up-to-date

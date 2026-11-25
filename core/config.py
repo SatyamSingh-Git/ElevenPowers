@@ -157,6 +157,10 @@ def discover_commands(root: Path, origins: dict | None = None) -> dict[str, str]
         # The project's own wrapper pins its Maven version; it is used only where it can run.
         wrapper = "mvnw.cmd" if os.name == "nt" else "./mvnw"
         candidates.append({"tests": f"{wrapper if (root / wrapper).is_file() else 'mvn'} test"})
+    if any((root / name).is_file() for name in ("build.gradle", "build.gradle.kts", "settings.gradle",
+                                                  "settings.gradle.kts")):
+        wrapper = "gradlew.bat" if os.name == "nt" else "./gradlew"
+        candidates.append({"tests": f"{wrapper if (root / wrapper).is_file() else 'gradle'} test"})
     pytest_configured = (root / "pytest.ini").is_file()
     try:
         data = tomllib.loads((root / "pyproject.toml").read_text(encoding="utf-8"))
