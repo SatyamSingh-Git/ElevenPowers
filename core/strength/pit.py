@@ -7,6 +7,7 @@ touching its build files, and keeping only the mutants on changed lines as the s
 observations the other engines produce. PIT runs its own selection of tests, not the
 recorded command, which every Java record says.
 """
+import os
 from pathlib import Path
 import re
 import shutil
@@ -24,6 +25,7 @@ LIMITATION = ("Java mutants are run by PIT against the tests it selects from the
               'not by the recorded test command.')
 PACKAGE = re.compile(r'^\s*package\s+([\w.]+)\s*;', re.MULTILINE)
 REPORTS = ('target/pit-reports', 'build/reports/pitest')
+WINDOWS = os.name == 'nt'
 STATUS = {'KILLED': 'detected', 'TIMED_OUT': 'detected', 'MEMORY_ERROR': 'detected',
           'SURVIVED': 'undetected', 'NO_COVERAGE': 'undetected', 'NON_VIABLE': 'invalid',
           'NOT_STARTED': 'not_run', 'STARTED': 'not_run'}
@@ -112,9 +114,18 @@ def _reason(output):
     return lines[-1] if lines else ''
 
 
+def _reported(root):
+    return {(mutation.findtext('mutatedClass').rpartition('.')[0], mutation.findtext('sourceFile'))
+            for report in _reports(root) for mutation in ElementTree.parse(report).getroot().iter('mutation')}
+
+
 def run(root, paths, regions, command, budget, maximum):
     name = tool(command)
     local = root / name
+    if WINDOWS and not local.suffix:
+        # The extensionless wrapper is the POSIX script, which Windows cannot start; cmd.exe finds the batch one.
+        local = next((sibling for sibling in (local.with_suffix('.bat'), local.with_suffix('.cmd'))
+                      if sibling.is_file()), local)
     executable = str(local.resolve()) if local.is_file() else shutil.which(name)
     if executable is None:
         return [], [f'PIT needs {name}, which was not found'], False
@@ -125,9 +136,13 @@ def run(root, paths, regions, command, budget, maximum):
                        root, budget, 480, shell=False)
     if done.status != 'complete':
         return [], [f"PIT did not complete ({done.status.replace('_', ' ')})"], False
-    issues = [] if done.returncode == 0 else [f'PIT did not complete (exit {done.returncode}: '
-                                              f'{_reason(done.stdout + done.stderr)[:200]})']
+    if done.returncode:
+        return [], [f'PIT did not complete (exit {done.returncode}: {_reason(done.stdout + done.stderr)[:200]})'], False
+    if not _reports(root):
+        return [], ['PIT did not complete (it wrote no report)'], False
+    # PIT reports what it mutated, not what it skipped: a file it never saw would otherwise vanish.
+    reported = _reported(root)
+    issues = [f'PIT reported no mutant for {path}' for path in paths
+              if (_package(root, path), Path(path).name) not in reported]
     found = observations(root, paths, regions)
-    if not issues and not _reports(root):
-        issues.append('PIT did not complete (it wrote no report)')
     return found[:maximum], issues, len(found) > maximum

@@ -280,3 +280,40 @@ def test_the_review_keeps_pit_descriptions_whole_and_says_pit_ran_its_own_tests(
     record['limitations'] = []
     assert not any(pit.LIMITATION in line for line in review._limits(
         {**report, 'strength': review._strength(tmp_path, tmp_path, 'base', 'mvn test', {})}))
+
+
+def test_a_run_that_exited_non_zero_yields_no_mutants_even_with_a_report(tmp_path, monkeypatch):
+    project(tmp_path)
+    monkeypatch.setattr(pit.shutil, 'which', lambda name: '/bin/' + name)
+    stub(monkeypatch, Execution('complete', 1, '[ERROR] Mutation score below threshold\n', ''), write=True)
+    assert pit.run(tmp_path, [SHAPES], {SHAPES: [[5, 5]]}, 'mvn test', budget(), 8) == (
+        [], ['PIT did not complete (exit 1: [ERROR] Mutation score below threshold)'], False)
+
+
+def test_a_selected_file_pit_reported_nothing_for_is_named(tmp_path, monkeypatch):
+    project(tmp_path)
+    other = 'src/main/java/c/Other.java'
+    (tmp_path / other).parent.mkdir(parents=True)
+    (tmp_path / other).write_text('package c;\n\npublic class Other {}\n')
+    monkeypatch.setattr(pit.shutil, 'which', lambda name: '/bin/' + name)
+    stub(monkeypatch, Execution('complete', 0), write=True)
+    found, issues, _ = pit.run(tmp_path, [A_UTIL, other, SHAPES], {A_UTIL: [], other: [[1, 3]], SHAPES: [[9, 9]]},
+                               'mvn test', budget(), 8)
+    # a/Util.java has mutants on unchanged lines only: examined, nothing to report.
+    assert [o.line for o in found] == [9, 9]
+    assert issues == [f'PIT reported no mutant for {other}']
+
+
+def test_on_windows_an_extensionless_wrapper_runs_its_batch_sibling(tmp_path, monkeypatch):
+    project(tmp_path)
+    for name in ('gradlew', 'gradlew.bat', 'mvnw', 'mvnw.cmd'):
+        (tmp_path / name).write_text('')
+    calls = stub(monkeypatch, Execution('complete', 0), write=True)
+    monkeypatch.setattr(pit, 'WINDOWS', True)
+    for command, runs in (('gradlew test', 'gradlew.bat'), ('./gradlew test', 'gradlew.bat'),
+                          ('mvnw test', 'mvnw.cmd'), ('gradlew.bat test', 'gradlew.bat')):
+        pit.run(tmp_path, [SHAPES], {SHAPES: [[5, 5]]}, command, budget(), 8)
+        assert calls[-1][0] == str((tmp_path / runs).resolve()), command
+    monkeypatch.setattr(pit, 'WINDOWS', False)
+    pit.run(tmp_path, [SHAPES], {SHAPES: [[5, 5]]}, './gradlew test', budget(), 8)
+    assert calls[-1][0] == str((tmp_path / 'gradlew').resolve())
