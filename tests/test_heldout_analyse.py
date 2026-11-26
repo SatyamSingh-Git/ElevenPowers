@@ -58,3 +58,41 @@ def test_secondary_resolve_rate_is_reported_beside_never_instead():
     value = analyse(records)
     assert value["secondary"]["resolve"]["assisted_better"] == 2 and value["secondary"]["resolve"]["ordinary_better"] == 0
     assert "primary" in value and value["primary"]["differences"] == {}
+
+
+def test_holm_adjusts_a_hand_computed_list():
+    from eval.heldout_analyse import holm
+    assert [round(p, 6) for p in holm([0.01, 0.04, 0.03, 0.2, 0.001])] == [0.04, 0.09, 0.09, 0.2, 0.005]
+    assert holm([0.6, 0.5]) == [1.0, 1.0]
+
+
+def test_the_four_arm_primaries_are_the_five_pairs_each_as_the_two_arm_analysis_would_compute():
+    from eval.heldout_analyse import PAIRS, compare, four, holm
+    plan = {"t1": {"ordinary": [True, True], "instructed": [False, True], "superpowers": [False, False], "assisted": [False, False]},
+            "t2": {"ordinary": [True, False], "instructed": [False, False], "superpowers": [False, True], "assisted": [True, False]},
+            "t3": {"ordinary": [True, True], "instructed": [True, True], "superpowers": [False, False], "assisted": [False, True]}}
+    records = [run(task, arm, vacuous=v) for task, arms in plan.items() for arm, values in arms.items() for v in values]
+    records.append(run("t1", "superpowers", state="plugins_unqualified", vacuous=True))
+    value = four(records)
+    assert PAIRS == (("ordinary", "instructed"), ("ordinary", "superpowers"), ("instructed", "assisted"),
+                     ("superpowers", "assisted"), ("ordinary", "assisted"))
+    assert list(value["primary"]) == [f"{a} - {b}" for a, b in PAIRS]
+    assert value["primary"]["ordinary - instructed"]["differences"] == {"t1": 0.5, "t2": 0.5}
+    # t1 and t2 tie; the unqualified superpowers run of t1 is not counted.
+    assert value["primary"]["superpowers - assisted"]["differences"] == {"t3": -0.5}
+    assert value["primary"]["superpowers - assisted"]["tied"] == 2
+    raw = [compare(records, a, b)["p"] for a, b in PAIRS]
+    assert [value["primary"][f"{a} - {b}"]["p"] for a, b in PAIRS] == raw
+    assert [value["primary"][f"{a} - {b}"]["holm_p"] for a, b in PAIRS] == holm(raw)
+    assert value["runs"] == {"scheduled": 25, "graded": 24, "incomplete": 1}
+
+
+def test_the_four_arm_secondaries_count_patches_changing_a_test_per_arm():
+    from eval.heldout_analyse import four
+    records = [dict(run("t1", "ordinary", vacuous=True), changes_test=False),
+               dict(run("t1", "assisted"), changes_test=True),
+               dict(run("t1", "instructed", resolved=False), changes_test=True)]
+    shares = four(records)["secondary"]["resolved_changing_a_test"]
+    assert shares["ordinary"] == {"resolved": 1, "changing_a_test": 0}
+    assert shares["assisted"] == {"resolved": 1, "changing_a_test": 1}
+    assert shares["instructed"] == {"resolved": 0, "changing_a_test": 0}

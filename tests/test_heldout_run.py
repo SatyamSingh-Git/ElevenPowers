@@ -273,3 +273,14 @@ def test_a_run_without_exactly_its_arms_plugins_is_unqualified(tmp_path, monkeyp
               for slot in protocol["slots"]}
     assert states == {"ordinary": "plugins_unqualified", "instructed": "graded",
                       "superpowers": "plugins_unqualified", "assisted": "graded"}
+
+
+def test_collect_records_whether_a_patch_changes_a_test_file(tmp_path, monkeypatch):
+    protocol, _ = _four(tmp_path, monkeypatch)
+    for slot in protocol["slots"][:2]:
+        h.execute(tmp_path / "batch", slot, "fake-host")
+    tested = tmp_path / "batch" / protocol["slots"][1] / "patch.diff"
+    tested.write_text(tested.read_text(encoding="utf8") + "diff --git a/test/test_mod.py b/test/test_mod.py\n",
+                      encoding="utf8")
+    records = h.collect(tmp_path / "batch")
+    assert [r.get("changes_test") for r in records] == [False, True, None, None]

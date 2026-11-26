@@ -20,6 +20,7 @@ from core.config import Config, save
 from core.hosts.provenance import fingerprint
 from core.hosts.setup import install
 from core.process import run, OutputLimitExceeded
+from core.surface import TEST_NAME
 from . import subscription
 from .bundle import export_patch
 from .heldout_env import _python, canary
@@ -41,6 +42,7 @@ NETWORK = re.compile(r'(?:^|[;&|(`]|\b(?:ba|z)?sh\s+-c\s+["\'])\s*(?:(?:sudo|xar
                      r'|git\s+(?:clone|fetch|pull|ls-remote))(?:\.exe)?(?=\s|$)', re.MULTILINE)
 # The workspace history is one seed commit, so reading it reveals nothing; recorded, not disqualifying.
 HISTORY = re.compile(r'\bgit\s+(?:log|show|blame|reflog)\b')
+PATCHED = re.compile(r'^diff --git a/\S+ b/(\S+)', re.MULTILINE)
 REACHING_TOOLS = {'WebFetch', 'WebSearch', 'Agent', 'Task'}
 HARNESS = ('eval/heldout_run.py', 'eval/live.py', 'eval/heldout_vacuity.py', 'eval/heldout_env.py',
            'eval/bundle.py', 'eval/subscription.py', 'eval/plugins.py')
@@ -260,7 +262,13 @@ def collect(batch):
     for slot in _read(root / 'protocol.json')['slots']:
         path = root / slot / 'result.json'
         if path.exists():
-            records.append(_read(path))
+            record = _read(path)
+            patch = root / slot / 'patch.diff'
+            if patch.exists():
+                # October's mechanism: whether the patch contains a test file at all.
+                changed = PATCHED.findall(patch.read_text(encoding='utf-8', errors='replace'))
+                record['changes_test'] = any(TEST_NAME.search(name) for name in changed)
+            records.append(record)
         else:
             name, arm, _ = slot.split('--')
             records.append({'slot': slot, 'task': name, 'arm': arm, 'state': 'not_launched'})
