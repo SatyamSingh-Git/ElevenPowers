@@ -25,11 +25,14 @@ from .bundle import export_patch
 from .heldout_env import _python, canary
 from .heldout_vacuity import vacuity
 from .live import CLOSED_BOOK, _sandboxed, _seed_git, base_tree, grade_patch, materialise
+from .plugins import INSTRUCTION, MARK, PROJECT_SETTINGS, SUPERPOWERS, TOOLS, UNATTENDED
 from .preservation import _read, _write
 from .task import Task
 
 TOOL_ROOT = Path(__file__).resolve().parents[1]
 ARMS = ('ordinary', 'assisted')
+# docs/superpowers/specs/2026-11-26-heldout-four-arms-design.md
+FOUR_ARMS = ('ordinary', 'instructed', 'superpowers', 'assisted')
 NAME = re.compile(r'[A-Za-z0-9._-]{1,120}')
 # Only where a command starts: the same words inside a grep pattern or a file name are data.
 NETWORK = re.compile(r'(?:^|[;&|(`]|\b(?:ba|z)?sh\s+-c\s+["\'])\s*(?:(?:sudo|xargs|env|time|nohup)\s+)*'
@@ -40,7 +43,7 @@ NETWORK = re.compile(r'(?:^|[;&|(`]|\b(?:ba|z)?sh\s+-c\s+["\'])\s*(?:(?:sudo|xar
 HISTORY = re.compile(r'\bgit\s+(?:log|show|blame|reflog)\b')
 REACHING_TOOLS = {'WebFetch', 'WebSearch', 'Agent', 'Task'}
 HARNESS = ('eval/heldout_run.py', 'eval/live.py', 'eval/heldout_vacuity.py', 'eval/heldout_env.py',
-           'eval/bundle.py', 'eval/subscription.py')
+           'eval/bundle.py', 'eval/subscription.py', 'eval/plugins.py')
 
 
 def _hash(data):
@@ -51,7 +54,7 @@ def _harness():
     return _hash(b''.join((TOOL_ROOT / name).read_bytes() for name in HARNESS))
 
 
-def prepare(batch, corpus, *, replicates=3, seconds=900, model='claude-sonnet-5-5'):
+def prepare(batch, corpus, *, replicates=3, seconds=900, model='claude-sonnet-5-5', arms=ARMS):
     if model not in subscription.SUPPORTED_MODELS['claude']:
         raise ValueError('unsupported subscription model')
     root = Path(batch).absolute()
@@ -66,12 +69,15 @@ def prepare(batch, corpus, *, replicates=3, seconds=900, model='claude-sonnet-5-
     slots = []
     for replicate in range(replicates):
         for index, name in enumerate(names):
-            arms = ARMS if (index + replicate) % 2 == 0 else ARMS[::-1]
-            slots += [f'{name}--{arm}--{replicate}' for arm in arms]
+            shift = (index + replicate) % len(arms)
+            slots += [f'{name}--{arm}--{replicate}' for arm in arms[shift:] + arms[:shift]]
     protocol = {'schema': 1, 'prepared_at': datetime.now(timezone.utc).isoformat(), 'host': 'claude',
                 'model': model, 'effort': 'medium', 'seconds': seconds, 'replicates': replicates,
                 'runtime_fingerprint': fingerprint(), 'harness_sha256': _harness(),
                 'corpus_sha256': _hash(data), 'slots': slots}
+    if arms != ARMS:
+        # October's two-arm protocol is kept as it was sealed; these fields are the four-arm study's.
+        protocol.update(arms=list(arms), unattended=True)
     _write(root / 'protocol.json', protocol)
     _write(root / 'protocol-seal.json', {'sha256': _hash((root / 'protocol.json').read_bytes())})
     return protocol
@@ -131,6 +137,27 @@ def _tool_calls(output):
     return calls, result
 
 
+def _events(output):
+    events = []
+    for line in output.splitlines():
+        try:
+            event = json.loads(line)
+        except ValueError:
+            continue
+        if isinstance(event, dict):
+            events.append(event)
+    return events
+
+
+def _plugins(output):
+    """Whether superpowers loaded and ElevenPowers spoke, from the run's own init and hook events."""
+    events = _events(output)
+    inits = [e for e in events if e.get('type') == 'system' and e.get('subtype') == 'init']
+    superpowers = bool(inits) and all(SUPERPOWERS in [p.get('source') for p in e.get('plugins', [])] for e in inits)
+    elevenpowers = any(e.get('subtype') == 'hook_response' and MARK in str(e.get('output', '')) for e in events)
+    return superpowers, elevenpowers
+
+
 def execute(batch, slot, executable):
     root = Path(batch).resolve(strict=True)
     folder = root / slot
@@ -154,6 +181,11 @@ def execute(batch, slot, executable):
     if arm == 'assisted':
         save(work, Config(profile='guide', commands={'tests': f"python -m pytest {task.source['test_dir']} -q"}))
         install('claude', work, sys.executable, TOOL_ROOT)
+    elif arm == 'instructed':
+        (work / 'CLAUDE.md').write_text(INSTRUCTION + '\n', encoding='utf-8')
+    elif arm == 'superpowers':
+        _write(work / '.claude' / 'settings.json', PROJECT_SETTINGS)
+    # Before the seed commit, so an arm's own files never appear in its patch.
     _seed_git(work)
     # Outside the workspace, so the answer could only come from the interpreter's own site.
     if not canary(_python(home), task.source['import_names'], folder):
@@ -161,8 +193,13 @@ def execute(batch, slot, executable):
         _write(folder / 'result.json', record)
         return record
 
-    command = subscription.command('claude', executable, work, task.prompt, model=protocol['model'])
+    four = 'arms' in protocol
+    prompt = task.prompt + '\n\n' + UNATTENDED if four else task.prompt
+    command = subscription.command('claude', executable, work, prompt, model=protocol['model'])
     command[command.index('--output-format') + 1] = 'stream-json'
+    if four:
+        command[command.index('--tools') + 1] = TOOLS
+        command.insert(command.index('--allowedTools') + 1, 'Skill')
     command += ['--verbose', '--disallowedTools', *CLOSED_BOOK]
     # Claude Code otherwise sends small auxiliary calls to Haiku, which the exact-model rule refuses.
     environment = {**_sandboxed(work), 'ANTHROPIC_DEFAULT_HAIKU_MODEL': protocol['model']}
@@ -184,6 +221,8 @@ def execute(batch, slot, executable):
     (folder / 'diagnostic.txt').write_text(diagnostic, encoding='utf-8')
 
     calls, result = _tool_calls(output)
+    if four:
+        record['superpowers'], record['elevenpowers'] = _plugins(output)
     record['observation'] = subscription.observation('claude', json.dumps(result) if result else '', diagnostic)
     record['cost'] = float(result.get('total_cost_usd') or 0)
     commands = [str(call.get('input', {}).get('command', '')) for call in calls if call.get('name') == 'Bash']
@@ -204,6 +243,9 @@ def execute(batch, slot, executable):
         state = 'graded' if record['observation']['completed'] else 'host_incomplete'
         if record['observation']['models'] != [protocol['model']]:
             state = 'model_unqualified'
+        elif four and (record['superpowers'] != (arm == 'superpowers') or
+                       record['elevenpowers'] != (arm == 'assisted')):
+            state = 'plugins_unqualified'
         elif state == 'graded' and record['breaches']:
             state = 'closed_book_breach'
     record['state'] = state
@@ -233,6 +275,7 @@ def main():
     prepared.add_argument('--corpus', type=Path, required=True)
     prepared.add_argument('--replicates', type=int, default=3)
     prepared.add_argument('--seconds', type=int, default=900)
+    prepared.add_argument('--four-arms', action='store_true', help='the 2026-11-26 study: ' + ', '.join(FOUR_ARMS))
     executed = commands.add_parser('execute')
     executed.add_argument('--batch', type=Path, required=True)
     executed.add_argument('--slot', required=True)
@@ -242,7 +285,8 @@ def main():
     collected.add_argument('--out', type=Path, required=True, help='the list eval.heldout_analyse reads')
     args = parser.parse_args()
     if args.action == 'prepare':
-        value = prepare(args.batch, args.corpus, replicates=args.replicates, seconds=args.seconds)
+        value = prepare(args.batch, args.corpus, replicates=args.replicates, seconds=args.seconds,
+                        arms=FOUR_ARMS if args.four_arms else ARMS)
         print(len(value['slots']), 'slots sealed')
     elif args.action == 'execute':
         print(json.dumps(execute(args.batch, args.slot, args.executable), indent=2))

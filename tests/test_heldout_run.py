@@ -201,3 +201,75 @@ def test_collect_reports_every_scheduled_slot_including_unlaunched_ones(tmp_path
     records = h.collect(tmp_path / "batch")
     assert [(r["slot"], r["state"]) for r in records] == [("t--ordinary--0", "graded"), ("t--assisted--0", "not_launched")]
     assert analyse(records)["runs"] == {"scheduled": 2, "graded": 1, "incomplete": 1}
+
+
+def _four(tmp_path, monkeypatch, plugins=None):
+    """A sealed four-arm batch on one task, and a fake host that reports each arm's plugins."""
+    from eval import plugins as p
+    corpus, tasks = _corpus(tmp_path)
+    protocol = h.prepare(tmp_path / "batch", corpus, replicates=1, seconds=60, arms=h.FOUR_ARMS)
+    monkeypatch.setattr(h.subscription, "auth", lambda *a: True)
+    calls, actual = [], h.run
+
+    def external(command, **kwargs):
+        if not (isinstance(command, list) and command[0] == "fake-host"):
+            return actual(command, **kwargs)
+        if command[-1] == "--version":
+            return SimpleNamespace(returncode=0, stdout="fake test host", stderr="")
+        root = Path(kwargs["cwd"])
+        arm = root.parent.name.split("--")[1]
+        settings = root / ".claude" / "settings.json"
+        calls.append({"arm": arm, "command": command,
+                      "memory": (root / "CLAUDE.md").read_text(encoding="utf8") if (root / "CLAUDE.md").exists() else None,
+                      "plugins": json.loads(settings.read_text(encoding="utf8")).get("enabledPlugins")
+                      if settings.exists() else None,
+                      "config": (root / ".elevenpowers" / "config.json").exists()})
+        (root / "pkg" / "mod.py").write_text("def value():\n    return 2\n", encoding="utf8")
+        loaded = (plugins or {}).get(arm, arm == "superpowers")
+        events = [{"type": "system", "subtype": "init",
+                   "plugins": [{"name": "superpowers", "source": p.SUPERPOWERS}] if loaded else []},
+                  {"type": "system", "subtype": "hook_response",
+                   "output": p.MARK + " for this task" if arm == "assisted" else "other context"},
+                  {"type": "result", "is_error": False, "total_cost_usd": 0.5, "modelUsage": {"claude-sonnet-5-5": {}}}]
+        return SimpleNamespace(returncode=0, stdout="\n".join(json.dumps(e) for e in events), stderr="")
+    monkeypatch.setattr(h, "run", external)
+    return protocol, calls
+
+
+def test_four_arms_rotate_with_the_task_and_the_replicate(tmp_path):
+    corpus, _ = _corpus(tmp_path, names=("a", "b"))
+    protocol = h.prepare(tmp_path / "batch", corpus, replicates=2, seconds=60, arms=h.FOUR_ARMS)
+    assert protocol["arms"] == ["ordinary", "instructed", "superpowers", "assisted"] and protocol["unattended"]
+    assert protocol["slots"][:8] == [
+        "a--ordinary--0", "a--instructed--0", "a--superpowers--0", "a--assisted--0",
+        "b--instructed--0", "b--superpowers--0", "b--assisted--0", "b--ordinary--0"]
+    assert protocol["slots"][8:12] == ["a--instructed--1", "a--superpowers--1", "a--assisted--1", "a--ordinary--1"]
+
+
+def test_each_arm_gets_only_its_own_condition_and_the_same_prompt_and_tools(tmp_path, monkeypatch):
+    from eval import plugins as p
+    protocol, calls = _four(tmp_path, monkeypatch)
+    for slot in protocol["slots"]:
+        assert h.execute(tmp_path / "batch", slot, "fake-host")["state"] == "graded", slot
+    seen = {call["arm"]: call for call in calls}
+    assert seen["instructed"]["memory"] == p.INSTRUCTION + "\n"
+    assert [arm for arm, call in seen.items() if call["memory"] is not None] == ["instructed"]
+    assert seen["superpowers"]["plugins"] == {p.SUPERPOWERS: True}
+    assert [arm for arm, call in seen.items() if call["plugins"]] == ["superpowers"]
+    assert [arm for arm, call in seen.items() if call["config"]] == ["assisted"]
+    prompts = {call["command"][call["command"].index("-p") + 1] for call in calls}
+    assert prompts == {"Make value() return 2.\n\n" + p.UNATTENDED}
+    for call in calls:
+        command = call["command"]
+        assert command[command.index("--tools") + 1] == p.TOOLS
+        assert "Skill" in command[command.index("--allowedTools"):]
+    patch = (tmp_path / "batch" / "t--instructed--0" / "patch.diff").read_text(encoding="utf8")
+    assert "CLAUDE.md" not in patch and "pkg/mod.py" in patch
+
+
+def test_a_run_without_exactly_its_arms_plugins_is_unqualified(tmp_path, monkeypatch):
+    protocol, _ = _four(tmp_path, monkeypatch, plugins={"superpowers": False, "ordinary": True})
+    states = {slot.split("--")[1]: h.execute(tmp_path / "batch", slot, "fake-host")["state"]
+              for slot in protocol["slots"]}
+    assert states == {"ordinary": "plugins_unqualified", "instructed": "graded",
+                      "superpowers": "plugins_unqualified", "assisted": "graded"}

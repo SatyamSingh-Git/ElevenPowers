@@ -24,32 +24,20 @@ from core.hosts.setup import install
 from core.process import run, OutputLimitExceeded
 from . import multistage_oracles as oracles
 from . import subscription
-from .heldout_run import NETWORK, REACHING_TOOLS, _interpreter, _tool_calls
+from .heldout_run import NETWORK, REACHING_TOOLS, _events, _interpreter, _tool_calls
 from .live import CLOSED_BOOK, _sandboxed, _seed_git
 from .multistage_cases import load
+from .plugins import MARK, PROJECT_SETTINGS, SUPERPOWERS, TOOLS, UNATTENDED
 from .preservation import _read, _write
 
 TOOL_ROOT = Path(__file__).resolve().parents[1]
 CASES = TOOL_ROOT / 'eval' / 'multistage_cases'
 MANIFEST = TOOL_ROOT / 'results' / 'multistage' / 'manifest.json'
 ARMS = ('superpowers', 'elevenpowers')
-SUPERPOWERS = 'superpowers@claude-plugins-official'
-PROJECT_SETTINGS = {
-    'enabledPlugins': {SUPERPOWERS: True},
-    'extraKnownMarketplaces': {'claude-plugins-official': {
-        'source': {'source': 'github', 'repo': 'anthropics/claude-plugins-official'}}},
-}
-# The start of ElevenPowers' SessionStart context; superpowers' own says "You have superpowers".
-MARK = 'ElevenPowers active'
-# Superpowers works through the Skill tool, which the held-out launcher's list leaves out.
-TOOLS = 'Bash,Read,Edit,Write,Glob,Grep,Skill'
-# A print-mode turn cannot be answered, and a request that stops to ask leaves its stage undone.
-UNATTENDED = ("I won't be around to answer questions while you work on this, so make any decisions "
-              "yourself and finish the request in this turn.")
 KEPT_OUT = ('.git', '.claude', '.elevenpowers', '__pycache__', '.pytest_cache')
 HARNESS = ('eval/multistage_run.py', 'eval/multistage_cases.py', 'eval/multistage_oracles.py',
            'eval/subscription.py', 'eval/heldout_run.py', 'eval/heldout_vacuity.py', 'eval/live.py',
-           'eval/bundle.py')
+           'eval/bundle.py', 'eval/plugins.py')
 
 
 def _hash(data):
@@ -145,18 +133,6 @@ def command(executable, work, prompt, session, stage, model):
     args.insert(args.index('--allowedTools') + 1, 'Skill')
     return args + ['--verbose', '--session-id' if stage == 1 else '--resume', session,
                    '--disallowedTools', *CLOSED_BOOK]
-
-
-def _events(output):
-    events = []
-    for line in output.splitlines():
-        try:
-            event = json.loads(line)
-        except ValueError:
-            continue
-        if isinstance(event, dict):
-            events.append(event)
-    return events
 
 
 def _breaches(calls, cases_root, manifest):
