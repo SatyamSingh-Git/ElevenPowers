@@ -24,6 +24,7 @@ from . import process
 from .config import load
 from .evidence import Kind, Result
 from .parsers import GRADLE, parse
+from .strength import pit
 from .strength.execution import Budget, execute
 from .stress import COLLECT_ERROR, _with_outcomes
 from .surface import TEST_NAME
@@ -198,6 +199,8 @@ def _limits(report):
                          'test that only imports them notices nothing.')
     if report['strength']:
         limits += [f'Mutation analysis: {issue}' for issue in report['strength']['issues']]
+        if report['strength'].get('own_tests'):
+            limits.append(f'Mutation analysis: {pit.LIMITATION}')
         limits.append('A change to a line that no test noticed can behave the same as the original (an equivalent '
                       'mutant), so each unpinned line is a question to look at, not a proven gap.')
     if report.get('functions') and 'state' not in report['functions']:
@@ -221,9 +224,11 @@ def _strength(tree, root, base, command, limits):
     for item in value['observations']:
         if item['status'] == 'undetected':
             key = (item['path'], item['line'], item['end_line'], item['context'])
-            lines.setdefault(key, []).append(item['operator'].rsplit('/', 1)[-1])
+            # Cosmic Ray names `core/NumberReplacer`; PIT describes the change in words that can hold a `/`.
+            operator = item['operator'] if item['id'].startswith('pit:') else item['operator'].rsplit('/', 1)[-1]
+            lines.setdefault(key, []).append(operator)
     return {'state': value['state'], 'issues': value['issues'], 'summary': value['summary'],
-            'attempts': value['attempts'],
+            'attempts': value['attempts'], 'own_tests': pit.LIMITATION in value['limitations'],
             'limits': {key: value['settings'].get(key) for key in ('max_mutants', 'seconds')},
             'unpinned': [{'path': path, 'line': line, 'end_line': end, 'context': context, 'operators': operators}
                          for (path, line, end, context), operators in sorted(lines.items())]}

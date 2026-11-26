@@ -259,3 +259,24 @@ def test_an_unchanged_java_change_reuses_its_pit_record(tmp_path, monkeypatch):
     monkeypatch.setattr(pit, 'PIT', '1.30.3')
     analyze(ledger)
     assert len(runs) == 2
+
+
+def test_the_review_keeps_pit_descriptions_whole_and_says_pit_ran_its_own_tests(tmp_path, monkeypatch):
+    from core import review
+    from core.strength import runner
+    record = {'state': 'complete', 'issues': [], 'summary': {}, 'attempts': 2,
+              'settings': {'max_mutants': 8, 'seconds': 60}, 'limitations': [pit.LIMITATION],
+              'observations': [
+                  {'id': 'pit:x', 'path': SHAPES, 'line': 5, 'end_line': 5, 'context': 'Shapes.big',
+                   'status': 'undetected', 'operator': 'replaced boolean return with true for demo/Shapes::big'},
+                  {'id': 'cr:y', 'path': 'a.py', 'line': 1, 'end_line': 1, 'context': 'f',
+                   'status': 'undetected', 'operator': 'core/NumberReplacer'}]}
+    monkeypatch.setattr(runner, 'analyze', lambda *args, **kwargs: record)
+    strength = review._strength(tmp_path, tmp_path, 'base', 'mvn test', {})
+    assert [item['operators'] for item in strength['unpinned']] == [
+        ['NumberReplacer'], ['replaced boolean return with true for demo/Shapes::big']]
+    report = {'command': 'mvn test', 'kept': [], 'strength': strength, 'functions': None}
+    assert f'Mutation analysis: {pit.LIMITATION}' in review._limits(report)
+    record['limitations'] = []
+    assert not any(pit.LIMITATION in line for line in review._limits(
+        {**report, 'strength': review._strength(tmp_path, tmp_path, 'base', 'mvn test', {})}))
