@@ -203,7 +203,7 @@ def test_collect_reports_every_scheduled_slot_including_unlaunched_ones(tmp_path
     assert analyse(records)["runs"] == {"scheduled": 2, "graded": 1, "incomplete": 1}
 
 
-def _four(tmp_path, monkeypatch, plugins=None):
+def _four(tmp_path, monkeypatch, plugins=None, spoke=None):
     """A sealed four-arm batch on one task, and a fake host that reports each arm's plugins."""
     from eval import plugins as p
     corpus, tasks = _corpus(tmp_path)
@@ -226,10 +226,11 @@ def _four(tmp_path, monkeypatch, plugins=None):
                       "config": (root / ".elevenpowers" / "config.json").exists()})
         (root / "pkg" / "mod.py").write_text("def value():\n    return 2\n", encoding="utf8")
         loaded = (plugins or {}).get(arm, arm == "superpowers")
-        events = [{"type": "system", "subtype": "init",
-                   "plugins": [{"name": "superpowers", "source": p.SUPERPOWERS}] if loaded else []},
+        init = [] if loaded == "no init" else [{"type": "system", "subtype": "init",
+                                                "plugins": [{"name": "superpowers", "source": p.SUPERPOWERS}] if loaded else []}]
+        events = [*init,
                   {"type": "system", "subtype": "hook_response",
-                   "output": p.MARK + " for this task" if arm == "assisted" else "other context"},
+                   "output": p.MARK + " for this task" if (spoke or {}).get(arm, arm == "assisted") else "other context"},
                   {"type": "result", "is_error": False, "total_cost_usd": 0.5, "modelUsage": {"claude-sonnet-5-5": {}}}]
         return SimpleNamespace(returncode=0, stdout="\n".join(json.dumps(e) for e in events), stderr="")
     monkeypatch.setattr(h, "run", external)
@@ -284,3 +285,11 @@ def test_collect_records_whether_a_patch_changes_a_test_file(tmp_path, monkeypat
                       encoding="utf8")
     records = h.collect(tmp_path / "batch")
     assert [r.get("changes_test") for r in records] == [False, True, None, None]
+
+
+def test_elevenpowers_silent_or_no_init_event_is_unqualified_too(tmp_path, monkeypatch):
+    protocol, _ = _four(tmp_path, monkeypatch, plugins={"superpowers": "no init"}, spoke={"assisted": False})
+    states = {slot.split("--")[1]: h.execute(tmp_path / "batch", slot, "fake-host")["state"]
+              for slot in protocol["slots"]}
+    assert states == {"ordinary": "graded", "instructed": "graded",
+                      "superpowers": "plugins_unqualified", "assisted": "plugins_unqualified"}

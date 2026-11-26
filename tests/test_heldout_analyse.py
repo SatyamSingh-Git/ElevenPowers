@@ -63,7 +63,7 @@ def test_secondary_resolve_rate_is_reported_beside_never_instead():
 def test_holm_adjusts_a_hand_computed_list():
     from eval.heldout_analyse import holm
     assert [round(p, 6) for p in holm([0.01, 0.04, 0.03, 0.2, 0.001])] == [0.04, 0.09, 0.09, 0.2, 0.005]
-    assert holm([0.6, 0.5]) == [1.0, 1.0]
+    assert holm([0.6, 0.7]) == [1.0, 1.0]
 
 
 def test_the_four_arm_primaries_are_the_five_pairs_each_as_the_two_arm_analysis_would_compute():
