@@ -96,3 +96,29 @@ def test_a_gradle_build_is_discovered_and_its_wrapper_preferred(tmp_path, monkey
     (tmp_path / 'gradlew.bat').unlink()
     monkeypatch.setattr(config.os, 'name', 'nt')
     assert config.discover_commands(tmp_path)['tests'] == 'gradle test'
+
+
+def test_the_strength_baseline_counts_a_passing_gradle_run_from_the_reports_it_wrote(tmp_path, monkeypatch):
+    import time
+    from core.strength import baseline as module
+    from core.strength.execution import Budget, Execution
+    results = tmp_path / 'build' / 'test-results' / 'test'
+    report = FIXTURES / 'TEST-demo.ShapesTest.xml'
+
+    def run(write):
+        def execute(command, root, budget, seconds, *, shell=True, original=None):
+            if write:
+                results.mkdir(parents=True, exist_ok=True)
+                (results / report.name).write_bytes(report.read_bytes())
+            return Execution('complete', 0, read('pass.txt'), '')
+        monkeypatch.setattr(module, 'execute', execute)
+        return module.baseline('./gradlew test', tmp_path, tmp_path / 'elsewhere', Budget(time.monotonic() + 60, 1), 60)
+
+    assert run(write=True) == module.Baseline('passed', passed=3)
+    # An UP-TO-DATE run writes nothing: the report an earlier run left is not this run's.
+    assert run(write=False).status == 'incomplete' and not (results / report.name).exists()
+    monkeypatch.setattr(module, 'execute', lambda *a, **k: Execution('complete', 0, 'ok\n', ''))
+    results.mkdir(parents=True, exist_ok=True)
+    (results / report.name).write_bytes(report.read_bytes())
+    assert module.baseline('make test', tmp_path, tmp_path / 'elsewhere',
+                           Budget(time.monotonic() + 60, 1), 60).status == 'incomplete'

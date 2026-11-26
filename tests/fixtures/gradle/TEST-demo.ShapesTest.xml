@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="demo.ShapesTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-26T07:29:19" hostname="host" time="0.021">
+  <properties/>
+  <testcase name="utils()" classname="demo.ShapesTest" time="0.017"/>
+  <testcase name="bigAtTheEnds()" classname="demo.ShapesTest" time="0.001"/>
+  <testcase name="innerTwice()" classname="demo.ShapesTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

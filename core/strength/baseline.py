@@ -3,8 +3,9 @@ from dataclasses import dataclass
 import os
 import re
 import sys
+import xml.etree.ElementTree as ElementTree
 from ..evidence import Kind, Result, SourceScan
-from ..parsers import parse, PYTEST_NODE, PYTEST_SHORT
+from ..parsers import GRADLE, parse, PYTEST_NODE, PYTEST_SHORT
 from .execution import execute
 
 
@@ -30,6 +31,22 @@ def outcomes(command, execution, root):
     return passed, failed, errors
 
 
+def _gradle_reports(root):
+    return [path for path in root.rglob('TEST-*.xml')
+            if 'build/test-results/' in path.relative_to(root).as_posix()]
+
+
+def _gradle_counts(root):
+    passed = failed = 0
+    for report in _gradle_reports(root):
+        suite = ElementTree.parse(report).getroot()
+        tests, skipped, failures, errors = (int(suite.get(name, 0)) for name in
+                                            ('tests', 'skipped', 'failures', 'errors'))
+        passed += tests - skipped - failures - errors
+        failed += failures + errors
+    return passed, failed
+
+
 def guard(command, original):
     normalized = command.replace('\\', '/').casefold()
     # An interpreter may live in the original virtualenv; source targets may not.
@@ -48,10 +65,19 @@ def baseline(command, copied, original, budget, seconds):
     issue = guard(command, original)
     if not command or issue:
         return Baseline('incomplete', issue or 'no declared test command')
+    gradle = bool(GRADLE.search(command.lower()))
+    if gradle:
+        # An UP-TO-DATE run writes no report, so one already here is not this run's.
+        for stale in _gradle_reports(copied):
+            stale.unlink()
     execution = execute(command, copied, budget, seconds, original=original)
     if execution.status != 'complete':
         return Baseline('incomplete', execution.reason or 'baseline ' + execution.status)
     passed, failed, errors = outcomes(command, execution, copied)
+    if gradle and not passed and not execution.returncode:
+        # A passing Gradle run prints no count; the JUnit XML it wrote carries one.
+        passed, reported = _gradle_counts(copied)
+        failed = max(failed, reported)
     if execution.returncode:
         return Baseline('failed', 'unmutated test command failed')
     if not passed or failed or errors:
