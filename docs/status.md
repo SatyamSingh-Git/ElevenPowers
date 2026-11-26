@@ -1,5 +1,21 @@
 # Current delivery status
 
+**2026-11-26 — Java changes get test strength, through PIT.**
+- **Before:** a changed `.java` file was not even selected; `ep_strength` and
+  `ep_review --strength` said nothing about Java.
+- **Now:** with a Maven or Gradle test command, PIT 1.30.2 runs in the private
+  copy through the project's own build tool, no build file edited, and each
+  mutant on a changed line is recorded like the Python and JavaScript ones. A
+  passing Gradle baseline is counted from the JUnit XML that run wrote.
+- **Checks:** real reviews of a moved boundary on Maven 3.9.9 and Gradle 8.10.2
+  both list `Shapes.java:5 — changed conditional boundary` (1 of 3 mutants
+  unnoticed; 35 s and 16 s); the code before said nothing. Fixtures are real PIT
+  reports, Maven and Gradle byte-identical. See
+  [validation](validation/2026-11-26-pit-java-strength.md).
+- **Bounds:** PIT runs its own tests, not the judged command, which every Java
+  record says; no expansion to the enclosing method; JUnit only; the first run
+  needs the network or a warm build cache.
+
 **2026-11-25 — `ep_review` builds past a failing module.**
 - **Before:** a Gradle or Maven project with one module that already fails
   stopped there on every tree, so the review answered UNKNOWN for a change a

@@ -448,6 +448,15 @@ context, selection and recorded-command-only coverage; the portable report's
 outer schema remains version 1. Legacy strength records remain explicitly
 whole-file samples. Markdown shows complete line ranges. Only the command that
 ran is observed; another test command may detect an undetected mutation.
+
+**Java.** A changed main-source `.java` file goes to PIT 1.30.2 when the tests
+command runs Maven or Gradle; the build tool fetches PIT on first use and no
+build file is edited. PIT mutates bytecode and runs its own selection of the
+build's tests, so a Java record says so, and only mutants on changed lines are
+kept, under PIT's own description (`changed conditional boundary`). A passing
+Gradle baseline prints no count, so it is counted from the JUnit XML that run
+wrote; an earlier run's reports are cleared first. Not expanded to the
+enclosing method: PIT names methods but not their lines.
 Undetected changes are possible test gaps, including equivalent behavior,
 not correctness verdicts. Individual targets never enter automatic agent feedback.
 

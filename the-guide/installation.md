@@ -15,8 +15,12 @@ python -m pip install cosmic-ray==8.7.0
 npm install --save-dev @stryker-mutator/instrumenter@9.5.1
 ```
 
-These are explicit setup steps. Runtime never downloads packages or alters a
-manifest. After setup, `ep_strength` runs the bounded analysis against that
+These are explicit setup steps. Runtime never alters a manifest, and installs no
+Python or Node package. Java needs no step: a changed `.java` file in a project
+whose test command runs Maven or Gradle goes to PIT 1.30.2, which that build
+tool downloads on first use (with pitest-junit5-plugin 1.2.3, and for Gradle
+gradle-pitest-plugin 1.19.0), as it would any plugin. Offline and without those
+in its cache, the analysis says PIT did not complete. After setup, `ep_strength` runs the bounded analysis against that
 project's commands; completion runs it only with `strength.at_stop`. Missing engines remain unavailable while
 ordinary verification continues. See [configuration](configuration.md) for focused
 commands, interpreter paths and copy limits; [commands](commands.md) covers manual

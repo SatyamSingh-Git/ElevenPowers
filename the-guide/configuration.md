@@ -93,7 +93,13 @@ files <=100000, bytes <=1 GiB. Invalid settings stay advisory and incomplete.
 `python` optionally chooses an interpreter containing Cosmic Ray 8.7.0; otherwise
 the runtime interpreter is used. `stryker` optionally chooses the directory of
 `@stryker-mutator/instrumenter` 9.5.1; otherwise the root's installed package is used.
-Explicit paths can be machine-specific. `dependencies` lists additional required
+Explicit paths can be machine-specific. Java takes no setting: PIT runs through
+the build tool the `tests` command names (its wrapper included), so a Java change
+under any other command is reported as unexamined. PIT chooses and runs the tests
+for each mutant itself, from the build's test classpath, not through that command;
+it has no line filter, so it mutates the whole changed classes and only mutants on
+changed lines are kept. JUnit 4 and 5 are supported; TestNG, Kotlin and Scala are
+not. `dependencies` lists additional required
 ignored inputs as relative paths. Conventional `node_modules` is copied when
 present, under the same limits. Linked/nested trees and missing inputs are explicit.
 
