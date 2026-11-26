@@ -99,7 +99,11 @@ under any other command is reported as unexamined. PIT chooses and runs the test
 for each mutant itself, from the build's test classpath, not through that command;
 it has no line filter, so it mutates the whole changed classes and only mutants on
 changed lines are kept. JUnit 4 and 5 are supported; TestNG, Kotlin and Scala are
-not. `dependencies` lists additional required
+not. PIT runs at the repository root with the build tool alone: a directory change
+or a build file, settings file or profile in the command (`cd backend &&`, `-f`,
+`-p`, `-s`, `-P`) is not carried over, so Java below the root is reported as not
+completed rather than examined. A changed file PIT reported no mutant for (a module
+without the `java` plugin, a second top-level class) is named as an issue. `dependencies` lists additional required
 ignored inputs as relative paths. Conventional `node_modules` is copied when
 present, under the same limits. Linked/nested trees and missing inputs are explicit.
 

@@ -49,6 +49,24 @@ right: the tests never probe between 5 and 10.
 - A mutant that loops forever is TIMED_OUT and the run still exits 0. PIT writes
   its report out of line order (7, 8, 9, 7, 11).
 
+## Found by the final review
+
+One independent review of the whole change (8d23a0f..931ef7d), each fixed with a
+test seen failing first:
+
+- A run that exited non-zero still recorded its mutants; it now yields none, as
+  the design said.
+- A selected file PIT never reported (a module without the `java` plugin, a file
+  under `src/it/java`) disappeared, so the review could say every change was
+  noticed. It is now named: `PIT reported no mutant for <path>`.
+- On Windows a command naming `gradlew` or `mvnw` without an extension resolved to
+  the POSIX script, which cannot start there (reproduced: `PIT did not complete
+  (error)`); the `.bat`/`.cmd` beside it is run instead.
+
+Then three mutants of the Gradle baseline survived (skips and failures counted
+as passes, any `TEST-*.xml` read, a green exit with failures in the report) and
+were killed with a real failing Gradle report.
+
 ## Not covered
 
 - PIT runs its own selection of tests from the build's test classpath, not the
@@ -56,6 +74,14 @@ right: the tests never probe between 5 and 10.
 - Only mutants on changed lines: PIT names a method but not its lines, so a
   change is not expanded to its enclosing method as it is for Python.
 - JUnit 4 and 5 only; no TestNG, Kotlin, Scala, Ant or Bazel.
+- PIT runs at the repository root with the build tool alone; a `cd`, `-f`, `-p`,
+  `-s` or `-P` in the test command is not carried over, so Java below the root
+  ends as an issue.
+- Deferred from the review: an id over 256 characters (a very deep path) loses
+  the run's mutants to an issue; a truncated report raises instead of becoming
+  an issue; the attempt cap discards results PIT already computed; one class
+  name in the same package in two modules maps to one of them; the review's
+  "Not measured" line does not mention Java.
 - The first run needs the network or a build cache that already holds PIT.
 - MEMORY_ERROR, NON_VIABLE, NOT_STARTED, STARTED and RUN_ERROR were not produced
   by a real run; their mapping is tested on a real record with the status changed,

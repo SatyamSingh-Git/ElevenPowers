@@ -14,7 +14,8 @@
   [validation](validation/2026-11-26-pit-java-strength.md).
 - **Bounds:** PIT runs its own tests, not the judged command, which every Java
   record says; no expansion to the enclosing method; JUnit only; the first run
-  needs the network or a warm build cache.
+  needs the network or a warm build cache; PIT runs at the repository root, so a
+  `cd`, `-f`, `-p`, `-s` or `-P` in the test command is not carried over.
 
 **2026-11-25 — `ep_review` builds past a failing module.**
 - **Before:** a Gradle or Maven project with one module that already fails
