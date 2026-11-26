@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="demo.CalcTest" tests="4" skipped="1" failures="2" errors="0" timestamp="2026-11-25T15:17:37" hostname="host" time="0.026">
+  <properties/>
+  <testcase name="wrongOnPurpose()" classname="demo.CalcTest" time="0.021">
+    <failure message="org.opentest4j.AssertionFailedError: expected: &lt;4&gt; but was: &lt;3&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: expected: &lt;4&gt; but was: &lt;3&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:150)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:145)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:531)
+	at app//demo.CalcTest.wrongOnPurpose(CalcTest.java:16)
+	at java.base@17.0.0.1/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base@17.0.0.1/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base@17.0.0.1/java.util.ArrayList.forEach(ArrayList.java:1511)
+</failure>
+  </testcase>
+  <testcase name="throwsOnPurpose()" classname="demo.CalcTest" time="0.001">
+    <failure message="java.lang.IllegalStateException: boom" type="java.lang.IllegalStateException">java.lang.IllegalStateException: boom
+	at demo.CalcTest.throwsOnPurpose(CalcTest.java:21)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+</failure>
+  </testcase>
+  <testcase name="adds()" classname="demo.CalcTest" time="0.0"/>
+  <testcase name="skipped()" classname="demo.CalcTest" time="0.0">
+    <skipped/>
+  </testcase>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

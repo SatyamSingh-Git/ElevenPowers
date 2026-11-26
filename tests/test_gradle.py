@@ -122,3 +122,23 @@ def test_the_strength_baseline_counts_a_passing_gradle_run_from_the_reports_it_w
     (results / report.name).write_bytes(report.read_bytes())
     assert module.baseline('make test', tmp_path, tmp_path / 'elsewhere',
                            Budget(time.monotonic() + 60, 1), 60).status == 'incomplete'
+
+
+def test_the_gradle_reports_count_skips_and_failures_and_only_from_their_own_folder(tmp_path, monkeypatch):
+    import time
+    from core.strength import baseline as module
+    from core.strength.execution import Budget, Execution
+    results = tmp_path / 'build' / 'test-results' / 'test'
+    decoy = tmp_path / 'src' / 'test' / 'resources' / 'TEST-demo.ShapesTest.xml'
+    decoy.parent.mkdir(parents=True)
+    decoy.write_bytes((FIXTURES / 'TEST-demo.ShapesTest.xml').read_bytes())
+
+    def execute(command, root, budget, seconds, *, shell=True, original=None):
+        results.mkdir(parents=True, exist_ok=True)
+        (results / 'TEST-demo.CalcTest.xml').write_bytes((FIXTURES / 'TEST-demo.CalcTest.xml').read_bytes())
+        return Execution('complete', 0, read('pass.txt'), '')
+    monkeypatch.setattr(module, 'execute', execute)
+    # A build with ignoreFailures exits 0 with failures in its report.
+    assert module.baseline('gradle test', tmp_path, tmp_path / 'elsewhere',
+                           Budget(time.monotonic() + 60, 1), 60).status == 'incomplete'
+    assert module._gradle_counts(tmp_path) == (1, 2) and decoy.is_file()
