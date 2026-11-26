@@ -1805,6 +1805,19 @@ The 1.4x gate result stands for its narrow configuration. It is not an argument 
 
 ## 10. Claims withdrawn or qualified
 
+- **"For a superpowers user there is nothing to reduce"** (v3 vacuity,
+  2026-11-01). Qualified 2026-11-26. It holds on the multi-stage cases under
+  the coarse bar. On single held-out requests superpowers did nothing to
+  vacuity: 72 of 89 resolved patches VACUOUS, against 72 of 91 with nothing
+  (p = 1.0). Its skills loaded in every run; the agent mostly did not invoke
+  them for a small fix.
+- **ElevenPowers' held-out reduction as the way to get a change pinned.**
+  Qualified 2026-11-26. The reduction replicates (49% against 79%), but one
+  line of `CLAUDE.md`, "Add a test that fails without your change.", took it to
+  0 of 90, lower than ElevenPowers on all 18 tasks that differ (Holm p = 0.0005).
+  The runtime's measured contribution is the measurement, not the behaviour.
+  See [the four-arm sweep](results/heldout/sweep-2026-11-26-four/README.md).
+
 - **"A person's description of the rule would not point at the filename"**
   (the acted-on run's `parcelpost` losses, 2026-11-04). Withdrawn
   2026-11-05, the day after it was written as a lead and carried into the
@@ -1988,7 +2001,12 @@ which inputs.
   whether a test is written at all.
   - **Its bound:** plain Claude Code against Claude Code with ElevenPowers.
     Superpowers was in neither arm.
-  - **For a superpowers user there is nothing to reduce** (v3 snapshots,
+  - **Four arms, 2026-11-26** (pre-registered, 480 sealed runs): VACUOUS
+    among resolved, nothing 79%, a one-line instruction 0%, superpowers 81%,
+    ElevenPowers 49%. The instruction beat ElevenPowers (Holm p = 0.0005);
+    October's effect replicates (Holm p = 0.0053); resolve unchanged in every
+    pair ([results](results/heldout/sweep-2026-11-26-four/README.md)).
+  - **On the multi-stage cases a superpowers user has nothing to reduce** (v3 snapshots,
     2026-11-01, $0, pre-registered). Superpowers alone left 1 VACUOUS
     stage of 475 resolved, against 0 of 472 with ElevenPowers; 11 of 12
     cases tied, p = 1.0 ([results](results/multistage-v3/vacuity/README.md)).

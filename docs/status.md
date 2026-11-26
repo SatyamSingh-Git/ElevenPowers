@@ -1,5 +1,17 @@
 # Current delivery status
 
+**2026-11-26 — Measured: one line of instruction pins changes better than ElevenPowers.**
+- **Study:** pre-registered, 480 sealed runs on the 40 held-out tasks (Sonnet 5.5,
+  medium): nothing, `CLAUDE.md` saying "Add a test that fails without your
+  change.", superpowers, ElevenPowers.
+- **Result:** VACUOUS among resolved 79%, **0%**, 81%, 49%. The instruction beat
+  ElevenPowers on all 18 tasks that differ (Holm p = 0.0005); October's
+  ElevenPowers effect replicates (Holm p = 0.0053); superpowers did nothing to it
+  on single requests; resolve unchanged in every pair.
+- **Reading:** what ElevenPowers contributes here is the measurement (the revert
+  probe found this), not the agent's behaviour. See
+  [results](../results/heldout/sweep-2026-11-26-four/README.md) and `PLAN.md` §10.
+
 **2026-11-26 — Java changes get test strength, through PIT.**
 - **Before:** a changed `.java` file was not even selected; `ep_strength` and
   `ep_review --strength` said nothing about Java.
