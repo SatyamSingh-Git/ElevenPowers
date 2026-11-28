@@ -1716,6 +1716,8 @@ window.ELEVENPOWERS_GRAPH = {
         "eval/plugins.py",
         "eval/heldout_transfer.py",
         "tests/test_heldout_transfer.py",
+        "eval/heldout_mutation.py",
+        "tests/test_heldout_mutation.py",
         "eval/heldout_source.py",
         "eval/heldout_env.py",
         "eval/heldout_sample.py",
