@@ -11,6 +11,11 @@
 - **Reading:** what ElevenPowers contributes here is the measurement (the revert
   probe found this), not the agent's behaviour. See
   [results](../results/heldout/sweep-2026-11-26-four/README.md) and `PLAN.md` §10.
+- **Follow-ups, 2026-11-28, no model:** the tests pin behaviour, not the agent's
+  code: 183 of the instruction's 186 pinning tests pass on the upstream fix
+  (`eval/heldout_transfer.py`). Mutation score on the changed lines barely separates
+  the arms (73-88%, no pair significant): 75% of mutants die even on vacuous patches
+  (`eval/heldout_mutation.py`). Paper draft: [docs/paper/draft.md](paper/draft.md).
 
 **2026-11-26 — Java changes get test strength, through PIT.**
 - **Before:** a changed `.java` file was not even selected; `ep_strength` and
