@@ -56,3 +56,23 @@ def test_the_analysis_runs_the_five_pairs_over_task_means_with_holm():
     assert [value["primary"][f"{a} - {b}"]["holm_p"] for a, b in PAIRS] == holm(raw)
     assert value["per_arm"]["assisted"] == {"runs": 2, "scored": 1, "no_mutant": 1, "mutants": 1, "killed": 1}
     assert value["per_arm"]["ordinary"]["mutants"] == 8 and value["per_arm"]["ordinary"]["killed"] == 3
+
+
+def test_only_the_changed_lines_are_mutated_and_the_tree_is_restored(tmp_path):
+    # Line 2 is the change; line 3 is the original `return 1`, now in the changed function.
+    source = "def value():\n    flag = 2 > 1\n    return 1\n"
+    value = _score(tmp_path, source, {})
+    assert value["outcome"] == "scored"
+    assert {line for _, line, _, _ in value["operators"]} == {2}
+    assert (tmp_path / "work" / "tree" / "pkg" / "mod.py").read_text(encoding="utf8") == source
+
+
+def test_a_mutant_that_times_out_or_errors_without_a_failed_line_is_killed(tmp_path, monkeypatch):
+    pytest.importorskip("cosmic_ray")
+    from eval import heldout_mutation as m
+    runs = iter([(set(), False, 0), (set(), True, -1), (set(), False, 2)])
+    monkeypatch.setattr(m, "_suite", lambda *a, **k: next(runs, (set(), False, 0)))
+    monkeypatch.setattr(m, "RUN", 2)
+    task, _ = _task(tmp_path)
+    value = m.score(task, _patch(task, tmp_path, "def value():\n    return 2\n", {}), tmp_path / "work")
+    assert (value["mutants"], value["killed"]) == (2, 2)
