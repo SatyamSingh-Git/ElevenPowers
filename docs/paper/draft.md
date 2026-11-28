@@ -1,8 +1,7 @@
 # Resolved Is Not Pinned: One Sentence Gets Coding Agents to Write Tests That Pin Their Changes
 
 *Draft, 2026-11-28. Every figure below comes from a sealed, pre-registered record in this
-repository; each section links the record it reports. Sections marked TODO wait for an
-analysis that is still running.*
+repository; each section links the record it reports.*
 
 ## Abstract
 
@@ -18,7 +17,11 @@ Resolve rates did not differ. Vacuity did: 79%, **0%**, 81% and 49%. The instruc
 beat the runtime check on every task where they differed (Holm-adjusted p = 0.0005),
 and the skill system did nothing on these single requests. The instruction's tests are
 not tuned to the agent's own code: 183 of its 186 pinning tests also pass on the
-upstream maintainers' fix, which the agent never saw.
+upstream maintainers' fix, which the agent never saw. Mutation score on the changed
+lines, by contrast, barely separates the setups (73% to 88%, no pair significant): it
+killed 75% of mutants even on vacuous patches, because small mutations break behaviour
+the existing suite already checks. Undoing the whole change is the measure that sees
+whether the change itself is pinned.
 
 ## 1. Introduction
 
@@ -34,7 +37,7 @@ revert probe (Section 3.3) and ask three questions:
 - **RQ1.** How often are resolved agent patches vacuous, and what changes it?
 - **RQ2.** When agents do write pinning tests, do they test the requested behaviour, or
   their own implementation?
-- **RQ3.** How much of each changed line do the tests pin? (TODO, Section 4.3)
+- **RQ3.** How much of each changed line do the tests pin, by mutation score?
 
 Contributions: a pre-registered four-arm comparison on independently sourced tasks;
 the finding that a one-line instruction removes vacuity entirely while a skill system
@@ -150,7 +153,20 @@ upstream fix both edit the same non-test data file.
 
 ### 4.3 RQ3: mutation score on the changed lines
 
-TODO: `eval/heldout_mutation.py` on the 360 resolved runs, running.
+Cosmic Ray 8.7.0, at most 8 mutants on each resolved patch's changed lines; 85 of 360
+runs had none (string, data or one-line changes) and are not scored.
+
+| | nothing | instruction | skill system | runtime check |
+|---|---|---|---|---|
+| mutants killed | 73% (279/381) | 88% (340/385) | 73% (274/373) | 83% (338/407) |
+
+The order matches vacuity, but **no pair differs after Holm** (smallest adjusted
+p = 0.12). Most mutants of a changed line are killed whatever the agent wrote: on
+vacuous patches 75% of mutants died, on pinned ones 85% (descriptive). A negated
+condition on a changed line usually breaks behaviour the existing suite already
+checks; only undoing the whole change isolates the new behaviour. **On small fixes,
+mutation score on the changed lines barely separates pinned from unpinned changes;
+the revert does.**
 
 ## 5. Discussion
 

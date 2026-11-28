@@ -84,6 +84,37 @@ Found while building it: pytest stops the whole session when one test file canno
 be imported, which would have hidden the other files' tests;
 `--continue-on-collection-errors`.
 
+## Mutation score on the changed lines (added 2026-11-28)
+
+By a [design](../../../docs/superpowers/specs/2026-11-28-heldout-mutation-score-design.md)
+pushed before computing it (`eval/heldout_mutation.py`, [rows](mutation.json)): Cosmic
+Ray 8.7.0 mutants on each resolved patch's changed lines, at most 8, judged like the
+revert. All 360 resolved runs measured; 85 had no mutant on a changed line (string,
+data or one-line changes Cosmic Ray's operators do not reach) and are not scored.
+
+| | ordinary | instructed | superpowers | ElevenPowers |
+|---|---|---|---|---|
+| scored / no mutant | 70 / 21 | 69 / 21 | 67 / 22 | 69 / 21 |
+| **mutants killed** | 279 of 381 (73%) | 340 of 385 (88%) | 274 of 373 (73%) | 338 of 407 (83%) |
+
+| pair (first - second) | tasks differing | higher score | tied | p | Holm p |
+|---|---|---|---|---|---|
+| ordinary - instructed | 11 | instructed 9, ordinary 2 | 14 | 0.045 | 0.18 |
+| ordinary - superpowers | 6 | ordinary 5, superpowers 1 | 17 | 0.40 | 0.57 |
+| instructed - assisted | 9 | instructed 7, assisted 2 | 15 | 0.024 | 0.12 |
+| superpowers - assisted | 10 | assisted 7, superpowers 3 | 13 | 0.18 | 0.55 |
+| ordinary - assisted | 9 | assisted 6, ordinary 3 | 15 | 0.29 | 0.57 |
+
+**No pair differs after Holm.** The order matches vacuity (instruction, then
+ElevenPowers, then the other two), but the gaps are small, because most mutants of a
+changed line are killed whatever the agent wrote. Descriptive, not pre-registered:
+on **vacuous** patches 626 of 834 mutants (75%) were killed, on pinned ones 605 of 712
+(85%). A small mutation of a changed line (a negated condition, a moved boundary)
+usually breaks behaviour the existing suite already checks; only undoing the whole
+change isolates the new behaviour. On these fixes, mutation score on the changed lines
+is a weak signal of whether the change is pinned, and the revert probe is the measure
+that separates the arms.
+
 ## Incomplete
 
 Two of 480 runs ended `host_failed`, both in the same minute on both workers
