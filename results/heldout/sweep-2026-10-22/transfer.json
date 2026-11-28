@@ -1,0 +1,1108 @@
+[
+ {
+  "slot": "charset_normalizer-017c75c2--assisted--0",
+  "task": "charset_normalizer-017c75c2",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/test_base_detection.py"
+  ],
+  "pinning": [
+   "tests/test_base_detection.py::test_empty_multi_byte_usage"
+  ],
+  "transferring": [
+   "tests/test_base_detection.py::test_empty_multi_byte_usage"
+  ]
+ },
+ {
+  "slot": "charset_normalizer-4b335594--assisted--0",
+  "task": "charset_normalizer-4b335594",
+  "arm": "assisted",
+  "outcome": "no pinning test",
+  "test_files": [
+   "tests/test_detect_legacy.py"
+  ],
+  "pinning": [],
+  "transferring": []
+ },
+ {
+  "slot": "charset_normalizer-4b335594--ordinary--0",
+  "task": "charset_normalizer-4b335594",
+  "arm": "ordinary",
+  "outcome": "no pinning test",
+  "test_files": [
+   "tests/test_detect_legacy.py"
+  ],
+  "pinning": [],
+  "transferring": []
+ },
+ {
+  "slot": "charset_normalizer-667b93c9--assisted--0",
+  "task": "charset_normalizer-667b93c9",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/test_base_detection.py"
+  ],
+  "pinning": [
+   "tests/test_base_detection.py::test_eq_with_non_alias_string"
+  ],
+  "transferring": [
+   "tests/test_base_detection.py::test_eq_with_non_alias_string"
+  ]
+ },
+ {
+  "slot": "pycparser-f93324c1--assisted--0",
+  "task": "pycparser-f93324c1",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/test_c_generator.py"
+  ],
+  "pinning": [
+   "tests/test_c_generator.py::TestCtoC::test_compound_literal_statement"
+  ],
+  "transferring": [
+   "tests/test_c_generator.py::TestCtoC::test_compound_literal_statement"
+  ]
+ },
+ {
+  "slot": "iniconfig-d2dcb728--ordinary--0",
+  "task": "iniconfig-d2dcb728",
+  "arm": "ordinary",
+  "outcome": "transfers",
+  "test_files": [
+   "testing/test_iniconfig.py"
+  ],
+  "pinning": [
+   "testing/test_iniconfig.py::test_iniconfig_strips_utf8_bom"
+  ],
+  "transferring": [
+   "testing/test_iniconfig.py::test_iniconfig_strips_utf8_bom"
+  ]
+ },
+ {
+  "slot": "iniconfig-d2dcb728--assisted--0",
+  "task": "iniconfig-d2dcb728",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "testing/test_iniconfig.py"
+  ],
+  "pinning": [
+   "testing/test_iniconfig.py::test_iniconfig_data_with_bom",
+   "testing/test_iniconfig.py::test_iniconfig_from_file_with_bom",
+   "testing/test_iniconfig.py::test_iniconfig_parse_with_bom"
+  ],
+  "transferring": [
+   "testing/test_iniconfig.py::test_iniconfig_data_with_bom",
+   "testing/test_iniconfig.py::test_iniconfig_from_file_with_bom",
+   "testing/test_iniconfig.py::test_iniconfig_parse_with_bom"
+  ]
+ },
+ {
+  "slot": "pyjwt-5fde08a6--assisted--0",
+  "task": "pyjwt-5fde08a6",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/test_api_jwt.py"
+  ],
+  "pinning": [
+   "tests/test_api_jwt.py::TestJWT::test_decode_with_deeply_nested_payload_throws_decode_error"
+  ],
+  "transferring": [
+   "tests/test_api_jwt.py::TestJWT::test_decode_with_deeply_nested_payload_throws_decode_error"
+  ]
+ },
+ {
+  "slot": "pyjwt-717668ad--assisted--0",
+  "task": "pyjwt-717668ad",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/test_algorithms.py"
+  ],
+  "pinning": [
+   "tests/test_algorithms.py::TestAlgorithms::test_hmac_prepare_key_rejects_bom_prefixed_jwk_json[utf-16-be]",
+   "tests/test_algorithms.py::TestAlgorithms::test_hmac_prepare_key_rejects_bom_prefixed_jwk_json[utf-32-be]"
+  ],
+  "transferring": [
+   "tests/test_algorithms.py::TestAlgorithms::test_hmac_prepare_key_rejects_bom_prefixed_jwk_json[utf-16-be]",
+   "tests/test_algorithms.py::TestAlgorithms::test_hmac_prepare_key_rejects_bom_prefixed_jwk_json[utf-32-be]"
+  ]
+ },
+ {
+  "slot": "wrapt-15068aae--assisted--0",
+  "task": "wrapt-15068aae",
+  "arm": "assisted",
+  "outcome": "not measured",
+  "problem": "upstream: Checking patch tests/core/test_patches_resolve_path.py...\nChecking patch tests/stubtest_allowlist.txt...\nerror: while searching for:\n# Allowlist for `python -m mypy.stubtest wrapt --allowlist <this>`.",
+  "test_files": [
+   "tests/core/test_patches_resolve_path.py",
+   "tests/stubtest_allowlist.txt"
+  ]
+ },
+ {
+  "slot": "wrapt-c27d859a--assisted--0",
+  "task": "wrapt-c27d859a",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/core/test_resolve_path.py"
+  ],
+  "pinning": [
+   "tests/core/test_resolve_path.py::TestResolvePathErrors::test_dotted_module_in_sys_modules_without_parent"
+  ],
+  "transferring": [
+   "tests/core/test_resolve_path.py::TestResolvePathErrors::test_dotted_module_in_sys_modules_without_parent"
+  ]
+ },
+ {
+  "slot": "wrapt-db45a2ef--assisted--0",
+  "task": "wrapt-db45a2ef",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/core/test_monkey_patching.py",
+   "tests/core/test_transient_function_wrapper.py"
+  ],
+  "pinning": [
+   "tests/core/test_transient_function_wrapper.py::TestTransientFunctionWrapper::test_restore_exception_removes_shadow",
+   "tests/core/test_transient_function_wrapper.py::TestTransientFunctionWrapper::test_restore_inherited_removes_shadow",
+   "tests/core/test_transient_function_wrapper.py::TestTransientFunctionWrapper::test_restore_module_getattr_removes_shadow",
+   "tests/core/test_transient_function_wrapper.py::TestTransientFunctionWrapper::test_restore_via_instance_removes_shadow"
+  ],
+  "transferring": [
+   "tests/core/test_transient_function_wrapper.py::TestTransientFunctionWrapper::test_restore_exception_removes_shadow",
+   "tests/core/test_transient_function_wrapper.py::TestTransientFunctionWrapper::test_restore_inherited_removes_shadow",
+   "tests/core/test_transient_function_wrapper.py::TestTransientFunctionWrapper::test_restore_module_getattr_removes_shadow",
+   "tests/core/test_transient_function_wrapper.py::TestTransientFunctionWrapper::test_restore_via_instance_removes_shadow"
+  ]
+ },
+ {
+  "slot": "wrapt-db45a2ef--ordinary--0",
+  "task": "wrapt-db45a2ef",
+  "arm": "ordinary",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/core/test_transient_function_wrapper.py"
+  ],
+  "pinning": [
+   "tests/core/test_transient_function_wrapper.py::TestTransientRestore::test_inherited_method_shadow_removed"
+  ],
+  "transferring": [
+   "tests/core/test_transient_function_wrapper.py::TestTransientRestore::test_inherited_method_shadow_removed"
+  ]
+ },
+ {
+  "slot": "wrapt-46d10340--ordinary--0",
+  "task": "wrapt-46d10340",
+  "arm": "ordinary",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/core/test_object_proxy.py"
+  ],
+  "pinning": [
+   "tests/core/test_object_proxy.py::TestBinaryOperatorUnwrapsOperand::test_ternary_pow_proxy_exponent"
+  ],
+  "transferring": [
+   "tests/core/test_object_proxy.py::TestBinaryOperatorUnwrapsOperand::test_ternary_pow_proxy_exponent"
+  ]
+ },
+ {
+  "slot": "wheel-986a440c--assisted--0",
+  "task": "wheel-986a440c",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/commands/test_tags.py"
+  ],
+  "pinning": [
+   "tests/commands/test_tags.py::test_tags_strips_zip64_extra"
+  ],
+  "transferring": [
+   "tests/commands/test_tags.py::test_tags_strips_zip64_extra"
+  ]
+ },
+ {
+  "slot": "wheel-986a440c--ordinary--0",
+  "task": "wheel-986a440c",
+  "arm": "ordinary",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/commands/test_tags.py"
+  ],
+  "pinning": [
+   "tests/commands/test_tags.py::test_zip64_extra_stripped"
+  ],
+  "transferring": [
+   "tests/commands/test_tags.py::test_zip64_extra_stripped"
+  ]
+ },
+ {
+  "slot": "tenacity-26f719dc--assisted--0",
+  "task": "tenacity-26f719dc",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/test_asyncio.py",
+   "tests/test_tenacity.py"
+  ],
+  "pinning": [
+   "tests/test_asyncio.py::TestAsyncEnabled::test_enabled_false_direct_call_raises_original_exception",
+   "tests/test_tenacity.py::TestEnabled::test_enabled_false_direct_call_raises_original_exception"
+  ],
+  "transferring": [
+   "tests/test_asyncio.py::TestAsyncEnabled::test_enabled_false_direct_call_raises_original_exception",
+   "tests/test_tenacity.py::TestEnabled::test_enabled_false_direct_call_raises_original_exception"
+  ]
+ },
+ {
+  "slot": "tenacity-b6201ece--assisted--0",
+  "task": "tenacity-b6201ece",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/test_tenacity.py"
+  ],
+  "pinning": [
+   "tests/test_tenacity.py::TestFalsyWaitStrategy::test_falsy_callable_wait_is_called"
+  ],
+  "transferring": [
+   "tests/test_tenacity.py::TestFalsyWaitStrategy::test_falsy_callable_wait_is_called"
+  ]
+ },
+ {
+  "slot": "cachetools-c0fdf6ab--assisted--0",
+  "task": "cachetools-c0fdf6ab",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/test_tlru.py"
+  ],
+  "pinning": [
+   "tests/test_tlru.py::TLRUCacheTest::test_ttu_expired_overwrite"
+  ],
+  "transferring": [
+   "tests/test_tlru.py::TLRUCacheTest::test_ttu_expired_overwrite"
+  ]
+ },
+ {
+  "slot": "cachetools-bcf9e817--assisted--0",
+  "task": "cachetools-bcf9e817",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/test_rr.py"
+  ],
+  "pinning": [
+   "tests/test_rr.py::RRCacheTest::test_rr_popitem_empty"
+  ],
+  "transferring": [
+   "tests/test_rr.py::RRCacheTest::test_rr_popitem_empty"
+  ]
+ },
+ {
+  "slot": "more-itertools-0e6acdf9--assisted--0",
+  "task": "more-itertools-0e6acdf9",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/test_more.py"
+  ],
+  "pinning": [
+   "tests/test_more.py::ChunkedTests::test_negative_n"
+  ],
+  "transferring": [
+   "tests/test_more.py::ChunkedTests::test_negative_n"
+  ]
+ },
+ {
+  "slot": "more-itertools-842a2b17--assisted--0",
+  "task": "more-itertools-842a2b17",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/test_recipes.py"
+  ],
+  "pinning": [
+   "tests/test_recipes.py::SubfactorialTests::test_negative"
+  ],
+  "transferring": [
+   "tests/test_recipes.py::SubfactorialTests::test_negative"
+  ]
+ },
+ {
+  "slot": "oauthlib-50783cff--assisted--0",
+  "task": "oauthlib-50783cff",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/oauth2/rfc6749/endpoints/test_introspect_endpoint.py",
+   "tests/oauth2/rfc6749/endpoints/test_revocation_endpoint.py"
+  ],
+  "pinning": [
+   "tests/oauth2/rfc6749/endpoints/test_introspect_endpoint.py::IntrospectEndpointTest::test_introspect_invalid_content_type",
+   "tests/oauth2/rfc6749/endpoints/test_revocation_endpoint.py::RevocationEndpointTest::test_revoke_invalid_content_type"
+  ],
+  "transferring": [
+   "tests/oauth2/rfc6749/endpoints/test_introspect_endpoint.py::IntrospectEndpointTest::test_introspect_invalid_content_type",
+   "tests/oauth2/rfc6749/endpoints/test_revocation_endpoint.py::RevocationEndpointTest::test_revoke_invalid_content_type"
+  ]
+ },
+ {
+  "slot": "charset_normalizer-017c75c2--assisted--1",
+  "task": "charset_normalizer-017c75c2",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/test_base_detection.py"
+  ],
+  "pinning": [
+   "tests/test_base_detection.py::test_empty_multi_byte_usage"
+  ],
+  "transferring": [
+   "tests/test_base_detection.py::test_empty_multi_byte_usage"
+  ]
+ },
+ {
+  "slot": "charset_normalizer-4b335594--ordinary--1",
+  "task": "charset_normalizer-4b335594",
+  "arm": "ordinary",
+  "outcome": "no pinning test",
+  "test_files": [
+   "tests/test_detect_legacy.py"
+  ],
+  "pinning": [],
+  "transferring": []
+ },
+ {
+  "slot": "charset_normalizer-4b335594--assisted--1",
+  "task": "charset_normalizer-4b335594",
+  "arm": "assisted",
+  "outcome": "no pinning test",
+  "test_files": [
+   "tests/test_detect_legacy.py"
+  ],
+  "pinning": [],
+  "transferring": []
+ },
+ {
+  "slot": "charset_normalizer-667b93c9--assisted--1",
+  "task": "charset_normalizer-667b93c9",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/test_base_detection.py"
+  ],
+  "pinning": [
+   "tests/test_base_detection.py::test_eq_with_non_alias_string"
+  ],
+  "transferring": [
+   "tests/test_base_detection.py::test_eq_with_non_alias_string"
+  ]
+ },
+ {
+  "slot": "pycparser-f93324c1--assisted--1",
+  "task": "pycparser-f93324c1",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/test_c_generator.py"
+  ],
+  "pinning": [
+   "tests/test_c_generator.py::TestCtoC::test_compound_literal_statement"
+  ],
+  "transferring": [
+   "tests/test_c_generator.py::TestCtoC::test_compound_literal_statement"
+  ]
+ },
+ {
+  "slot": "iniconfig-d2dcb728--assisted--1",
+  "task": "iniconfig-d2dcb728",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "testing/test_iniconfig.py"
+  ],
+  "pinning": [
+   "testing/test_iniconfig.py::test_init_file_with_utf8_bom",
+   "testing/test_iniconfig.py::test_parse_strips_utf8_bom"
+  ],
+  "transferring": [
+   "testing/test_iniconfig.py::test_init_file_with_utf8_bom",
+   "testing/test_iniconfig.py::test_parse_strips_utf8_bom"
+  ]
+ },
+ {
+  "slot": "iniconfig-d2dcb728--ordinary--1",
+  "task": "iniconfig-d2dcb728",
+  "arm": "ordinary",
+  "outcome": "transfers",
+  "test_files": [
+   "testing/test_iniconfig.py"
+  ],
+  "pinning": [
+   "testing/test_iniconfig.py::test_iniconfig_data_with_bom",
+   "testing/test_iniconfig.py::test_iniconfig_from_file_with_utf8_bom",
+   "testing/test_iniconfig.py::test_iniconfig_parse_with_utf8_bom"
+  ],
+  "transferring": [
+   "testing/test_iniconfig.py::test_iniconfig_data_with_bom",
+   "testing/test_iniconfig.py::test_iniconfig_from_file_with_utf8_bom",
+   "testing/test_iniconfig.py::test_iniconfig_parse_with_utf8_bom"
+  ]
+ },
+ {
+  "slot": "pyjwt-5fde08a6--assisted--1",
+  "task": "pyjwt-5fde08a6",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/test_api_jwt.py"
+  ],
+  "pinning": [
+   "tests/test_api_jwt.py::TestJWT::test_decode_deeply_nested_payload_raises_decode_error"
+  ],
+  "transferring": [
+   "tests/test_api_jwt.py::TestJWT::test_decode_deeply_nested_payload_raises_decode_error"
+  ]
+ },
+ {
+  "slot": "pyjwt-717668ad--assisted--1",
+  "task": "pyjwt-717668ad",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/test_algorithms.py"
+  ],
+  "pinning": [
+   "tests/test_algorithms.py::TestAlgorithms::test_hmac_prepare_key_rejects_bom_prefixed_jwk_json[utf-16-be]",
+   "tests/test_algorithms.py::TestAlgorithms::test_hmac_prepare_key_rejects_bom_prefixed_jwk_json[utf-32-be]"
+  ],
+  "transferring": [
+   "tests/test_algorithms.py::TestAlgorithms::test_hmac_prepare_key_rejects_bom_prefixed_jwk_json[utf-16-be]",
+   "tests/test_algorithms.py::TestAlgorithms::test_hmac_prepare_key_rejects_bom_prefixed_jwk_json[utf-32-be]"
+  ]
+ },
+ {
+  "slot": "wrapt-15068aae--ordinary--1",
+  "task": "wrapt-15068aae",
+  "arm": "ordinary",
+  "outcome": "not measured",
+  "problem": "upstream: Checking patch tests/stubtest_allowlist.txt...\nerror: while searching for:\n# that are intentional under that contract.\n\n# --- Submodule-level: intentionally unstubbed (see wrapt-stubs/__init__.pyi).\nw",
+  "test_files": [
+   "tests/stubtest_allowlist.txt"
+  ]
+ },
+ {
+  "slot": "wrapt-15068aae--assisted--1",
+  "task": "wrapt-15068aae",
+  "arm": "assisted",
+  "outcome": "not measured",
+  "problem": "upstream: Checking patch tests/core/test_object_proxy.py...\nChecking patch tests/core/test_resolve_path.py...\nChecking patch tests/stubtest_allowlist.txt...\nerror: while searching for:\n# that are intentional un",
+  "test_files": [
+   "tests/core/test_object_proxy.py",
+   "tests/core/test_resolve_path.py",
+   "tests/stubtest_allowlist.txt"
+  ]
+ },
+ {
+  "slot": "wrapt-c27d859a--assisted--1",
+  "task": "wrapt-c27d859a",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/core/test_resolve_path.py"
+  ],
+  "pinning": [
+   "tests/core/test_resolve_path.py::TestResolvePathErrors::test_dotted_module_in_sys_modules_without_parent"
+  ],
+  "transferring": [
+   "tests/core/test_resolve_path.py::TestResolvePathErrors::test_dotted_module_in_sys_modules_without_parent"
+  ]
+ },
+ {
+  "slot": "wrapt-db45a2ef--ordinary--1",
+  "task": "wrapt-db45a2ef",
+  "arm": "ordinary",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/core/test_transient_function_wrapper.py"
+  ],
+  "pinning": [
+   "tests/core/test_transient_function_wrapper.py::TestTransientFunctionWrapper::test_exception_still_restores",
+   "tests/core/test_transient_function_wrapper.py::TestTransientFunctionWrapper::test_inherited_method_shadow_removed",
+   "tests/core/test_transient_function_wrapper.py::TestTransientFunctionWrapper::test_instance_attribute_shadow_removed",
+   "tests/core/test_transient_function_wrapper.py::TestTransientFunctionWrapper::test_module_getattr_shadow_removed"
+  ],
+  "transferring": [
+   "tests/core/test_transient_function_wrapper.py::TestTransientFunctionWrapper::test_exception_still_restores",
+   "tests/core/test_transient_function_wrapper.py::TestTransientFunctionWrapper::test_inherited_method_shadow_removed",
+   "tests/core/test_transient_function_wrapper.py::TestTransientFunctionWrapper::test_instance_attribute_shadow_removed",
+   "tests/core/test_transient_function_wrapper.py::TestTransientFunctionWrapper::test_module_getattr_shadow_removed"
+  ]
+ },
+ {
+  "slot": "wrapt-db45a2ef--assisted--1",
+  "task": "wrapt-db45a2ef",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/core/test_transient_function_wrapper.py"
+  ],
+  "pinning": [
+   "tests/core/test_transient_function_wrapper.py::TestTransientRestore::test_attribute_via_instance",
+   "tests/core/test_transient_function_wrapper.py::TestTransientRestore::test_inherited_method_on_class",
+   "tests/core/test_transient_function_wrapper.py::TestTransientRestore::test_module_getattr"
+  ],
+  "transferring": [
+   "tests/core/test_transient_function_wrapper.py::TestTransientRestore::test_attribute_via_instance",
+   "tests/core/test_transient_function_wrapper.py::TestTransientRestore::test_inherited_method_on_class",
+   "tests/core/test_transient_function_wrapper.py::TestTransientRestore::test_module_getattr"
+  ]
+ },
+ {
+  "slot": "wrapt-46d10340--assisted--1",
+  "task": "wrapt-46d10340",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/core/test_object_proxy.py"
+  ],
+  "pinning": [
+   "tests/core/test_object_proxy.py::TestBinaryOperatorsProxyOperand::test_matmul_unwraps_right_operand",
+   "tests/core/test_object_proxy.py::TestBinaryOperatorsProxyOperand::test_pow_proxy_exponent_with_proxy_base",
+   "tests/core/test_object_proxy.py::TestBinaryOperatorsProxyOperand::test_reflected_override_on_proxied_subclass"
+  ],
+  "transferring": [
+   "tests/core/test_object_proxy.py::TestBinaryOperatorsProxyOperand::test_matmul_unwraps_right_operand",
+   "tests/core/test_object_proxy.py::TestBinaryOperatorsProxyOperand::test_pow_proxy_exponent_with_proxy_base",
+   "tests/core/test_object_proxy.py::TestBinaryOperatorsProxyOperand::test_reflected_override_on_proxied_subclass"
+  ]
+ },
+ {
+  "slot": "wheel-986a440c--assisted--1",
+  "task": "wheel-986a440c",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/commands/test_tags.py"
+  ],
+  "pinning": [
+   "tests/commands/test_tags.py::test_no_zip64_extra_in_local_headers"
+  ],
+  "transferring": [
+   "tests/commands/test_tags.py::test_no_zip64_extra_in_local_headers"
+  ]
+ },
+ {
+  "slot": "tenacity-26f719dc--assisted--1",
+  "task": "tenacity-26f719dc",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/test_asyncio.py",
+   "tests/test_tenacity.py"
+  ],
+  "pinning": [
+   "tests/test_asyncio.py::TestAsyncEnabled::test_enabled_false_direct_call_raises_original_exception",
+   "tests/test_tenacity.py::TestEnabled::test_enabled_false_direct_call_raises_original_exception"
+  ],
+  "transferring": [
+   "tests/test_asyncio.py::TestAsyncEnabled::test_enabled_false_direct_call_raises_original_exception",
+   "tests/test_tenacity.py::TestEnabled::test_enabled_false_direct_call_raises_original_exception"
+  ]
+ },
+ {
+  "slot": "tenacity-949dcfa6--assisted--1",
+  "task": "tenacity-949dcfa6",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/test_tenacity.py"
+  ],
+  "pinning": [
+   "tests/test_tenacity.py::TestRetryWithoutTornado::test_retry_decorator_with_tornado_global_nulled"
+  ],
+  "transferring": [
+   "tests/test_tenacity.py::TestRetryWithoutTornado::test_retry_decorator_with_tornado_global_nulled"
+  ]
+ },
+ {
+  "slot": "cachetools-ec0b97b8--assisted--1",
+  "task": "cachetools-ec0b97b8",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/test_cachedmethod.py"
+  ],
+  "pinning": [
+   "tests/test_cachedmethod.py::InheritanceTest::test_cachedmethod_override_calls_super",
+   "tests/test_cachedmethod.py::InheritanceTest::test_plain_override_calls_super"
+  ],
+  "transferring": [
+   "tests/test_cachedmethod.py::InheritanceTest::test_cachedmethod_override_calls_super",
+   "tests/test_cachedmethod.py::InheritanceTest::test_plain_override_calls_super"
+  ]
+ },
+ {
+  "slot": "cachetools-c0fdf6ab--assisted--1",
+  "task": "cachetools-c0fdf6ab",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/test_tlru.py"
+  ],
+  "pinning": [
+   "tests/test_tlru.py::TLRUCacheTest::test_ttu_expired_overwrite"
+  ],
+  "transferring": [
+   "tests/test_tlru.py::TLRUCacheTest::test_ttu_expired_overwrite"
+  ]
+ },
+ {
+  "slot": "cachetools-bcf9e817--assisted--1",
+  "task": "cachetools-bcf9e817",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/test_rr.py"
+  ],
+  "pinning": [
+   "tests/test_rr.py::RRCacheTest::test_rr_popitem_empty"
+  ],
+  "transferring": [
+   "tests/test_rr.py::RRCacheTest::test_rr_popitem_empty"
+  ]
+ },
+ {
+  "slot": "more-itertools-0e6acdf9--assisted--1",
+  "task": "more-itertools-0e6acdf9",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/test_more.py"
+  ],
+  "pinning": [
+   "tests/test_more.py::ChunkedTests::test_negative"
+  ],
+  "transferring": [
+   "tests/test_more.py::ChunkedTests::test_negative"
+  ]
+ },
+ {
+  "slot": "more-itertools-842a2b17--ordinary--1",
+  "task": "more-itertools-842a2b17",
+  "arm": "ordinary",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/test_recipes.py"
+  ],
+  "pinning": [
+   "tests/test_recipes.py::SubfactorialTests::test_basic",
+   "tests/test_recipes.py::SubfactorialTests::test_large",
+   "tests/test_recipes.py::SubfactorialTests::test_matches_derangements",
+   "tests/test_recipes.py::SubfactorialTests::test_negative"
+  ],
+  "transferring": [
+   "tests/test_recipes.py::SubfactorialTests::test_basic",
+   "tests/test_recipes.py::SubfactorialTests::test_large",
+   "tests/test_recipes.py::SubfactorialTests::test_matches_derangements",
+   "tests/test_recipes.py::SubfactorialTests::test_negative"
+  ]
+ },
+ {
+  "slot": "more-itertools-842a2b17--assisted--1",
+  "task": "more-itertools-842a2b17",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/test_recipes.py"
+  ],
+  "pinning": [
+   "tests/test_recipes.py::SubfactorialTests::test_matches_derangements",
+   "tests/test_recipes.py::SubfactorialTests::test_negative",
+   "tests/test_recipes.py::SubfactorialTests::test_values"
+  ],
+  "transferring": [
+   "tests/test_recipes.py::SubfactorialTests::test_matches_derangements",
+   "tests/test_recipes.py::SubfactorialTests::test_negative",
+   "tests/test_recipes.py::SubfactorialTests::test_values"
+  ]
+ },
+ {
+  "slot": "oauthlib-50783cff--assisted--1",
+  "task": "oauthlib-50783cff",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/oauth2/rfc6749/endpoints/test_introspect_endpoint.py",
+   "tests/oauth2/rfc6749/endpoints/test_revocation_endpoint.py"
+  ],
+  "pinning": [
+   "tests/oauth2/rfc6749/endpoints/test_introspect_endpoint.py::IntrospectEndpointTest::test_introspect_bad_content_type",
+   "tests/oauth2/rfc6749/endpoints/test_revocation_endpoint.py::RevocationEndpointTest::test_revoke_bad_content_type"
+  ],
+  "transferring": [
+   "tests/oauth2/rfc6749/endpoints/test_introspect_endpoint.py::IntrospectEndpointTest::test_introspect_bad_content_type",
+   "tests/oauth2/rfc6749/endpoints/test_revocation_endpoint.py::RevocationEndpointTest::test_revoke_bad_content_type"
+  ]
+ },
+ {
+  "slot": "charset_normalizer-017c75c2--assisted--2",
+  "task": "charset_normalizer-017c75c2",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/test_base_detection.py"
+  ],
+  "pinning": [
+   "tests/test_base_detection.py::test_empty_multi_byte_usage"
+  ],
+  "transferring": [
+   "tests/test_base_detection.py::test_empty_multi_byte_usage"
+  ]
+ },
+ {
+  "slot": "charset_normalizer-4b335594--assisted--2",
+  "task": "charset_normalizer-4b335594",
+  "arm": "assisted",
+  "outcome": "no pinning test",
+  "test_files": [
+   "tests/test_detect_legacy.py"
+  ],
+  "pinning": [],
+  "transferring": []
+ },
+ {
+  "slot": "charset_normalizer-4b335594--ordinary--2",
+  "task": "charset_normalizer-4b335594",
+  "arm": "ordinary",
+  "outcome": "no pinning test",
+  "test_files": [
+   "tests/test_detect_legacy.py"
+  ],
+  "pinning": [],
+  "transferring": []
+ },
+ {
+  "slot": "charset_normalizer-667b93c9--assisted--2",
+  "task": "charset_normalizer-667b93c9",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/test_base_detection.py"
+  ],
+  "pinning": [
+   "tests/test_base_detection.py::test_eq_non_alias_string_does_not_raise"
+  ],
+  "transferring": [
+   "tests/test_base_detection.py::test_eq_non_alias_string_does_not_raise"
+  ]
+ },
+ {
+  "slot": "pycparser-f93324c1--assisted--2",
+  "task": "pycparser-f93324c1",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/test_c_generator.py"
+  ],
+  "pinning": [
+   "tests/test_c_generator.py::TestCtoC::test_compound_literal_statement"
+  ],
+  "transferring": [
+   "tests/test_c_generator.py::TestCtoC::test_compound_literal_statement"
+  ]
+ },
+ {
+  "slot": "iniconfig-d2dcb728--ordinary--2",
+  "task": "iniconfig-d2dcb728",
+  "arm": "ordinary",
+  "outcome": "transfers",
+  "test_files": [
+   "testing/test_iniconfig.py"
+  ],
+  "pinning": [
+   "testing/test_iniconfig.py::test_parse_strips_utf8_bom",
+   "testing/test_iniconfig.py::test_read_file_with_utf8_bom"
+  ],
+  "transferring": [
+   "testing/test_iniconfig.py::test_parse_strips_utf8_bom",
+   "testing/test_iniconfig.py::test_read_file_with_utf8_bom"
+  ]
+ },
+ {
+  "slot": "iniconfig-d2dcb728--assisted--2",
+  "task": "iniconfig-d2dcb728",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "testing/test_iniconfig.py"
+  ],
+  "pinning": [
+   "testing/test_iniconfig.py::test_iniconfig_from_file_strips_utf8_bom",
+   "testing/test_iniconfig.py::test_iniconfig_parse_strips_utf8_bom"
+  ],
+  "transferring": [
+   "testing/test_iniconfig.py::test_iniconfig_from_file_strips_utf8_bom",
+   "testing/test_iniconfig.py::test_iniconfig_parse_strips_utf8_bom"
+  ]
+ },
+ {
+  "slot": "pyjwt-5fde08a6--assisted--2",
+  "task": "pyjwt-5fde08a6",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/test_api_jwt.py"
+  ],
+  "pinning": [
+   "tests/test_api_jwt.py::TestJWT::test_decode_deeply_nested_payload"
+  ],
+  "transferring": [
+   "tests/test_api_jwt.py::TestJWT::test_decode_deeply_nested_payload"
+  ]
+ },
+ {
+  "slot": "pyjwt-717668ad--assisted--2",
+  "task": "pyjwt-717668ad",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/test_algorithms.py"
+  ],
+  "pinning": [
+   "tests/test_algorithms.py::TestAlgorithms::test_hmac_prepare_key_rejects_jwk_in_any_json_encoding[utf-16-be]",
+   "tests/test_algorithms.py::TestAlgorithms::test_hmac_prepare_key_rejects_jwk_in_any_json_encoding[utf-32-be]"
+  ],
+  "transferring": [
+   "tests/test_algorithms.py::TestAlgorithms::test_hmac_prepare_key_rejects_jwk_in_any_json_encoding[utf-16-be]",
+   "tests/test_algorithms.py::TestAlgorithms::test_hmac_prepare_key_rejects_jwk_in_any_json_encoding[utf-32-be]"
+  ]
+ },
+ {
+  "slot": "wrapt-db45a2ef--assisted--2",
+  "task": "wrapt-db45a2ef",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/core/test_monkey_patching.py",
+   "tests/core/test_transient_function_wrapper.py"
+  ],
+  "pinning": [
+   "tests/core/test_transient_function_wrapper.py::TestTransientFunctionWrapper::test_restore_class_inherited_attribute",
+   "tests/core/test_transient_function_wrapper.py::TestTransientFunctionWrapper::test_restore_class_inherited_on_exception",
+   "tests/core/test_transient_function_wrapper.py::TestTransientFunctionWrapper::test_restore_instance_attribute_via_class",
+   "tests/core/test_transient_function_wrapper.py::TestTransientFunctionWrapper::test_restore_module_getattr"
+  ],
+  "transferring": [
+   "tests/core/test_transient_function_wrapper.py::TestTransientFunctionWrapper::test_restore_class_inherited_attribute",
+   "tests/core/test_transient_function_wrapper.py::TestTransientFunctionWrapper::test_restore_class_inherited_on_exception",
+   "tests/core/test_transient_function_wrapper.py::TestTransientFunctionWrapper::test_restore_instance_attribute_via_class",
+   "tests/core/test_transient_function_wrapper.py::TestTransientFunctionWrapper::test_restore_module_getattr"
+  ]
+ },
+ {
+  "slot": "wrapt-db45a2ef--ordinary--2",
+  "task": "wrapt-db45a2ef",
+  "arm": "ordinary",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/core/test_transient_function_wrapper.py"
+  ],
+  "pinning": [
+   "tests/core/test_transient_function_wrapper.py::TestTransientRestore::test_inherited_method_not_left_shadowed",
+   "tests/core/test_transient_function_wrapper.py::TestTransientRestore::test_instance_attribute_via_class_removed"
+  ],
+  "transferring": [
+   "tests/core/test_transient_function_wrapper.py::TestTransientRestore::test_inherited_method_not_left_shadowed",
+   "tests/core/test_transient_function_wrapper.py::TestTransientRestore::test_instance_attribute_via_class_removed"
+  ]
+ },
+ {
+  "slot": "wrapt-46d10340--ordinary--2",
+  "task": "wrapt-46d10340",
+  "arm": "ordinary",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/core/test_object_proxy.py"
+  ],
+  "pinning": [
+   "tests/core/test_object_proxy.py::TestBinaryOperatorsProxyOperand::test_ternary_pow_proxy_exponent"
+  ],
+  "transferring": [
+   "tests/core/test_object_proxy.py::TestBinaryOperatorsProxyOperand::test_ternary_pow_proxy_exponent"
+  ]
+ },
+ {
+  "slot": "wrapt-46d10340--assisted--2",
+  "task": "wrapt-46d10340",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/core/test_operator_proxy_operand.py"
+  ],
+  "pinning": [
+   "tests/core/test_operator_proxy_operand.py::RightOperandProxyTests::test_pow_proxy_exponent_and_base"
+  ],
+  "transferring": [
+   "tests/core/test_operator_proxy_operand.py::RightOperandProxyTests::test_pow_proxy_exponent_and_base"
+  ]
+ },
+ {
+  "slot": "wheel-986a440c--assisted--2",
+  "task": "wheel-986a440c",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/commands/test_tags.py"
+  ],
+  "pinning": [
+   "tests/commands/test_tags.py::test_tags_strips_zip64_extra"
+  ],
+  "transferring": [
+   "tests/commands/test_tags.py::test_tags_strips_zip64_extra"
+  ]
+ },
+ {
+  "slot": "tenacity-26f719dc--assisted--2",
+  "task": "tenacity-26f719dc",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/test_asyncio.py",
+   "tests/test_tenacity.py"
+  ],
+  "pinning": [
+   "tests/test_asyncio.py::TestAsyncEnabled::test_enabled_false_direct_call_raises_original_exception",
+   "tests/test_tenacity.py::TestEnabled::test_enabled_false_direct_call_raises_original_exception"
+  ],
+  "transferring": [
+   "tests/test_asyncio.py::TestAsyncEnabled::test_enabled_false_direct_call_raises_original_exception",
+   "tests/test_tenacity.py::TestEnabled::test_enabled_false_direct_call_raises_original_exception"
+  ]
+ },
+ {
+  "slot": "tenacity-949dcfa6--assisted--2",
+  "task": "tenacity-949dcfa6",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/test_tornado.py"
+  ],
+  "pinning": [
+   "tests/test_tornado.py::TestTornadoGlobalNulled::test_retry_decoration_with_tornado_global_none"
+  ],
+  "transferring": [
+   "tests/test_tornado.py::TestTornadoGlobalNulled::test_retry_decoration_with_tornado_global_none"
+  ]
+ },
+ {
+  "slot": "tenacity-389aab8b--assisted--2",
+  "task": "tenacity-389aab8b",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/test_tenacity.py"
+  ],
+  "pinning": [
+   "tests/test_tenacity.py::TestFalsyWaitAndCallableCombine::test_callable_plus_strategy",
+   "tests/test_tenacity.py::TestFalsyWaitAndCallableCombine::test_wait_empty_sum",
+   "tests/test_tenacity.py::TestFalsyWaitAndCallableCombine::test_wait_none",
+   "tests/test_tenacity.py::TestFalsyWaitAndCallableCombine::test_wait_zero"
+  ],
+  "transferring": [
+   "tests/test_tenacity.py::TestFalsyWaitAndCallableCombine::test_callable_plus_strategy",
+   "tests/test_tenacity.py::TestFalsyWaitAndCallableCombine::test_wait_empty_sum",
+   "tests/test_tenacity.py::TestFalsyWaitAndCallableCombine::test_wait_none",
+   "tests/test_tenacity.py::TestFalsyWaitAndCallableCombine::test_wait_zero"
+  ]
+ },
+ {
+  "slot": "cachetools-c0fdf6ab--assisted--2",
+  "task": "cachetools-c0fdf6ab",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/test_tlru.py"
+  ],
+  "pinning": [
+   "tests/test_tlru.py::TLRUCacheTest::test_ttu_expired_overwrite"
+  ],
+  "transferring": [
+   "tests/test_tlru.py::TLRUCacheTest::test_ttu_expired_overwrite"
+  ]
+ },
+ {
+  "slot": "cachetools-bcf9e817--assisted--2",
+  "task": "cachetools-bcf9e817",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/test_rr.py"
+  ],
+  "pinning": [
+   "tests/test_rr.py::RRCacheTest::test_rr_popitem_empty"
+  ],
+  "transferring": [
+   "tests/test_rr.py::RRCacheTest::test_rr_popitem_empty"
+  ]
+ },
+ {
+  "slot": "more-itertools-0e6acdf9--assisted--2",
+  "task": "more-itertools-0e6acdf9",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/test_more.py"
+  ],
+  "pinning": [
+   "tests/test_more.py::ChunkedTests::test_negative"
+  ],
+  "transferring": [
+   "tests/test_more.py::ChunkedTests::test_negative"
+  ]
+ },
+ {
+  "slot": "more-itertools-842a2b17--assisted--2",
+  "task": "more-itertools-842a2b17",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/test_recipes.py"
+  ],
+  "pinning": [
+   "tests/test_recipes.py::SubfactorialTests::test_large",
+   "tests/test_recipes.py::SubfactorialTests::test_matches_derangements",
+   "tests/test_recipes.py::SubfactorialTests::test_negative",
+   "tests/test_recipes.py::SubfactorialTests::test_small"
+  ],
+  "transferring": [
+   "tests/test_recipes.py::SubfactorialTests::test_large",
+   "tests/test_recipes.py::SubfactorialTests::test_matches_derangements",
+   "tests/test_recipes.py::SubfactorialTests::test_negative",
+   "tests/test_recipes.py::SubfactorialTests::test_small"
+  ]
+ },
+ {
+  "slot": "oauthlib-50783cff--assisted--2",
+  "task": "oauthlib-50783cff",
+  "arm": "assisted",
+  "outcome": "transfers",
+  "test_files": [
+   "tests/oauth2/rfc6749/endpoints/test_introspect_endpoint.py",
+   "tests/oauth2/rfc6749/endpoints/test_revocation_endpoint.py"
+  ],
+  "pinning": [
+   "tests/oauth2/rfc6749/endpoints/test_introspect_endpoint.py::IntrospectEndpointTest::test_introspect_token_bad_content_type",
+   "tests/oauth2/rfc6749/endpoints/test_revocation_endpoint.py::RevocationEndpointTest::test_revoke_token_bad_content_type"
+  ],
+  "transferring": [
+   "tests/oauth2/rfc6749/endpoints/test_introspect_endpoint.py::IntrospectEndpointTest::test_introspect_token_bad_content_type",
+   "tests/oauth2/rfc6749/endpoints/test_revocation_endpoint.py::RevocationEndpointTest::test_revoke_token_bad_content_type"
+  ]
+ }
+]

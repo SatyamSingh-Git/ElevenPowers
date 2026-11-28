@@ -51,6 +51,39 @@ By the reading fixed in advance: the instruction is significant and the runtime
 check does not add to it; the opposite. What ElevenPowers measures (VACUOUS, the
 revert probe) is what found this; what it does to the agent is beaten by a sentence.
 
+## Do the tests pin behaviour or the agent's own implementation? (added 2026-11-28)
+
+Measured afterwards on the same runs, by a [design](../../../docs/superpowers/specs/2026-11-28-heldout-test-transfer-design.md)
+pushed before computing it (`eval/heldout_transfer.py`, [rows](transfer.json)).
+SWT-bench's measure: a test that fails without the agent's change and passes with it
+should also pass on the **upstream maintainers' fix**, which the agent never saw.
+
+| | ordinary | instructed | superpowers | ElevenPowers |
+|---|---|---|---|---|
+| resolved runs changing a test file | 18 | 90 | 17 | 46 |
+| runs with a pinning test | 12 | 87 | 13 | 43 |
+| **all pinning tests pass on the upstream fix** | 12 | **86** | 13 | 43 |
+| pinning tests passing on the upstream fix | 29 of 29 | **183 of 186** | 30 of 30 | 69 of 69 |
+| not measured | 2 | 0 | 1 | 1 |
+
+October's runs, the same way: ordinary 10 of 10 runs, assisted 51 of 51, every pinning
+test transferring ([rows](../sweep-2026-10-22/transfer.json)). The primary comparison
+fixed in the design (instructed against ElevenPowers, by task) has nothing to compare:
+every one of the 18 tasks where both arms have a pinning test ties.
+
+**So the instruction's 0% is not tests gamed to the agent's code.** 183 of its 186
+pinning tests describe behaviour the upstream fix shares. The one run that does not
+transfer (`uvicorn-31e3e00f--instructed--2`, read in full): the request was "Transfer
+WebSocket transport ownership before processing", and the agent's test asserts
+`set_protocol` before `connection_made`; upstream moved it only ahead of
+`data_received`. A choice the request left open, made differently, not an internal.
+Every not-measured run is `wrapt-15068aae`, whose agent patches and upstream fix both
+edit `tests/stubtest_allowlist.txt`, so the two cannot be combined.
+
+Found while building it: pytest stops the whole session when one test file cannot
+be imported, which would have hidden the other files' tests;
+`--continue-on-collection-errors`.
+
 ## Incomplete
 
 Two of 480 runs ended `host_failed`, both in the same minute on both workers
