@@ -58,8 +58,12 @@ def test_the_analysis_runs_the_five_pairs_over_task_means_with_holm():
     assert value["per_arm"]["ordinary"]["mutants"] == 8 and value["per_arm"]["ordinary"]["killed"] == 3
 
 
-def test_only_the_changed_lines_are_mutated_and_the_tree_is_restored(tmp_path):
+def test_only_the_changed_lines_are_mutated_and_the_tree_is_restored(tmp_path, monkeypatch):
     # Line 2 is the change; line 3 is the original `return 1`, now in the changed function.
+    # Cosmic Ray lists line 2's nine candidates first, so the limit must reach past them.
+    pytest.importorskip("cosmic_ray")
+    from eval import heldout_mutation as m
+    monkeypatch.setattr(m, "RUN", 16)
     source = "def value():\n    flag = 2 > 1\n    return 1\n"
     value = _score(tmp_path, source, {})
     assert value["outcome"] == "scored"
